@@ -1,0 +1,22 @@
+<sht-dialog class="sht-dialog no-focus-visible d-flex middle-md bottom-xs end-xs p-fixed left-0 top-0 h-100 w-100 o-auto zi-9 color-{{- settings.color_scheme_drawer_popover }}" id="dialogSizeGuide{{ size_guide_dialog_id }}" hidden tabindex="-1">
+  <div class="dialog disable-scrollbars" role="dialog" aria-labelledby="dialogTitle{{ size_guide_dialog_id }}" aria-modal="true">
+    <div class="dialog__content d-flex fd-column h-100">
+      <div class="dialog__header d-flex between-xs middle-xs p-sticky top-0 gap-1x">
+        <h3 class="dialog--animate h6 m-zero flex-1" id="dialogTitle{{ size_guide_dialog_id }}">{{ size_guide_heading }}</h3>
+        <button type="button" aria-label="{{- "accessibility.close_modal" | t -}}" class="dialog--animate js-dialog-close-btn btn btn-icon  btn-plain btn--large">
+          {%- render 'icon-close', class: "ml-1x" -%}
+        </button>
+      </div>
+      <div class="dialog__body js-dialog-body disable-scrollbars">
+          <template>
+              <div class="hide-empty rte dialog--animate">
+                {{- size_guide_block.settings.size_guide_content.content | default: '' -}}
+              </div>
+          </template>
+      </div>
+      <div class="dialog__footer d-none">
+        <button type="button" aria-label="{{- "accessibility.close_modal" | t -}}" class="js-dialog-close-btn js-dialog-close-btn--last d-none">{{- "accessibility.close_modal" | t -}}</button>
+      </div>
+    </div>
+  </div>
+</sht-dialog>

@@ -1,0 +1,368 @@
+{%- liquid
+  assign content_align_mobile = section.settings.content_align_mobile
+  assign content_align_desktop = section.settings.content_align
+  assign section_id = section.id | md5 | truncate: 12, ""
+-%}
+
+{% liquid
+  assign detect_background = 1
+  if section.settings.color_scheme.settings.color_background.alpha != 0.0
+    assign no_transparent = 'no-transparent'
+    assign detect_background = section.settings.color_scheme.settings.color_background | color_brightness | times: 9999
+  endif
+%}
+<style>
+  #shopify-section-{{ section.id }} {
+    --section-background-hash: {{ detect_background }};
+  }
+  #shopify-section-{{ section.id }} + * {
+    --previous-section-background-hash: {{ detect_background }};
+  }
+</style>
+
+<div class="s--margin color-{{- section.settings.color_scheme }} s-container-radius {{ no_transparent }}" data-ui-component="Info Tab Section" role="region" aria-labelledby="sectionHeading-{{ section.id | md5 | truncate: 12, "" }}">
+  <div class="section ctnr d-grid  ">
+    {% render 'section-header',
+      content_align_mobile: content_align_mobile,
+      content_align_desktop: content_align_desktop,
+      subheading: section.settings.subheading,
+      heading: section.settings.heading,
+      description: section.settings.description,
+      heading_size: section.settings.heading_size
+      section: section
+   %}
+    <div class="s-content">
+      <sht-info-tabs class="sht-tab-container d-flex fd-column gap-content gap-horizontal-md {{ section.settings.content_ordering_mobile }} {{ section.settings.content_ordering_desktop }}">
+        {% if section.blocks.size > 0 %}
+          {% for block in section.blocks limit: section.blocks.size %}
+            {% liquid
+              assign aria_expanded = 'false'
+              assign active_class = ''
+              assign styles = 'max-height: 0;'
+              if forloop.first
+                assign aria_expanded = 'true'
+                assign active_class = 'active'
+                assign styles = ''
+              endif
+             %}
+            {% capture tab_header_button %}
+              {{ tab_header_button }}
+              <button class="btn-tab btn btn--medium btn-icon js-tab-btn {{ active_class }}" aria-controls="infoTab-{{ forloop.index }}-{{ section_id }}" aria-expanded="{{ aria_expanded }}">
+                <span class="d-block p-relative zi-1">{{- forloop.index -}}</span>
+              </button>
+            {% endcapture %}
+            {% capture tab_header_content %}
+              {{ tab_header_content }}
+              <div class="d-inline-block" {{ block.shopify_attributes }} role="presentation">
+                <button class="info-tab__header focus-state js-accordion-trigger color-light bg-transparent b-zero d-none d-flex-md gap-1-5-x p-zero c-pointer w-100 middle-md {{ active_class }}" aria-controls="infoTab-{{ forloop.index }}-{{ section_id }}" aria-expanded="{{ aria_expanded }}">
+                  <span class="info-tabs__button btn btn--medium btn-icon">
+                    <span class="d-block p-relative zi-1">{{- forloop.index -}}</span>
+                  </span>
+                  <span class="info-tabs__heading h6 m-zero hide-empty flex-1 ta-left wb-break-word">{{- block.settings.heading -}}</span>
+                </button>
+                <div class="tab__header__description mt-1x js-accordion-content rte hide-empty" id="infoTab-{{ forloop.index }}-{{ section_id }}" style="{{ styles }}">
+                  {{- block.settings.description -}}
+                </div>
+              </div>
+            {% endcapture %}
+          {% endfor %}
+          <div class="info-tab__heading d-flex fd-column" style="--w-md:{{- 12 | minus: section.settings.image_size_on_large -}};">
+            <div class="d-flex mb-2x gap-1x d-none-important-md">
+              {{ tab_header_button }}
+            </div>
+            <div class="p-relative ls-none d-flex fd-column r-gap-2x-md" tabindex="-1">
+              {{ tab_header_content }}
+            </div>
+          </div>
+        {% endif %}
+        <div class="info-tab__media p-relative" style="--w-md:{{- section.settings.image_size_on_large -}}; aspect-ratio: {{- section.settings.image_ratio -}};">
+          {% for block in section.blocks limit: section.blocks.size %}
+          <div id="infoTab-{{- forloop.index -}}-{{- section_id -}}-media" class="info-tab__media-item {% if forloop.first %}info-tab__media--active {% else %} hidden-xs {% endif %} js-tab-panel-media p-absolute w-100 h-100">
+              {%-liquid
+                assign loading = "lazy"
+                assign decoding ="async"
+                assign fetchpriority = "auto"
+                if section.index <= 2 and forloop.first
+                  assign loading = "eager"
+                  assign fetchpriority = "high"
+                endif
+                assign placeholder_image_index = forloop.index0 | modulo: 4 | plus: 1
+                assign media = 'product-apparel-' | append: placeholder_image_index | placeholder_svg_tag: 'placeholder media js-image-lazy w-100 h-100 d-block'
+                assign image_alt = block.settings.image.alt | default: block.settings.image.image | split: '/' | last
+                assign media = block.settings.image | image_url: width: block.settings.image.width | image_tag: widths: '450, 550, 750, 950, 1024, 1200, 1400, 1600, 1800, 2000', sizes: '(min-width: 1025px) calc((100vw - 128px) /2), calc(100vw - 96px)', class: 'of-cover w-100 h-100', alt: image_alt, loading: loading, fetchpriority: fetchpriority, decoding: decoding
+                render 'image', image_item: media, image_wrap_classes: 'rounded-2x w-100', image_classes: 'w-100 h-100', ratio: section.settings.image_ratio
+              %}
+            </div>
+          {% endfor %}
+        </div>
+      </sht-info-tabs>
+    </div>
+    <div class="s-footer {{ section.settings.button_text | default: 'd-none' | replace: section.settings.button_text, '' }} {{ content_align_mobile }} {{ content_align_desktop }}">
+      <a class="btn hide-empty {{ section.settings.style_button }} btn--large" href="{{- section.settings.button_link | default: '#' -}}" {% if section.settings.button_link == blank %} tabindex="-1" {% endif %}>
+        {{- section.settings.button_text -}}
+      </a>
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "t:sections.info_tabs.name",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "max_blocks": 5,
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.general.content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_scheme.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "t:general.settings.section_subheading.label",
+      "default": "Add a tagline"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:general.settings.section_heading.label",
+      "info": "t:general.settings.prominent_font.info",
+      "default": "Our core values"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.heading_size.label",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "t:general.settings.heading_size.options.h2.label"
+        },
+        {
+          "value": "h3",
+          "label": "t:general.settings.heading_size.options.h3.label"
+        },
+        {
+          "value": "h4",
+          "label": "t:general.settings.heading_size.options.h4.label"
+        },
+        {
+          "value": "h5",
+          "label": "t:general.settings.heading_size.options.h5.label"
+        }
+      ],
+      "default": "h2"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "t:general.settings.section_description.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.info_tabs.settings.header.tabs_item.content"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "t:general.settings.image_ratio.label",
+      "options": [
+        {
+          "value": "1",
+          "label": "t:general.settings.image_ratio.options.square.label"
+        },
+        {
+          "value": "2/3",
+          "label": "t:general.settings.image_ratio.options.portrait.label"
+        },
+        {
+          "value": "3/2",
+          "label": "t:general.settings.image_ratio.options.landscape.label"
+        }
+      ],
+      "default": "3/2"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.header.settings.headers.header_large_screen.content"
+    },
+    {
+      "type": "select",
+      "id": "content_align",
+      "label": "t:general.settings.section_heading_alignment.label",
+      "options": [
+        {
+          "value": "ta-left-md",
+          "label": "t:general.settings.option_left.label"
+        },
+        {
+          "value": "ta-center-md",
+          "label": "t:general.settings.option_center.label"
+        }
+      ],
+      "default": "ta-center-md"
+    },
+    {
+      "type": "select",
+      "label": "t:sections.info_tabs.settings.tabs_ordering.label",
+      "id": "content_ordering_desktop",
+      "options": [
+        {
+          "value": "fd-row-md",
+          "label": "t:general.settings.section_ordering.option_text_first.label"
+        },
+        {
+          "value": "fd-row-reverse-md",
+          "label": "t:general.settings.section_ordering.option_image_first.label"
+        }
+      ],
+      "default": "fd-row-reverse-md"
+    },
+    {
+      "type": "select",
+      "id": "image_size_on_large",
+      "label": "t:general.settings.image_width_on_large_screen.label",
+      "options": [
+        {
+          "value": "6",
+          "label": "50%"
+        },
+        {
+          "value": "8.4",
+          "label": "70%"
+        }
+      ],
+      "default": "8.4"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.header.mobile_screen.content"
+    },
+    {
+      "type": "select",
+      "id": "content_align_mobile",
+      "label": "t:general.settings.section_heading_alignment.label",
+      "options": [
+        {
+          "value": "ta-left",
+          "label": "t:general.settings.option_left.label"
+        },
+        {
+          "value": "ta-center",
+          "label": "t:general.settings.option_center.label"
+        }
+      ],
+      "default": "ta-center"
+    },
+    {
+      "type": "select",
+      "label": "t:sections.info_tabs.settings.tabs_ordering.label",
+      "id": "content_ordering_mobile",
+      "options": [
+        {
+          "value": "text-first-mb",
+          "label": "t:general.settings.section_ordering.option_text_first.label"
+        },
+        {
+          "value": "fd-column-reverse",
+          "label": "t:general.settings.section_ordering.option_image_first.label"
+        }
+      ],
+      "default": "fd-column-reverse"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.button.content"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "t:general.settings.label.label",
+      "info": "t:general.settings.hide_if_empty.info"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.style.label",
+      "id": "style_button",
+      "options": [
+        {
+          "value": "btn-primary",
+          "label": "t:general.settings.filled.label"
+        },
+        {
+          "value": "btn-outline",
+          "label": "t:general.settings.oulined.label"
+        },
+        {
+          "value": "btn-link",
+          "label": "t:general.settings.text_link.label"
+        }
+      ],
+      "default": "btn-primary"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "t:general.settings.link.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "t:sections.info_tabs.blocks.tab.name",
+      "settings": [
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.image.content"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:general.settings.image.label"
+        },
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.text.content"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:general.settings.heading.label",
+          "default": "Tab heading"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "t:general.settings.description.label",
+          "default": "<p>Highlight your values, products, or services</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.info_tabs.name",
+      "blocks": [
+        {
+          "type": "tab"
+        },
+        {
+          "type": "tab"
+        },
+        {
+          "type": "tab"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

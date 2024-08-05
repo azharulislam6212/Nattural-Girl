@@ -1,0 +1,64 @@
+{% liquid
+  assign detect_background = 1
+  if section.settings.color_scheme.settings.color_background.alpha != 0.0
+    assign no_transparent = 'no-transparent'
+    assign detect_background = section.settings.color_scheme.settings.color_background | color_brightness | times: 9999
+  endif
+%}
+<style>
+  #shopify-section-{{ section.id }} {
+    --section-background-hash: {{ detect_background }};
+  }
+  #shopify-section-{{ section.id }} + * {
+    --previous-section-background-hash: {{ detect_background }};
+  }
+</style>
+<div class="s--margin s-container-radius o-hidden color-{{- section.settings.color_scheme }} {{ no_transparent }}" data-ui-component="Apps Section">
+  <div class="w-100 section {{ section.settings.enable_content_fullwidth | default: 'ctnr' | replace: 'true', 'pr-0 pl-0' }} {{ section.settings.remove_padding_top | replace: 'true', 'pt-0' | replace: section.settings.remove_padding_top, '' }} {{ section.settings.remove_padding_bottom | replace: 'true', 'pb-0' | replace: section.settings.remove_padding_bottom, '' }}">
+    {%- for block in section.blocks -%}
+      {% render block %}
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "t:sections.apps.name",
+    "settings": [
+      {
+        "type": "color_scheme",
+        "id": "color_scheme",
+        "label": "t:general.settings.color_scheme.label",
+        "default": "scheme-1"
+        },
+      {
+        "type": "checkbox",
+        "id": "enable_content_fullwidth",
+        "default": false,
+        "label": "t:sections.apps.settings.enable_layout_fullwidth.label"
+      },
+      {
+        "type": "checkbox",
+        "id": "remove_padding_top",
+        "default": false,
+        "label": "t:sections.apps.settings.remove_padding_top.label"
+      },
+      {
+        "type": "checkbox",
+        "id": "remove_padding_bottom",
+        "default": false,
+        "label": "t:sections.apps.settings.remove_padding_bottom.label"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "@app"
+      }
+    ],
+    "presets": [
+      {
+        "name": "t:sections.apps.name"
+      }
+    ]
+  }
+{% endschema %}

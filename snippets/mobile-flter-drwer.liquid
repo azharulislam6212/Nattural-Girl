@@ -1,0 +1,71 @@
+<div class="mobile-drawer" id="navigation-mobile">
+    <div class="filter-header">
+        <h3>Filters</h3>
+    </div>
+  <div class="mobile-wrapper custom-scrollbar">
+
+  {% for filter in collection.filters %}
+    <div class="mobile-filters__item">
+      <div class="mobile=filters__filter-wrap">
+        {% for value in filter.values %}
+
+           {% liquid
+            assign color_value = value.value | handle | strip
+
+            assign color_value_custom = color_value
+      
+            if settings.custom_colors != blank
+              assign custom_colors_string = settings.custom_colors | strip
+              assign custom_colors_obj = custom_colors_string | newline_to_br | split: '<br />'
+      
+              for obj in custom_colors_obj
+                assign obj_strip = obj | strip
+                assign obj_key = obj_strip | split: ':' | first
+                assign obj_value = obj_strip | split: ':' | last
+                assign obj_color_name = obj_key | handle | strip
+      
+                if color_value == obj_color_name
+                  assign obj_color_value = obj_value
+                  assign color_value_custom = obj_color_value | strip
+                  break
+                endif
+              endfor
+            endif
+          %}
+        
+          <div class="mobile-filters__filter">
+            <input
+              type="checkbox"
+              class="mobile-filters__input"
+              name="{{ value.param_name }}"
+              value="{{ value.value }}"
+              id="mobileFilter-{{ filter.label | escape }}-{{ forloop.index }}"
+              {% if value.active %}checked{% endif %}
+              {% if value.count == 0 and value.active == false %}disabled{% endif %}>
+            <label class="mobile-filter-label" for="mobileFilter-{{ filter.label | escape }}-{{ forloop.index }}">
+              {% if filter.label contains 'colour' %}
+                <div class="filter__color" style="background-color: {{color_value_custom}};"></div>
+              {% endif %}
+              <span>{{ value.value }}</span>
+            </label>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+
+
+
+
+  </div>
+  <div class="filter-footer">
+    <button class="btn btn-primary btn-custom  btn-custom--large button--filter" >
+        Apply 
+        
+    <span class="spakle-btn"> 
+      <img src="{{ 'twinkles.gif' | asset_url }}" alt="twinkles">
+    </span>
+    
+    </button>
+</div>
+</div>

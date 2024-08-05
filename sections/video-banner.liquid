@@ -1,0 +1,454 @@
+{%- liquid
+  assign video_type = section.settings.video_url.type
+  if section.settings.video_hosted != blank and section.settings.video_source == 'video_hosted'
+    assign video_type = 'local_video'
+  endif
+
+  unless section.settings.section_mask_overlay_color.alpha == 0.0 or section.settings.section_mask_overlay_color == blank
+    assign overlay_color =  '--mask-overlay-color:' | append: section.settings.section_mask_overlay_color
+  endunless
+  unless section.settings.section_content_overlay_color.alpha == 0.0 or section.settings.section_content_overlay_color == blank
+    assign content_color =  'color:' | append: section.settings.section_content_overlay_color
+  endunless
+-%}
+
+<div class="s--margin color-{{- section.settings.color_scheme }} s-container-radius no-transparent" data-ui-component="Video Banner Section" role="region" aria-labelledby="sectionHeading-{{ section.id | md5 | truncate: 12, "" }}">
+  <div class="p-relative   s-container-radius o-hidden">
+    <div class="sht-mask p-absolute w-100 h-100" style="--overlay: {{ section.settings.section_overlay_opacity }}; {{ overlay_color }}">
+      <sht-load-video class="p-absolute w-100 h-100 js-animate anm anm-zoomOut" data-video-type="{{ video_type }}" data-video-id="{{ section.settings.video_url.id }}">
+        {%- if section.settings.video_source == 'video_hosted' -%}
+          {% capture local_video %}
+            {{- section.settings.video_hosted | video_tag: autoplay: true, controls: false, loop: true, preload: 'none', class: 'video-local w-100v h-100 of-cover center-middle p-absolute mih' -}}
+          {% endcapture %}
+          {{ local_video | replace: '<source src="', '<source data-src="' }}
+        {%- else %}
+          <iframe tabindex="-1" title="{{ section.settings.video_url.type }}" class="video-ifram js-local-video w-100v center-middle p-absolute mih miw" allow="autoplay; encrypted-media"
+            data-src="
+            {%- if section.settings.video_url.type == 'youtube' -%}
+              https://www.youtube.com/embed/{{ section.settings.video_url.id }}?version=3&enablejsapi=1&mute=1&loop=1&controls=0&rel=0&showinfo=0&autoplay=1&playlist={{ section.settings.video_url.id }}
+            {%- elsif section.settings.video_url.type == 'vimeo' -%}
+              https://player.vimeo.com/video/{{ section.settings.video_url.id }}?api=1&background=1&autoplay=1&loop=1&title=0&byline=0&portrait=0&controls=0&muted=1
+            {%- endif -%}" style="--miw:177.77vh;--h-xs:56.25vw;">
+          </iframe>
+        {% endif %}
+      </sht-load-video>
+    </div>
+    <div class="s-banner ctnr zi-2 w-100 h-100 p-relative d-flex {{ section.settings.content_position_mobile }} {{ section.settings.content_position_desktop }}" style="--mh-xs:{{ section.settings.height_mobile }};--mh-md:{{ section.settings.height_desktop }}">
+      <div class="w-100" style="{{ content_color }}">
+        {% render 'section-header-block',
+          content_align_desktop: section.settings.content_position_desktop,
+          content_align_mobile: section.settings.content_position_mobile,
+          section: section
+        %}
+      </div>
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "t:sections.video_banner.name",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.general.content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_schemes.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "select",
+      "id": "video_source",
+      "label": "t:sections.video_banner.settings.video_source.label",
+      "default": "video_external",
+      "options": [
+        {
+          "value": "video_external",
+          "label": "t:general.settings.external.label"
+        },
+        {
+          "value": "video_hosted",
+          "label": "t:general.settings.shopify_hosted.label"
+        }
+      ]
+    },
+    {
+      "type": "video_url",
+      "id": "video_url",
+      "accept": [
+        "youtube",
+        "vimeo"
+      ],
+      "default": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+      "label": "t:general.settings.external_video.label",
+      "info": "t:general.settings.video_link.info"
+    },
+    {
+      "type": "video",
+      "id": "video_hosted",
+      "label": "t:general.settings.header_hosted_video.content"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_large_screen.content"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.section_height.label",
+      "info": "t:general.settings.section_height.info",
+      "id": "height_desktop",
+      "options": [
+        {
+          "value": "50vh",
+          "label": "t:general.settings.height.options.option_50.label"
+        },
+        {
+          "value": "70vh",
+          "label": "t:general.settings.height.options.option_70.label"
+        },
+        {
+          "value": "100vh",
+          "label": "t:general.settings.height.options.fill_screen_height.label"
+        }
+      ],
+      "default": "70vh"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.content_position.label",
+      "id": "content_position_desktop",
+      "options": [
+        {
+          "value": "start-md top-md ta-left-md",
+          "label": "t:general.settings.content_position.options.top_left.label"
+        },
+        {
+          "value": "center-md top-md ta-center-md",
+          "label": "t:general.settings.content_position.options.top_center.label"
+        },
+        {
+          "value": "start-md middle-md ta-left-md",
+          "label": "t:general.settings.content_position.options.middle_left.label"
+        },
+        {
+          "value": "center-md middle-md ta-center-md",
+          "label": "t:general.settings.content_position.options.middle_center.label"
+        },
+        {
+          "value": "start-md bottom-md ta-left-md",
+          "label": "t:general.settings.content_position.options.bottom_left.label"
+        },
+        {
+          "value": "center-md bottom-md ta-center-md",
+          "label": "t:general.settings.content_position.options.bottom_center.label"
+        }
+      ],
+      "default": "center-md middle-md ta-center-md"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_mobile_screen.content"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.section_height.label",
+      "info": "t:general.settings.section_height.info",
+      "id": "height_mobile",
+      "options": [
+        {
+          "value": "50vh",
+          "label": "t:general.settings.height.options.option_50.label"
+        },
+        {
+          "value": "70vh",
+          "label": "t:general.settings.height.options.option_70.label"
+        },
+        {
+          "value": "100vh",
+          "label": "t:general.settings.height.options.fill_screen_height.label"
+        }
+      ],
+      "default": "70vh"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.content_position.label",
+      "id": "content_position_mobile",
+      "options": [
+        {
+          "value": "start-xs top-xs ta-left",
+          "label": "t:general.settings.content_position.options.top_left.label"
+        },
+        {
+          "value": "center-xs top-xs ta-center",
+          "label": "t:general.settings.content_position.options.top_center.label"
+        },
+        {
+          "value": "start-xs middle-xs ta-left",
+          "label": "t:general.settings.content_position.options.middle_left.label"
+        },
+        {
+          "value": "center-xs middle-xs ta-center",
+          "label": "t:general.settings.content_position.options.middle_center.label"
+        },
+        {
+          "value": "start-xs bottom-xs ta-left",
+          "label": "t:general.settings.content_position.options.bottom_left.label"
+        },
+        {
+          "value": "center-xs bottom-xs ta-center",
+          "label": "t:general.settings.content_position.options.bottom_center.label"
+        }
+      ],
+      "default": "center-xs middle-xs ta-center"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.custom_color.content"
+    },
+    {
+      "type": "color",
+      "id": "section_mask_overlay_color",
+      "label": "t:general.settings.mask_overlay.label"
+    },
+    {
+      "type": "range",
+      "unit": "%",
+      "max": 90,
+      "min": 0,
+      "step": 1,
+      "default": 30,
+      "id": "section_overlay_opacity",
+      "label": "t:general.settings.overlay_opacity.label"
+    },
+    {
+      "type": "color",
+      "id": "section_content_overlay_color",
+      "label": "t:general.settings.text_overlay.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "subheading",
+      "name": "t:general.settings.headers.subheading.content",
+      "settings": [
+        {
+          "type": "text",
+          "label": "t:general.settings.text.label",
+          "id": "subheading",
+          "default": "Add a tagline"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "name": "t:general.settings.headers.heading.content",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:general.settings.text.label",
+          "info": "t:general.settings.prominent_font.info",
+          "default": "[Welcome] to our store"
+        },
+        {
+          "type": "select",
+          "label": "t:general.settings.heading_size.label",
+          "id": "heading_size",
+          "options": [
+            {
+              "value": "headline",
+              "label": "t:general.settings.heading_size.options.headline.label"
+            },
+            {
+              "value": "h1",
+              "label": "t:general.settings.heading_size.options.h1.label"
+            },
+            {
+              "value": "h2",
+              "label": "t:general.settings.heading_size.options.h2.label"
+            },
+            {
+              "value": "h3",
+              "label": "t:general.settings.heading_size.options.h3.label"
+            }
+          ],
+          "default": "h2"
+        }
+      ]
+    },
+    {
+      "type": "description",
+      "name": "t:general.settings.headers.description.content",
+      "settings": [
+        {
+          "type": "richtext",
+          "label": "t:general.settings.text.label",
+          "id": "description",
+          "default": "<p>Highlight your new collection or share content related to this image</p>"
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "name": "t:general.settings.headers.buttons.content",
+      "settings": [
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.button_1.content"
+        },
+        {
+          "type": "text",
+          "label": "t:general.settings.button.label",
+          "info": "t:general.settings.hide_if_empty.info",
+          "id": "button_main_text",
+          "default": "Check now"
+        },
+        {
+          "type": "select",
+          "label": "t:general.settings.style.label",
+          "id": "button_main_style",
+          "options": [
+            {
+              "value": "btn-primary",
+              "label": "t:general.settings.filled.label"
+            },
+            {
+              "value": "btn-outline",
+              "label": "t:general.settings.oulined.label"
+            },
+            {
+              "value": "btn-link",
+              "label": "t:general.settings.text_link.label"
+            }
+          ],
+          "default": "btn-primary"
+        },
+        {
+          "type": "url",
+          "id": "button_main_link",
+          "label": "t:general.settings.link.label"
+        },
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.button_2.content"
+        },
+        {
+          "type": "text",
+          "label": "t:general.settings.button.label",
+          "info": "t:general.settings.hide_if_empty.info",
+          "id": "button_sub_text",
+          "default": "View details"
+        },
+        {
+          "type": "select",
+          "label": "t:general.settings.style.label",
+          "id": "button_sub_style",
+          "options": [
+            {
+              "value": "btn-primary",
+              "label": "t:general.settings.filled.label"
+            },
+            {
+              "value": "btn-outline",
+              "label": "t:general.settings.oulined.label"
+            },
+            {
+              "value": "btn-link",
+              "label": "t:general.settings.text_link.label"
+            }
+          ],
+          "default": "btn-outline"
+        },
+        {
+          "type": "url",
+          "id": "button_sub_link",
+          "label": "t:general.settings.link.label"
+        }
+      ]
+    },
+    {
+      "type": "countdown",
+      "name": "t:general.settings.headers.countdown_timer.content",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "hide_on_end",
+          "label": "t:general.settings.hide_on_end.label",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "end_date",
+          "label": "t:general.settings.end_date.label",
+          "info": "t:general.settings.end_date.info"
+        },
+        {
+          "type": "text",
+          "id": "end_time",
+          "label": "t:general.settings.end_time.label",
+          "info": "t:general.settings.end_time.info"
+        },
+        {
+          "type": "richtext",
+          "id": "end_text",
+          "label": "t:general.settings.end_text.label",
+          "info": "t:general.settings.end_text.info",
+          "default": "<p>Event is finished</p>"
+        },
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.custom_color.content"
+        },
+        {
+          "type": "color",
+          "id": "countdown_background",
+          "label": "t:general.settings.countdown_background.label"
+        },
+        {
+          "type": "color",
+          "id": "countdown_number_color",
+          "label": "t:general.settings.countdown_number.label"
+        },
+        {
+          "type": "color",
+          "id": "color_end_text",
+          "label": "t:general.settings.end_text.label",
+          "default": "#FF0000"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.video_banner.name",
+      "blocks": [
+        {
+          "type": "subheading"
+        },
+        {
+          "type": "heading"
+        },
+        {
+          "type": "description"
+        },
+        {
+          "type": "button"
+        },
+        {
+          "type": "countdown"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

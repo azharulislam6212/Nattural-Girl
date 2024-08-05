@@ -1,0 +1,77 @@
+{
+  "type": "header",
+  "name": "Header Group",
+  "sections": {
+    "announcement-bar": {
+      "type": "announcement-bar",
+      "blocks": {
+        "message_cDXaAT": {
+          "type": "message",
+          "settings": {
+            "message_text": "<p>Our Winter Sale is live! Up to 50% off our latest styles. <a href=\"\/collections\/all\" title=\"All products\">SHOP NOW<\/a><\/p>",
+            "message_text_mobile": "<p>Up to 50% off our latest styles. <a href=\"\/collections\/all\" title=\"All products\">SHOP NOW<\/a><\/p>"
+          }
+        }
+      },
+      "block_order": [
+        "message_cDXaAT"
+      ],
+      "disabled": true,
+      "settings": {
+        "color_scheme": "scheme-6",
+        "enable_autoplay": true,
+        "duration": 5,
+        "text_size": "fs-body"
+      }
+    },
+    "header": {
+      "type": "header",
+      "blocks": {
+        "mega_menu_8geCaH": {
+          "type": "mega_menu",
+          "settings": {
+            "menu_item_name": "Shop All",
+            "image_ratio": "1\/1",
+            "product_1": "pop-princess",
+            "primary_image": "shopify:\/\/shop_images\/PopPrincessprofilepicture_1.jpg",
+            "primary_heading": "Pop Princess",
+            "primary_link": "shopify:\/\/products\/pop-princess",
+            "product_2": "sweet-siren",
+            "secondary_image": "shopify:\/\/shop_images\/Sweetsirenprofilepicture_1.jpg",
+            "secondary_heading": "Sweet Siren",
+            "secondary_link": "shopify:\/\/products\/sweet-siren",
+            "promotions_mask_overlay_color": "",
+            "promotions_overlay_opacity": 0,
+            "promotions_content_overlay_color": ""
+          }
+        }
+      },
+      "block_order": [
+        "mega_menu_8geCaH"
+      ],
+      "settings": {
+        "color_scheme": "scheme-5284797b-abf7-4483-8273-4098bc723723",
+        "header_sticky": "true",
+        "logo": "shopify:\/\/shop_images\/Natural_Girl_Red_Logo-2.png",
+        "tlogo": "shopify:\/\/shop_images\/Natural_Girl_White_transparent_logo.svg",
+        "sticky_logo": "shopify:\/\/shop_images\/Natural_Girl_Red_Logo-2.png",
+        "logo_width": 150,
+        "logo_width_mobile": 160,
+        "main_menu": "new-menu",
+        "main_menu_mobile": "new-menu",
+        "open_external_link": true,
+        "header_transparrent": true,
+        "show_currency_selector": false,
+        "show_language_selector": false,
+        "header_layout_desktop": "header--horizontal header--horizontal-left-center",
+        "header_layout_mobile": "drawer-right",
+        "sticky_header_bgc": "#fffcf2",
+        "sticky_header_content": "#8e2210"
+      }
+    }
+  },
+  "order": [
+    "announcement-bar",
+    "header"
+  ]
+}

@@ -1,0 +1,76 @@
+{% comment %}
+  Renders a list of product's price (regular, sale)
+
+  Accepts:
+  - product: {Object} Product Liquid object (optional)
+  - price_class: {String} Adds a price class to the price element (optional)
+
+  Usage:
+    {% render 'product-price', product: product %}
+{% endcomment %}
+{%- liquid
+  assign price_regular = ' d-block'
+  assign price_sale = ' d-none'
+
+  assign compare_at_price = target.compare_at_price
+  assign compare_at_price_dsp = compare_at_price | money
+
+  assign price = target.price | default: 5000
+  assign money_price_dsp = price | money
+  assign sold_out = target.available | default: 'price--sold-out' | replace: 'true', ''
+
+  if settings.currency_code_enabled
+    assign money_price_dsp = price | money_with_currency
+    assign compare_at_price_dsp = compare_at_price | money_with_currency
+  endif
+
+  if target == product and product.price_varies
+    assign money_price_dsp = 'products.product.price.from_price_html' | t: price: money_price_dsp
+  endif
+
+  if compare_at_price > price
+    assign price_regular = ' d-none'
+    assign price_sale = ' d-flex middle-xs fw-wrap gap-30'
+  endif
+-%}
+
+<span class="price {{ price_class }} {{ sold_out }}">
+  <span class="price__regular {{ price_regular }}">
+    <span class="visually-hidden">{{ 'products.product.price.regular_price' | t }}</span>
+    <span class="price-item price-item--regular price-item--last d-inline-block {{ price_style }}">
+      {{- money_price_dsp -}}
+    </span>
+  </span>
+  <span class="price__sale {{ price_sale }} {{ content_align | default: settings.product_card_position }}">
+    <span class="visually-hidden">{{ 'products.product.price.sale_price' | t }}</span>
+    {%- if compare_at_price %}
+      <span class="visually-hidden">{{ 'products.product.price.regular_price' | t }}</span>
+      <span class="price-item__regular d-inline-block">
+        <s class="price-item price-item--regular color-disable  {{ price_sale_bold }}">
+          {{ compare_at_price_dsp }}
+        </s>
+      </span>
+    {%- endif -%}
+
+    <span class="price-item price-item--last d-inline-flex gap-5 {{ price_style }}">
+      {{- money_price_dsp -}}   <span class="price-symbole">🎉</span>
+    </span>
+
+  </span>
+  {%- unless product.selected_or_first_available_variant.unit_price_measurement == null -%}
+    <small class="unit-price fs-body d-block color-light">
+      <span class="visually-hidden">{{ 'products.product.price.unit_price' | t }}</span>
+      <span class="price-item d-inline-block subtext">
+        <span>{{- product.selected_or_first_available_variant.unit_price | money -}}</span>
+        <span aria-hidden="true">/</span>
+        <span class="visually-hidden">&nbsp;{{ 'accessibility.unit_price_separator' | t }}&nbsp;</span>
+        <span>
+          {%- if product.selected_or_first_available_variant.unit_price_measurement.reference_value != 1 -%}
+            {{- product.selected_or_first_available_variant.unit_price_measurement.reference_value -}}
+          {%- endif -%}
+          {{ product.selected_or_first_available_variant.unit_price_measurement.reference_unit }}
+        </span>
+      </span>
+    </small>
+  {%- endunless -%}
+</span>

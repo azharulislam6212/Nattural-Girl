@@ -1,0 +1,5 @@
+<picture>
+    <source media="(min-width: 769px)" srcset="{{image | img_url: 'master'}}" sizes="100vw">
+    <source media="(max-width: 768px)" srcset="{{image_mob | img_url: 'master'}}" sizes="100vw">
+    <img src="{{image | img_url: 'master'}}" srcset="{{image_mob | img_url: 'master'}}, {{image | img_url: 'master'}}" sizes="100vw" alt="">
+</picture>

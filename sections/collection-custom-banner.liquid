@@ -1,0 +1,133 @@
+
+{{ 'section-collection-banner.css' | asset_url | stylesheet_tag }}
+
+
+
+{% assign banner_image = collection.metafields.custom.banner_image.value %}
+
+<div class="collection-custom-banner color-{{- section.settings.color_scheme }}">
+  <div class="container-fluid p-0">
+    <div class="row g-0">
+      <div class="col-lg-6 col-12">
+        <div class="collection-box">
+
+
+        <div class="collection-box__wrap">
+        {%- if collection.title != blank -%}
+            <h2 class="collection-box__title inline-richtext">
+                {{ collection.title }}
+              </h2>
+        {%- elsif section.settings.heading != blank -%}
+            <h2 class="collection-box__title inline-richtext">
+              {{ section.settings.heading }}
+            </h2>
+          {%- endif -%}
+
+
+          {%- if banner_image.banner_description != blank -%}
+            <div class="collection-box__text rte">
+               {{ banner_image.banner_description | metafield_tag }}
+              </div>
+          {%- elsif section.settings.text != blank -%}
+            <div class="collection-box__text rte">
+             <p> {{ section.settings.text }} </p>
+            </div>
+          {%- endif -%}
+
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 col-12">
+
+
+{% liquid  
+
+assign desktop_image = banner_image.desktop_image.value 
+assign mobile_image = banner_image.mobile_image.value 
+
+%}
+
+
+        {% if desktop_image != blank  or  mobile_image != blank %}
+          <div class="collecion-image-wrapper metafiled">
+            <div
+              class="collecion-image"
+            >
+
+            {% if mobile_image != blank %}
+
+              {% render 'smart-image', image: desktop_image , image_mob: mobile_image %}
+
+            {% else %}
+              {% render 'resposive-img' with image:  desktop_image  %}
+
+            {% endif %}
+          
+            </div>
+          </div>
+
+        {% elsif section.settings.image != blank %}
+          <div class="collecion-image-wrapper  customiser">
+            <div
+              class="collecion-image"
+            >
+             
+            {% render 'resposive-img' with image:  section.settings.image  %}
+
+            </div>
+          </div>
+        {% else %}
+          <div class="collecion-image-wrapper">
+            <div
+            class="collecion-image placeholder"
+          >
+              {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Custom collection Banner",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "heading"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "text",
+      "label": "Text"
+    },
+    {
+      "type": "header",
+      "content": "Image Ratio"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_scheme.label",
+      "default": "accent-1"
+    }
+  ],
+
+  "presets": [
+    {
+      "name": "Custom collection Banner"
+    }
+  ]
+}
+{% endschema %}

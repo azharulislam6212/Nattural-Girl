@@ -1,0 +1,368 @@
+{%- liquid
+  assign loading = "lazy"
+  assign decoding ="async"
+  assign fetchpriority = "auto"
+
+  if section.index <= 2
+    assign loading = "eager"
+    assign fetchpriority = "high"
+  endif
+  assign section_id = section.id | md5 | truncate: 12, ""
+  assign formID = section_id | prepend: 'cf-'
+  assign form_image_alt  = section.settings.contact_image.alt | default: section.settings.contact_image.image | split: '/' | last
+  assign form_image = section.settings.contact_image | image_url: width: section.settings.contact_image.width | image_tag: widths: '550, 750, 950, 1024, 1200', sizes: '(min-width: 1025px) calc(100vw/2), 100vw', alt: form_image_alt, class: 'js-image-lazy media w-100 of-cover media', loading: loading, fetchpriority: fetchpriority, decoding: decoding
+  assign s_layout = 'mw-content'
+-%}
+{% if form_image %}
+  {% assign s_layout = '' %}
+  {% assign  gap_layout_inline = 'gap-horizontal-md' %}
+  {% capture form_image_html %}
+    <div style="--w-md:6;">
+      {% render 'image', image_item: form_image, image_wrap_classes: 'rounded-2x media--hover-effect' %}
+    </div>
+  {% endcapture %}
+{% endif %}
+
+{% liquid
+  assign detect_background = 1
+  if section.settings.color_scheme.settings.color_background.alpha != 0.0
+    assign no_transparent = 'no-transparent'
+    assign detect_background = section.settings.color_scheme.settings.color_background | color_brightness | times: 9999
+  endif
+%}
+<style>
+  #shopify-section-{{ section.id }} {
+    --section-background-hash: {{ detect_background }};
+  }
+  #shopify-section-{{ section.id }} + * {
+    --previous-section-background-hash: {{ detect_background }};
+  }
+</style>
+
+<div class="s--margin color-{{- section.settings.color_scheme }} s-container-radius {{ no_transparent }}" data-ui-component="Contact Form Section" role="region" aria-labelledby="sectionHeading-{{ section_id }}">
+  <div class="section ctnr d-grid  ">
+    <div class="s-content {{ gap_layout_inline }} d-flex fd-column gap-content center-xs {{ section.settings.content_ordering_mobile }} {{ section.settings.content_ordering_desktop }}">
+      <div class="{{ s_layout }}" style="--w-md:6">
+        <div class="d-grid gap-content">
+          <h2 id="sectionHeading-{{ section_id }}" class="{{ section.settings.heading_size }} mb-0 wb-break-word hide-empty">
+            {{- section.settings.heading | replace: '[', '<span class="prominent-heading">' | replace: ']', '</span>' -}}
+          </h2>
+          {%- form 'contact', id: formID, class: 'form-contact' -%}
+            {%- if form.posted_successfully? -%}
+              <div class="message--success d-flex middle-xs mb-20 mb-sm-36 mb-md-48 mb-lg-60 start-xs">
+                <div class="icon icon--small icon--success fs-0">
+                  {% render 'icon-check', size: 16 %}
+                </div>
+                <span class="ml-8 subtext">
+                  {{ 'templates.contact.form.post_success' | t }}
+                </span>
+              </div>
+            {%- elsif form.errors -%}
+              <div class="message--error d-flex middle-xs mb-20 mb-sm-36 mb-md-48 mb-lg-60 start-xs">
+                <div class="icon icon--small icon--error fs-0">
+                  {% render 'icon-close', size: 16 %}
+                </div>
+                <span class="ml-8 subtext">
+                  {{ 'templates.contact.form.error_heading' | t }}
+                </span>
+              </div>
+            {%- endif -%}
+            <div class="d-grid gap-20">
+              <div>
+                <label class="field__label mb-1x d-inline-block p-relative" for="{{ formID }}-name">{{ 'templates.contact.form.name' | t }}<sup class="p-absolute ml-4 color-danger">*</sup></label>
+                <input
+                autocomplete="name"
+                type="text"
+                id="{{ formID }}-name"
+                class="field__text field--large field--large field--hover w-100"
+                name="contact[Name]"
+                value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
+                placeholder="{{ 'templates.contact.form.name_placeholder' | t }}"
+                required
+                >
+              </div>
+              <div>
+                <label class="field__label mb-1x d-inline-block p-relative" for="{{ formID }}-email">{{ 'templates.contact.form.email' | t }}<sup class="p-absolute ml-4 color-danger">*</sup></label>
+                <input
+                autocomplete="email"
+                type="email"
+                id="{{ formID }}-email"
+                class="field__text field--large field--large field--hover w-100"
+                name="contact[email]"
+                spellcheck="false"
+                autocapitalize="off"
+                value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+                aria-required="true"
+                placeholder="{{ 'templates.contact.form.email_placeholder' | t }}"
+                required
+                >
+              </div>
+              {%- for block in section.blocks -%}
+                {%- case block.type -%}
+                  {%- when 'text_field' -%}
+                    <div {{ block.shopify_attributes }}>
+                      <label class="d-block field__label mb-1x p-relative" for="{{ formID }}-{{ forloop.index }}-custom">
+                        {{ block.settings.label }}
+                        <sup class="p-absolute ml-4 color-danger {{ block.settings.required | default: 'd-none' | replace: 'true', 'p-absolute ml-4 color-danger' }}">*</sup>
+                      </label>
+                      {%- if block.settings.textarea -%}
+                        <textarea
+                          rows="5"
+                          id="{{ formID }}-{{ forloop.index }}-custom"
+                          class="textarea field__text field--large field--large field--hover w-100"
+                          name="contact[{{ block.settings.label }}]"
+                          placeholder="{{ block.settings.placeholder }}"
+                          {{ block.settings.required | default: '' | replace: 'true', 'required' }}
+                          >
+                          {{- form.body -}}
+                        </textarea>
+                      {%- else -%}
+                        <input
+                        class="field__text field--large field--large field--hover w-100"
+                        type="text"
+                        id="{{ formID }}-{{ forloop.index }}-custom"
+                        name="contact[{{ block.settings.label }}]"
+                        placeholder="{{ block.settings.placeholder }}"
+                        {{ block.settings.required | default: '' | replace: 'true', 'required' }}
+                        >
+                      {%- endif -%}
+                    </div>
+                  {%- when 'dropdown' -%}
+                    <div {{ block.shopify_attributes }}>
+                      <label class="d-block field__label mb-1x p-relative" for="{{ formID }}-{{ forloop.index }}-dropdown">
+                        {{ block.settings.label }}
+                      </label>
+                      {% assign options = block.settings.add_value | split: ',' %}
+                      <div class="field__select p-relative">
+                        <select class="field__text field--large field--large field--hover field--dropdown w-100 color-text-regular" name="contact[{{ block.settings.label }}]" id="{{ formID }}-{{ forloop.index }}-dropdown">
+                          {% for value in options %}
+                            <option value="{{value}}">{{ value }}</option>
+                          {% endfor %}
+                        </select>
+                        <span class="p-absolute right-0 pe-none">
+                          <span class="btn btn-icon icon--default bg-transparent">
+                            {% render 'icon-chevron-down', size: 16 %}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                {%- endcase -%}
+              {%- endfor -%}
+              <div>
+                <label class="field__label mb-1x p-relative d-block" for="{{ formID }}-message">{{ 'templates.contact.form.message' | t }}<sup class="p-absolute ml-4 color-danger">*</sup></label>
+                <textarea
+                  rows="5"
+                  id="{{ formID }}-message"
+                  required
+                  class="textarea field__text field--large field--large field--hover w-100"
+                  name="contact[{{ 'templates.contact.form.message_title' | t }}]"
+                  placeholder="{{ 'templates.contact.form.message_placeholder' | t }}"
+                >
+                  {{- form.body -}}
+                </textarea>
+              </div>
+              <div class="d-flex fd-column start-xs mt-md-28">
+                <button type="submit" class="btn btn--large c-pointer maw-fit-content-md hide-empty {{ section.settings.style_button }}">
+                  {{- section.settings.button_label -}}
+                </button>
+              </div>
+            </div>
+          {%- endform -%}
+        </div>
+      </div>
+      {{ form_image_html }}
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "t:sections.contact_form.name",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.general.content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_scheme.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:general.settings.section_heading.label",
+      "info": "t:general.settings.prominent_font.info",
+      "default": "Contact us"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.heading_size.label",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "t:general.settings.heading_size.options.h2.label"
+        },
+        {
+          "value": "h3",
+          "label": "t:general.settings.heading_size.options.h3.label"
+        },
+        {
+          "value": "h4",
+          "label": "t:general.settings.heading_size.options.h4.label"
+        },
+        {
+          "value": "h5",
+          "label": "t:general.settings.heading_size.options.h5.label"
+        }
+      ],
+      "default": "h2"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.image.content"
+    },
+    {
+      "type": "image_picker",
+      "id": "contact_image",
+      "label": "t:general.settings.image.label"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_large_screen.content"
+    },
+    {
+      "type": "select",
+      "id": "content_ordering_desktop",
+      "label": "t:general.settings.section_ordering.label",
+      "default": "fd-row-reverse-md",
+      "options": [
+        {
+          "value": "fd-row-md",
+          "label": "t:general.settings.section_ordering.option_text_first.label"
+        },
+        {
+          "value": "fd-row-reverse-md",
+          "label": "t:general.settings.section_ordering.option_image_first.label"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.header.mobile_screen.content"
+    },
+    {
+      "type": "select",
+      "id": "content_ordering_mobile",
+      "label": "t:general.settings.section_ordering.label",
+      "options": [
+        {
+          "value": "text-first-mb",
+          "label": "t:general.settings.section_ordering.option_text_first.label"
+        },
+        {
+          "value": "fd-column-reverse",
+          "label": "t:general.settings.section_ordering.option_image_first.label"
+        }
+      ],
+      "default": "fd-column-reverse"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.button.content"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "t:general.settings.label.label",
+      "info": "t:general.settings.hide_if_empty.info",
+      "default": "Send message"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.style.label",
+      "id": "style_button",
+      "options": [
+        {
+          "value": "btn-primary",
+          "label": "t:general.settings.filled.label"
+        },
+        {
+          "value": "btn-outline",
+          "label": "t:general.settings.oulined.label"
+        },
+        {
+          "value": "btn-link",
+          "label": "t:general.settings.text_link.label"
+        }
+      ],
+      "default": "btn-primary"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "text_field",
+      "name": "t:sections.contact_form.blocks.custom_text_field.name",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "t:general.settings.label.label",
+          "default": "Custom text field label"
+        },
+        {
+          "type": "text",
+          "id": "placeholder",
+          "label": "t:general.settings.placeholder.label",
+          "default": "Enter your information"
+        },
+        {
+          "type": "checkbox",
+          "id": "required",
+          "label": "t:sections.contact_form.general.blocks.settings.field_is_required.label",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "textarea",
+          "label": "t:sections.contact_form.blocks.custom_text_field.settings.use_textarea.label",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "dropdown",
+      "name": "t:sections.contact_form.blocks.custom_dropdown.name",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "t:general.settings.label.label",
+          "default": "Custom dropdown label"
+        },
+        {
+          "type": "text",
+          "id": "add_value",
+          "label": "t:sections.contact_form.blocks.custom_dropdown.settings.value.label",
+          "default": "value1, value2, value3",
+          "info": "t:sections.contact_form.blocks.custom_dropdown.settings.value.info"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.contact_form.name"
+    }
+  ]
+}
+{% endschema %}

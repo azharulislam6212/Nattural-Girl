@@ -1,0 +1,174 @@
+{
+  "sections": {
+    "running_content_1": {
+      "type": "running-content",
+      "blocks": {
+        "text_1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Promotion text<\/p>",
+            "svg_icon": "",
+            "color_text": "",
+            "text_color_gradient": ""
+          }
+        },
+        "icon_1": {
+          "type": "icon",
+          "settings": {
+            "icon_source": "theme_library",
+            "options_icon": "subscription",
+            "html_code": "",
+            "color_content": ""
+          }
+        },
+        "text_2": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Promotion text<\/p>",
+            "svg_icon": "",
+            "color_text": "",
+            "text_color_gradient": ""
+          }
+        },
+        "icon_2": {
+          "type": "icon",
+          "settings": {
+            "icon_source": "theme_library",
+            "options_icon": "subscription",
+            "html_code": "",
+            "color_content": ""
+          }
+        }
+      },
+      "block_order": [
+        "text_1",
+        "icon_1",
+        "text_2",
+        "icon_2"
+      ],
+      "disabled": true,
+      "settings": {
+        "color_scheme": "",
+        "speed": "100",
+        "moving_direction": "animation-direction",
+        "pause_when_hover": false,
+        "heading_size": "h3",
+        "padding_top": 24,
+        "padding_bottom": 24,
+        "padding_top_mobile": 15,
+        "padding_bottom_mobile": 15
+      }
+    },
+    "main": {
+      "type": "main-404",
+      "blocks": {
+        "subheading": {
+          "type": "subheading",
+          "settings": {
+            "subheading": "404 — Page not found"
+          }
+        },
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "heading": "We're sorry, this page is not available!",
+            "heading_size": "h2"
+          }
+        },
+        "description": {
+          "type": "description",
+          "settings": {
+            "description": "<p>The page URL might be outdated or contains typo errors. Please contact us or select options below.<\/p>"
+          }
+        },
+        "search": {
+          "type": "search",
+          "settings": {}
+        },
+        "button": {
+          "type": "button",
+          "settings": {
+            "home_page_link_text": "Back to home page",
+            "catalogue_link_text": "Explore our catalogue"
+          }
+        }
+      },
+      "block_order": [
+        "subheading",
+        "heading",
+        "description",
+        "search",
+        "button"
+      ],
+      "settings": {
+        "color_scheme": "schema-2",
+        "content_ordering_desktop": "fd-row-md",
+        "content_ordering_mobile": "text-first-mb"
+      }
+    },
+    "running_content_2": {
+      "type": "running-content",
+      "blocks": {
+        "text_1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Promotion text<\/p>",
+            "svg_icon": "",
+            "color_text": "",
+            "text_color_gradient": ""
+          }
+        },
+        "icon_1": {
+          "type": "icon",
+          "settings": {
+            "icon_source": "theme_library",
+            "options_icon": "subscription",
+            "html_code": "",
+            "color_content": ""
+          }
+        },
+        "text_2": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Promotion text<\/p>",
+            "svg_icon": "",
+            "color_text": "",
+            "text_color_gradient": ""
+          }
+        },
+        "icon_2": {
+          "type": "icon",
+          "settings": {
+            "icon_source": "theme_library",
+            "options_icon": "subscription",
+            "html_code": "",
+            "color_content": ""
+          }
+        }
+      },
+      "block_order": [
+        "text_1",
+        "icon_1",
+        "text_2",
+        "icon_2"
+      ],
+      "disabled": true,
+      "settings": {
+        "color_scheme": "",
+        "speed": "100",
+        "moving_direction": "animation-reverse",
+        "pause_when_hover": false,
+        "heading_size": "h3",
+        "padding_top": 24,
+        "padding_bottom": 24,
+        "padding_top_mobile": 15,
+        "padding_bottom_mobile": 15
+      }
+    }
+  },
+  "order": [
+    "running_content_1",
+    "main",
+    "running_content_2"
+  ]
+}

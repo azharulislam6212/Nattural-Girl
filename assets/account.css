@@ -1,0 +1,82 @@
+#recover:target {
+  display: flex;
+}
+#recover:target ~ #login {
+  display: none;
+}
+.account-noti {
+  margin: auto;
+  margin-bottom: calc(var(--gutter-base) * 2.5);
+}
+.order-title {
+  margin-bottom: var(--gap-width);
+}
+thead th,
+table tr {
+  border: none;
+}
+.account__content {
+  gap: calc(var(--gutter-base) * 2.5);
+}
+/* Tablet Portrait */
+@media (min-width: 459px) {
+  .account-noti {
+    margin-bottom: calc(var(--gutter-base) * 3);
+  }
+}
+/* Tablet Lanspcape */
+@media (min-width: 1025px) {
+  .account__header {
+    margin-bottom: calc(var(--gutter-base) * 3);
+  }
+  .customer-address {
+    width: 437px;
+  }
+}
+@media (max-width: 1024px) {
+  .t-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-width);
+  }
+  .t-tr {
+    display: block;
+  }
+  .t-td {
+    display: flex;
+    justify-content: space-between;
+    word-break: break-word;
+  }
+  .t-td:before {
+    content: attr(data-name);
+    margin-right: 16px;
+    color: rgba(var(--color-normal-text-rgb),.6);
+    max-width: 148px;
+    width: 100%;
+    flex: 0 0 auto;
+    text-align: left;
+  }
+  th,
+  td {
+    padding: 8px 0;
+  }
+  .t-thead {
+    display: none;
+  }
+  .customer-order tfoot .t-td:first-of-type {
+    display: none;
+  }
+  .customer-order__position {
+    text-align: right;
+  }
+  .t-body .t-tr td:first-child {
+    padding-top: 0;
+  }
+  .t-body .t-tr td:last-child {
+    padding-bottom: 0;
+  }
+  .t-foot {
+    display: flex;
+    flex-direction: column;
+  }
+}

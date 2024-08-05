@@ -1,0 +1,32 @@
+
+{%-liquid
+  assign image_element = place_holder
+  assign image_id = "productSlideshowThumb-" | append: section.id | append: "-" | append: thumb_index
+  assign class = 'js-image-lazy media object_fit' | replace: 'object_fit', object_fit
+  assign image_element = media | image_url: width: 200 | image_tag: alt: media.alt, class: class, id: image_id, loading: 'lazy'
+-%}
+<sht-vert-carousel-itm role="listitem" class="product-slideshow__thumb center-md d-flex-md middle-md p-zero-md maw-md-100 product-slideshow__thumb--{{ media.media_type }} js-product-slideshow-thumb js-carousel-item vertical-carousel__item p-relative scrollable-aln-start ta-center d-flex middle-xs fg-1 fs-0" data-media-target-id="{{ section.id }}-{{ media.id }}">
+  <button aria-describedby="{{ image_id }}" aria-label="{{ 'accessibility.open_media_gallery' | t: index: thumb_index }}" aria-controls="productGalleryCarousel-{{ section.id }}" class="js-slideshow-btn-thumb btn-slideshow-thumb o-hidden p-relative p-zero btn-plain c-pointer" data-target="{{ section.id }}-{{ media.id }}" style="--ratio: {{ ratio }}; background-color: {{ media_background }};">
+    {%- unless media.media_type == 'image' -%}
+    {% case media.media_type %}
+      {% when 'model' %}
+        <span class="slideshow__thumb-icon zi-2 br-50p p-absolute d-flex middle-xs center-xs ">
+          {% render 'icon-3d-model' size: 16 %}
+        </span>
+        {% when 'external_video' %}
+        <span class="slideshow__thumb-icon zi-2 br-50p p-absolute d-flex middle-xs center-xs ">
+          {% render 'icon-play' size: 16 %}
+        </span>
+        {% when 'video' %}
+        <span class="slideshow__thumb-icon zi-2 br-50p p-absolute d-flex middle-xs center-xs ">
+          {% render 'icon-play' size: 16 %}
+        </span>
+      {% endcase %}
+    {%- endunless -%}
+    <div class="js-wrap-image-lazy d-block o-hidden">
+      <div class="animation d-block p-relative" style="--ratio: {{ ratio }}">
+       {{ image_element }}
+      </div>
+    </div>
+  </button>
+</sht-vert-carousel-itm>

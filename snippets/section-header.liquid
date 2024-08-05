@@ -1,0 +1,62 @@
+{% comment %}
+  Renders section header
+
+  Accepts:
+  - subheading: {String} Section subheading.
+  - heading: {String} Section heading.
+  - description: {String} Section description.
+  - content_align: {String} Header text alignment. Value is "ta-center" for center, left is empty.
+  - button_main_text: {String} Button primary text.
+  - button_main_link: {String} Button primary link.
+  - button_sub_text: {String} Button secondary text.
+  - button_sub_link: {String} Button secondary link.
+
+  Example usage:
+  {% render 'section-header',
+    content_align: section.settings.content_alignment,
+    subheading: section.settings.subheading,
+    heading: section.settings.heading,
+    description: section.settings.description,
+    button_main_text: section.settings.button_main_text,
+    button_main_link: section.settings.button_main_link,
+    button_sub_text: section.settings.button_sub_text,
+    button_sub_link: section.settings.button_sub_link,
+  %}
+{% endcomment %}
+{%- liquid
+  assign classes = classes | default: 's-header'
+
+  assign description_class_md = 'm-initial-md'
+  assign content_align_class_desktop = 'top-md ta-left-md'
+  if content_align_desktop contains 'ta-center'
+    assign content_align_class_desktop = 'middle-md ta-center-md'
+    assign description_class_md = 'm-auto-md'
+  endif
+
+  assign content_align_class_mobile = 'top-xs ta-left'
+  if content_align_mobile contains 'ta-center'
+    assign content_align_class_mobile = 'middle-xs ta-center'
+    assign description_class = 'm-auto'
+  endif
+-%}
+{%- unless subheading == blank and heading == blank and description == blank -%}
+  <div class="{{ classes }} {{ header_class }}" style="{% if content_align_desktop contains 'ta-' or header_style %}{{ header_style }}{% endif %} {{ header_layout }}">
+    <div class="s-header__content d-flex fd-column {{ content_align_class_mobile }} {{ content_align_class_desktop }} wb-break-word">
+      <span class="s-header__sub s-header__item hide-empty d-inline-block">{{- subheading | escape -}}</span>
+      <{{ heading_tag | default: 'h2' }} id="sectionHeading-{{ section.id | md5 | truncate: 12, "" }}" class="s-header__title {{ heading_size }} mb-0 wb-break-word hide-empty" >{{- heading | replace: '[', '<span class="prominent-heading">' | replace: ']', '</span>' -}}</{{ heading_tag | default: 'h2'}}>
+      <div class="s-header-content hide-empty w-100">
+        {% if description -%}
+          <div class="s-header__desc s-header__item rte hide-empty {{ description_class_md }} {{ description_class }}">{{- description -}}</div>
+        {%- endif %}
+        <div class="s-header__buttons s-header__item d-inline-flex gap-12 fw-wrap hide-empty {{ content_align_class_mobile }} {{ content_align_class_desktop }} {{ style_button }}">
+          {%- if button_main_text != blank -%}
+          <a class="btn btn--large {{ button_main_style }}" href="{{- button_main_link | default: '#' -}}" {% if button_main_link == blank %} tabindex="-1" {% endif %}>{{- button_main_text | escape -}}</a>
+          {%- endif -%}
+          {%- if button_sub_text != blank -%}
+            <a class="btn btn--large {{ button_sub_style }}" href="{{- button_sub_link | default: '#' -}}" {% if button_sub_link == blank %} tabindex="-1" {% endif %} >{{- button_sub_text | escape -}}</a>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+{%- endunless -%}

@@ -1,0 +1,141 @@
+{%- liquid
+  assign template = template | split: '.' | first
+
+  capture separate
+    echo '<li>'
+    render 'icon-chevron-right', size: 12
+    echo '</li>'
+  endcapture
+
+-%}
+
+{% liquid
+  assign detect_background = 1
+  if section.settings.color_scheme.settings.color_background.alpha != 0.0
+    assign no_transparent = 'no-transparent'
+    assign detect_background = section.settings.color_scheme.settings.color_background | color_brightness | times: 9999
+  endif
+%}
+<style>
+  #shopify-section-{{ section.id }} {
+    --section-background-hash: {{ detect_background }};
+  }
+  #shopify-section-{{ section.id }} + * {
+    --previous-section-background-hash: {{ detect_background }};
+  }
+</style>
+
+<div class="breadcrumb s-container-radius s-small-margin--outer color-{{- section.settings.color_scheme }} {{ no_transparent }}" data-ui-component="Breadcrumb" role="region" >
+  <nav class="ctnr s-small-padding" aria-label="Breadcrumb">
+    <ul class="breadcrumb__list ls-none d-flex middle-xs fw-wrap wb-break-word">
+      <li>
+        <a class="breadcrumb__link subtext" href="{{ routes.root_url }}">{{ "accessibility.home" | t }}</a>
+      </li>
+      {{ separate }}
+      {%- case template -%}
+        {%- when 'page' -%}
+          <li>
+            <span class="subtext color-light" aria-current="page">{{ page.title }}</span>
+          </li>
+        {%- when 'product' -%}
+          {%- if collection.url -%}
+            <li>
+              {{ collection.title | link_to: collection.url, class: '' }}
+            </li>
+            {{ separate }}
+          {%- endif -%}
+          <li>
+            <span class="subtext color-light" aria-current="page">{{ product.title }}</span>
+          </li>
+        {%- when 'collection' and collection.handle -%}
+          {%- if current_tags -%}
+            <li>
+              <a class="breadcrumb__link subtext " href="{{ routes.collections_url }}" aria-current="page">{{ 'templates.breadcrumb.collections' | t }}</a>
+            </li>
+            {{ separate }}
+            <li>
+              {{ collection.title | link_to: collection.url, class: 'breadcrumb__link  subtext' }}
+            </li>
+            {{ separate }}
+            <li>
+              {%- capture tag_url -%}{{- collection.url -}}/{{- current_tags | join: "+" }}{%- endcapture -%}
+              <a class="breadcrumb__link  subtext color-light" href="{{ tag_url }}" aria-current="page">{{ current_tags | join: " + " }}</a>
+            </li>
+          {%- else -%}
+            <li>
+              <a class="breadcrumb__link subtext " href="{{ routes.collections_url }}" aria-current="page">{{ 'templates.breadcrumb.collections' | t }}</a>
+            </li>
+            {{ separate }}
+            <li>
+              <span class="subtext color-light" aria-current="page">{{ collection.title }}</span>
+            </li>
+          {%- endif -%}
+        {%- when 'blog' -%}
+          {%- if current_tags -%}
+            <li>
+              {{ blog.title | link_to: blog.url, class: 'breadcrumb__link subtext ' }}
+            </li>
+            {{ separate }}
+            <li>
+              {%- capture tag_url -%}{{- blog.url -}}/tagged/{{- current_tags | join: "+" }}{%- endcapture -%}
+              <a class="breadcrumb__link subtext color-light" href="{{ tag_url }}" aria-current="page">{{ current_tags | join: " + " }}</a>
+            </li>
+          {%- else -%}
+            <li>
+              <span class="subtext color-light" aria-current="page">{{ blog.title }}</span>
+            </li>
+          {%- endif -%}
+        {%- when 'article' -%}
+          <li>
+            {{ blog.title | link_to: blog.url, class: 'breadcrumb__link  subtext' }}
+          </li>
+          {{ separate }}
+          <li>
+            <span class="subtext color-light" aria-current="page">{{ article.title }}</span>
+          </li>
+        {%- when 'search' -%}
+          <li>
+            <span class="subtext color-light" aria-current="page">{{ 'templates.breadcrumb.search' | t }}</span>
+          </li>
+        {%- else -%}
+          <li>
+            <span class="subtext color-light" aria-current="page">{{ page_title }}</span>
+          </li>
+      {%- endcase -%}
+    </ul>
+  </nav>
+</div>
+{% schema %}
+{
+  "name": "t:sections.breadcrumb.name",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.general.content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_schemes.label",
+      "default": "scheme-1"
+    }
+  ],
+  "enabled_on": {
+    "templates": [
+      "article",
+      "blog",
+      "collection",
+      "list-collections",
+      "page",
+      "search",
+      "product"
+    ]
+  },
+  "presets": [
+    {
+      "name": "t:sections.breadcrumb.name"
+    }
+  ]
+}
+{% endschema %}

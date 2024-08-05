@@ -1,0 +1,40 @@
+  <div class="header__logo d-flex middle-xs" style="--sticky-logo-ratio: {{ section.settings.sticky_logo.aspect_ratio }};--logo-ratio: {{ section.settings.logo.aspect_ratio }};--logo-width-desktop: {{ logo_width_desktop -}} px; --logo-width-mobile: {{ logo_width_mobile }}px">
+    {%- if request.page_type == 'index' or request.page_type == 'password' -%}
+      <h1 class="header__heading h5 m-zero wb-break-word visually-hidden">{{ section.settings.logo.alt | default: shop.name | escape }}</h1>
+    {%- endif -%}
+    <a href="{{ routes.root_url }}" aria-label="{{ section.settings.logo.alt | default: shop.name | escape }}" class="header__logo-link m-zero js-header-logo-link d-block h5 p-relative wb-break-word">
+      {%- if section.settings.logo != blank -%}
+        {%- liquid
+          assign logo_alt = section.settings.logo.alt | default: shop.name | escape
+          assign logo_height = section.settings.logo_width | times: 2 | divided_by: section.settings.logo.aspect_ratio
+          assign logo_width = section.settings.logo_width | times: 2
+        -%}
+        {% capture sizes %}{{ logo_width }}px{% endcapture %}
+        {% capture widths %}{{ section.settings.logo_width }}, {{ logo_width | round }}, {{ logo_width }}{% endcapture %}
+        {% assign hide_logo = 'header__logo__img' %}
+        {% if section.settings.header_sticky != 'false' and section.settings.sticky_logo != blank %}
+          {%- liquid
+            assign logo_alt = section.settings.sticky_logo.alt | default: shop.name | escape
+            assign hide_logo = 'header__logo__img hide_logo'
+            assign sticky_logo_height = section.settings.logo_width | times: 2 | divided_by: section.settings.sticky_logo.aspect_ratio
+          -%}
+          {{ section.settings.sticky_logo | image_url: width: 600 | image_tag: class: 'header__logo__img header__logo__sticky d-none', widths: widths, height: sticky_logo_height, width: logo_width, alt: logo_alt, sizes: sizes, preload: true }}
+        {% endif %}    
+        
+          <span class="main-logo"> 
+          {{ section.settings.logo | image_url: width: 600 | image_tag: class: hide_logo, widths: widths, height: logo_height, width: logo_width, alt: logo_alt, sizes: sizes, preload: true }}
+          </span>
+          {% if section.settings.tlogo != blank %}
+            <span class="t-logo"> 
+              {{ section.settings.tlogo | image_url: width: 600 | image_tag: class: hide_logo, widths: widths, height: logo_height, width: logo_width, alt: logo_alt, sizes: sizes, preload: true }}
+              </span>
+
+              {% else %}
+              {{ section.settings.logo | image_url: width: 600 | image_tag: class: hide_logo, widths: widths, height: logo_height, width: logo_width, alt: logo_alt, sizes: sizes, preload: true }}
+          {% endif %}
+        
+          {%- else -%}
+        <span class="header__heading m-zero wb-break-word">{{ shop.name }}</span>
+      {%- endif -%}
+    </a>
+  </div>

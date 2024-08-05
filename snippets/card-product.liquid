@@ -1,0 +1,165 @@
+{%- comment -%}
+{% render 'card-product',
+  product: block.settings.product,
+  show_rating: true,
+  show_vendor: true,
+  show_color_swatch: true,
+  show_sale_badge: true,
+  enable_quick_buy: true,
+  item_per_row: 1,
+  ratio: '100',
+%}
+{%- endcomment -%}
+
+{%- liquid
+
+    assign loading = "lazy"
+    assign decoding ="async"
+    assign fetchpriority = "auto"
+    if section.index <= 2 and is_first
+      assign loading = "eager"
+      assign fetchpriority = "high"
+    endif
+
+  assign add_to_cart = add_to_cart
+  assign ratio = settings.product_card_image_ratio | replace: 'auto', product.featured_media.aspect_ratio
+
+  assign section_id = section.id | md5 | truncate: 12, ""
+  assign random_number =  "now" | date: "%N" | append: section_id | append: product.id
+
+  assign product_image_id =  random_number | prepend: 'cardProductImage-'
+  assign product_link_class =  random_number | prepend: 'js-card-product-link-'
+  assign image_width = image_width | default: '320, 450, 550, 750, 950, 1024, 1200, 1400, 1600, 1800, 2000'
+
+  assign sizes = "(min-width: 769px) calc(100vw/4), (min-width: 459px) calc(100vw/2), calc(100vw/2)"
+  assign product_placeholder = 'product-apparel-2' | placeholder_svg_tag: 'js-image-lazy placeholder w-100 h-100 media'
+  assign product_image = product_placeholder
+
+  assign product_img_first_classes = 'js-image-lazy media img-first w-100 h-100 ' | append: settings.product_card_image_type
+  assign product_img_second_classes = 'js-image-lazy media img-second w-100 h-100 opacity-0 ' | append: settings.product_card_image_type
+
+  assign product_image = product.featured_media | image_url: width: product.featured_media.width | image_tag: widths: image_width, sizes: sizes, alt: product.title, class: product_img_first_classes, id: product_image_id, loading: loading, fetchpriority: fetchpriority, decoding: decoding
+  assign secondary_image_class = ''
+  if product.media[1] != nil and settings.show_second_image_on_hover
+    assign product_image_second = product.media[1] | image_url: width: product.featured_image.width | image_tag: widths: image_width, sizes: sizes, alt: product.title, class: product_img_second_classes, loading: "lazy", fetchpriority: "auto", decoding: "async"
+    assign secondary_image_class = ' card--2-images'
+     capture secondary_image
+      render 'image', image_item: product_image_second, image_classes: ' w-100 h-100', image_wrap_classes: 'product__image-second p-absolute top-0 left-0 w-100 h-100', ratio: ratio
+     endcapture
+  endif
+
+  assign sale_badge_style = settings.product_card_sale_badge_style
+%}
+<div class="sht-card product-card product-card--{{- card_layout | default: 'vertical' }} {{ secondary_image_class }} w-100 h-100 p-relative {% if settings.product_card_style == 'card' %} color-{{ settings.product_card_color_scheme }} {% else %} card--standard {% endif %}">
+  <div class="card__badge product__badge p-absolute d-flex top-xs fd-column zi-1 hide-empty ">
+    {%- if settings.product_card_sale_badge_style != 'disable' and product.compare_at_price != null and product.compare_at_price > product.price -%}
+      <span class="badge badge--sale d-inline-block fw-700 mb-4">
+        <span class="d-inline-block {{ sale_badge_style | replace: 'text_only', 'd-none-important' }}">
+          {%- liquid
+            assign save_amount =  product.compare_at_price | minus: product.price | times: 1.0 | divided_by: product.compare_at_price | times: 100 | round
+            if product.has_only_default_variant
+              echo 'products.product.card.save_percent' | t: save_amount: save_amount
+            else
+              assign save_amount = 0
+              for variant in product.variants
+                assign saving = variant.compare_at_price | minus: variant.price | times: 1.0 | divided_by: variant.compare_at_price | times: 100 | round
+                assign save_amount = saving | at_least: save_amount
+              endfor
+              echo 'products.product.card.save_percent_up_to' | t: save_amount: save_amount
+            endif
+          -%}
+        </span>
+        <span class="d-inline-block {{ sale_badge_style | replace: 'text_sale_amount', 'd-none-important' }}">
+          {{ 'products.product.on_sale' | t }}
+        </span>
+      </span>
+    {%- endif -%}
+    {%- if product.available == false and settings.enable_product_card_sold_out_badge -%}
+      <span class="badge badge--soldout d-inline-block fw-700">
+          {{ 'products.product.sold_out' | t }}
+      </span>
+    {%- endif -%}
+  </div>
+  <div class="card__media product-card__media p-relative rounded-2x media--hover-effect">
+{% if  product.compare_at_price > product.price %}
+  
+<span class="product-card-sparkle"> 
+  <svg class="sparkle" width="38" height="29" viewBox="0 0 38 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M32.8722 29C27.6966 17.43 28.1349 15.6108 37.9997 7.64933C26.4298 12.8249 24.6105 12.3866 16.649 2.52182C21.8246 14.0918 21.3863 15.911 11.5215 23.8725C23.0914 18.6969 24.9107 19.1352 32.8722 29Z" fill="white"/>
+<path d="M9.32412 11.3479C7.10602 6.38935 7.29387 5.60967 11.5216 2.19761C6.56309 4.41571 5.78341 4.22787 2.37135 0.000108719C4.58944 4.95866 4.40159 5.73834 0.173828 9.1504C5.13238 6.9323 5.91206 7.12014 9.32412 11.3479Z" fill="white"/>
+</svg>
+</span>
+{% endif %}
+
+    <a href="{{- product.url | within: collection | default: '#' -}}" class="d-block w-100 h-100 p-absolute top-0 left-0 zi-1 {{ product_link_class }}" aria-label="{{ product.title | escape }}" tabindex="-1"></a>
+      {% render 'image', image_item: product_image, image_wrap_classes: 'product__image-first', ratio: ratio %}
+      {{ secondary_image }}
+  </div>
+  <div class="card__content w-100 wb-break-word {{ card_content_position | default: settings.product_card_position }}">
+
+  <!-- Start of Judge.me code -->
+  {% comment %} <div class='jdgm-widget jdgm-preview-badge'>
+    {{ product.metafields.judgeme.badge }}
+  </div> {% endcomment %}
+<!-- End of Judge.me code -->
+
+ 
+ <div class="card__content-wrap  d-flex justify-content-between">
+
+  <div class="card__content-info text-left"> 
+
+  {% if show_vendor %}
+    
+     <div class=" color-light subtext mb-8 {{ show_vendor | default: 'd-none' | replace: 'true', '' }}">
+      <span class="visually-hidden">{{ 'accessibility.vendor' | t }}</span>
+      <span>{{- product.vendor -}}</span>
+    </div>
+  
+  {% endif %}
+    <h3 class="card__heading h6 mb-12 card__heading--desktop">
+      <a href="{{- product.url | within: collection -}}" class="td-none {{ product_link_class }}">{{ product.title |  truncate: 35  }}</a>
+    </h3>
+    <h3 class="card__heading h6 mb-12 card__heading--laptop">
+      <a href="{{- product.url | within: collection -}}" class="td-none {{ product_link_class }}">{{ product.title |  truncate: 22  }}</a>
+    </h3>
+
+ 
+      <h3 class="card__heading h6 mb-12  card__heading--mobile card__heading--mobile-layout-1">
+        <a href="{{- product.url | within: collection -}}" class="td-none {{ product_link_class }}">{{ product.title |  truncate: 40 }}</a>
+      </h3>
+     
+      <h3 class="card__heading h6 mb-12  card__heading--mobile card__heading--mobile-layout-2">
+        <a href="{{- product.url | within: collection -}}" class="td-none {{ product_link_class }}">{{ product.title |  truncate: 22 }}</a>
+      </h3>
+      
+  
+
+
+
+    </div>
+    {%- liquid
+      render 'product-price-card' product: product, target: product, price_class: 'd-block product-card__price text-right', content_align: card_content_position | default: settings.product_card_position
+      -%}
+      </div>
+      {% comment %} {%- liquid
+      if show_color_swatch == true
+        render 'card-product-color-swatch', product: product, product_image_id: product_image_id, product_link_class: product_link_class, content_align: card_content_position | default:  settings.product_card_position
+      endif
+    -%} {% endcomment %}
+    {%- unless add_to_cart == 'none' or product.selected_or_first_available_variant.available == false -%}
+      {%- if add_to_cart == 'quick_view' -%}
+        <button class="btn btn-icon btn-link btn-small no-js-hidden btn-quick-view" aria-label="{{ "products.product.quick_view" | t }}" aria-haspopup="true" type="button" data-product-url="{{ product.url | split: "?" | first }}?view=quick-view" onclick="window.dialogQuickShop.showModal(this);">
+          {{ 'products.product.quick_view' | t }}
+        </button>
+      {%- elsif add_to_cart == 'quick_add' and product.has_only_default_variant -%}
+        {% render 'quick-add-form', section: section, product: product, content_align: card_content_position | default: settings.product_card_position %}
+      {%- else -%}
+        {% comment %} <button class="btn btn-link btn-small no-js-hidden btn-quick-add" aria-label="{{ "products.product.quick_add" | t }}" aria-haspopup="true" type="button" data-product-url="{{ product.url | split: "?" | first }}?view=quick-view" data-status="{{ add_to_cart }}" onclick="window.dialogQuickShop.showModal(this, this.dataset.status);">
+          {{ 'products.product.quick_add' | t }}
+        </button> {% endcomment %}
+      {%- endif -%}
+    {%- endunless -%}
+  </div>
+</div>
+
+

@@ -1,0 +1,35 @@
+{%- liquid
+  assign share_url = shop.url | append: product.url
+  assign share_description = product.description | strip_html | truncatewords: 15 | url_param_escape
+  assign share_image = product.featured_image | image_url: width: 750 | prepend: 'https:'
+  assign action = "javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"
+-%}
+
+<ul class="social-share ls-none d-flex middle-xs gap-8 fw-wrap">
+<li class="d-block">
+  <a aria-label="Facebook" class="social-share-link d-flex btn {{ icon_style }} btn-icon btn--medium" href="https://www.facebook.com/sharer.php?u={{ share_url }}" onclick="{{ action }}">
+  {%- render 'icon-facebook' -%}
+  <span class="visually-hidden">Facebook</span>
+  </a>
+</li>
+<li class="d-block">
+  <a aria-label="Twitter" class="social-share-link d-flex btn {{ icon_style }} btn-icon btn--medium" href="https://twitter.com/share?text={{ product.title }}&url={{ share_url }}" onclick="{{ action }}">
+  {%- render 'icon-x-twitter' -%}
+  <span class="visually-hidden">Twitter</span>
+  </a>
+</li>
+<li class="d-block">
+  <a aria-label="Pinterest" class="social-share-link d-flex btn {{ icon_style }} btn-icon btn--medium" href="https://pinterest.com/pin/create/button/?url={{ share_url }}&media={{ share_image }}&description={{ share_description }}" onclick="{{ action }}">
+  {%- render 'icon-pinterest' -%}
+  <span class="visually-hidden">Pinterest</span>
+  </a>
+</li>
+<li class="d-none">
+  <button data-link-copied-to-clipboard="{{ 'general.share.link_copied_to_clipboard' | t }}" class="btn {{ icon_style }} social-share-link d-flex middle-xs w-100 js-social-share-copy-link c-pointer">
+  {%- render 'icon-link' -%}
+  <span class="js-social-share-copy-link-label">
+    {{ 'general.share.copy_link' | t }}
+  </span>
+  </button>
+</li>
+</ul>

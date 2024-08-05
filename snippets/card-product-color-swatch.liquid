@@ -1,0 +1,53 @@
+{%-liquid
+  assign variant_label = settings.variant_swatches_option | downcase | default: 'color'
+-%}
+<sht-variant-swtch class="variant-swatchs mt-16 hide-empty d-flex fw-wrap middle-xs no-js-hidden {{ content_align | default:  settings.product_card_position }}" >
+  {%- unless product.has_only_default_variant -%}
+    {%- for option in product.options_with_values -%}
+      {%- liquid
+        assign variant_name = option.name | downcase
+        if option.values.size <= 4
+          assign limit_value = 4
+        else
+          assign limit_value = 3
+        endif
+      -%}
+      {%- if variant_label == variant_name -%}
+        {%- for value in option.values limit: limit_value -%}
+          {%-liquid
+            assign selected_variant = product.selected_variant
+            assign variant_img = ''
+            for variant in product.variants
+              if variant.title contains value and variant.image
+                assign variant_img = variant.image | image_url: width: 1200 | image_tag: widths: '320, 450, 550, 750, 950, 1024, 1200', sizes: '(min-width: 361px) calc(100vw/2), calc(100vw/3)', alt: variant.title, data_url: variant.url
+                assign variant_img = variant_img | prepend: '<template>' | append: '</template>'
+                assign selected_variant = variant
+                break
+              endif
+            endfor
+          -%}
+          {%- if settings.swatch_source == 'variant_image' -%}
+            {%- if selected_variant.image -%}
+              <button class="vs__item clr-swh__type--image js-variant-swatch-item p-relative has-tooltip c-pointer corner-radius-xs o-hidden" aria-controls="{{ image_id }}" data-product-link-class="{{ product_link_class }}" data-product-image-id="{{ product_image_id }}" data-option-value="{{ value | downcase | escape | remove: " " }}" title="{{ value | escape }}" aria-label="{{ 'products.product.media.view_color_swatch' | t: color_swatch_name: value, product_name: product.title }}" type="button">
+                {{ selected_variant.image | image_url: width: 100 | image_tag: widths: '100', class: 'product-swatches-image absolute zi-1 top-0 left-0 w-100 h-100 of-cover' }}
+                {{- variant_img -}}
+                <span class="tooltip tooltip__text tooltip--top p-absolute" aria-hidden="true">{{- value | escape -}}</span>
+              </button>
+            {%- endif -%}
+            {%- else -%}
+            <button class="vs__item clr-swh__type js-variant-swatch-item p-relative has-tooltip c-pointer rounded-100x" aria-controls="{{ image_id }}" data-product-link-class="{{ product_link_class }}" data-product-image-id="{{ product_image_id }}" data-option-value="{{ value | downcase | escape | remove: " " }}" title="{{ value | escape }}" aria-label="{{ 'products.product.media.view_color_swatch' | t: color_swatch_name: value, product_name: product.title }}" type="button">
+              {{- variant_img -}}
+              <span class="tooltip tooltip__text tooltip--top p-absolute" aria-hidden="true">{{- value | escape -}}</span>
+            </button>
+          {%- endif -%}
+        {%- endfor -%}
+        {%- if option.values.size > 4 -%}
+          <span class="variant-swatch__variant-count">
+            +{{ option.values.size | minus: 3 -}}
+          </span>
+        {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endunless -%}
+</sht-variant-swtch>
+

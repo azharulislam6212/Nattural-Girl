@@ -1,0 +1,474 @@
+{%- liquid
+  assign loading = "lazy"
+  assign decoding ="async"
+  assign fetchpriority = "auto"
+
+  if section.index <= 2
+    assign loading = "eager"
+    assign fetchpriority = "high"
+  endif
+
+  if section.settings.mobile_image
+    assign mobile_image_alt  = section.settings.mobile_image.alt | default: section.settings.mobile_image.image | split: '/' | last
+    assign mobile_image = section.settings.mobile_image | image_url: width: section.settings.mobile_image.width | image_tag: widths: '320, 450, 550, 750, 950, 1024, 1200', sizes: "100vw", alt: mobile_image_alt, class: 'js-image-lazy-mobile d-none-md d-block w-100 h-100 of-cover p-absolute top-0 zi-1', loading: loading, fetchpriority: fetchpriority, decoding: decoding
+  endif
+
+  assign desktop_image = 'hero-apparel-1' | placeholder_svg_tag: 'js-image-lazy placeholder w-100 h-100 of-cover'
+
+  assign desktop_image_alt  = section.settings.desktop_image.alt | default: section.settings.desktop_image.image | split: '/' | last
+  assign desktop_image = section.settings.desktop_image | image_url: width: section.settings.desktop_image.width | image_tag: widths: '320, 450, 550, 750, 950, 1024, 1200, 1400, 1600, 1800, 2000, 2200, 2400, 2600, 2800, 3000', sizes: "100vw", alt: desktop_image_alt, class: 'js-image-lazy w-100 h-100 of-cover', loading: loading, fetchpriority: fetchpriority, decoding: decoding
+
+  assign min_height_mobile = section.settings.height_mobile
+  assign min_height_desktop = section.settings.height_desktop
+
+  if min_height_desktop == "adapt_img"
+    assign min_height_desktop = ""
+    if section.settings.desktop_image == blank
+      assign height_desktop = "500px"
+    endif
+    assign height_desktop = 100 | divided_by : section.settings.desktop_image.aspect_ratio | append: 'vw'
+  endif
+
+  if min_height_mobile == "adapt_img"
+    assign min_height_mobile = ""
+    assign height_mobile = 100 | divided_by : section.settings.mobile_image.aspect_ratio | append: 'vw'
+    if section.settings.mobile_image == blank
+      assign height_mobile = 100 | divided_by : section.settings.desktop_image.aspect_ratio | append: 'vw'
+    endif
+    if section.settings.mobile_image == blank and section.settings.desktop_image == blank
+      assign height_mobile = "500px"
+    endif
+  endif
+
+  unless section.settings.section_mask_overlay_color.alpha == 0.0 or section.settings.section_mask_overlay_color == blank
+    assign overlay_color = '--mask-overlay-color:' | append: section.settings.section_mask_overlay_color
+  endunless
+  unless section.settings.section_content_overlay_color.alpha == 0.0 or section.settings.section_content_overlay_color == blank
+    assign content_color = 'color:' | append: section.settings.section_content_overlay_color
+  endunless
+-%}
+<div class="s--margin color-{{- section.settings.color_scheme }} s-container-radius no-transparent" data-ui-component="Image Banner Section" role="region" aria-labelledby="sectionHeading-{{ section.id | md5 | truncate: 12, "" }}">
+  <div class="p-relative  s-container-radius o-hidden" >
+    <div class="media-wrapper sht-mask p-absolute w-100 h-100 js-animate anm anm-zoomOut zi-1"  style="--overlay: {{ section.settings.section_overlay_opacity }}; {{ overlay_color }}">
+      {{ desktop_image }}
+      {{ mobile_image }}
+    </div>
+    <div class="ctnr s-banner zi-3 w-100 h-100 p-relative d-flex {{ section.settings.content_position_mobile }} {{ section.settings.content_position_desktop }}" style="--mh-xs: {{- min_height_mobile -}};--mh-md: {{- min_height_desktop -}};--h-xs: {{- height_mobile -}};--h-md: {{- height_desktop -}};">
+      <div class="w-100" style="{{ content_color }}">
+        {% render 'section-header-block',
+          content_align_desktop: section.settings.content_position_desktop,
+          content_align_mobile: section.settings.content_position_mobile,
+          section: section
+        %}
+      </div>
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "t:sections.image_banner.name",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.general.content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_schemes.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.image.content"
+    },
+    {
+      "type": "image_picker",
+      "label": "t:general.settings.desktop_background_image.label",
+      "id": "desktop_image",
+      "info": "t:general.settings.image_recommend.info"
+    },
+    {
+      "type": "image_picker",
+      "label": "t:general.settings.mobile_background_image.label",
+      "id": "mobile_image",
+      "info": "t:general.settings.image_recommend_mobile.info"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_large_screen.content"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.section_height.label",
+      "info": "t:general.settings.section_height.info",
+      "id": "height_desktop",
+      "options": [
+        {
+          "value": "auto",
+          "label": "t:general.settings.height.options.adapt_to_content.label"
+        },
+        {
+          "value": "50vh",
+          "label": "t:general.settings.height.options.option_50.label"
+        },
+        {
+          "value": "70vh",
+          "label": "t:general.settings.height.options.option_70.label"
+        },
+        {
+          "value": "100vh",
+          "label": "t:general.settings.height.options.fill_screen_height.label"
+        },
+        {
+          "value": "adapt_img",
+          "label": "t:general.settings.image_ratio.options.adapt.label"
+        }
+      ],
+      "default": "70vh"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.content_position.label",
+      "id": "content_position_desktop",
+      "options": [
+        {
+          "value": "start-md top-md ta-left-md",
+          "label": "t:general.settings.content_position.options.top_left.label"
+        },
+        {
+          "value": "center-md top-md ta-center-md",
+          "label": "t:general.settings.content_position.options.top_center.label"
+        },
+        {
+          "value": "start-md middle-md ta-left-md",
+          "label": "t:general.settings.content_position.options.middle_left.label"
+        },
+        {
+          "value": "center-md middle-md ta-center-md",
+          "label": "t:general.settings.content_position.options.middle_center.label"
+        },
+        {
+          "value": "start-md bottom-md ta-left-md",
+          "label": "t:general.settings.content_position.options.bottom_left.label"
+        },
+        {
+          "value": "center-md bottom-md ta-center-md",
+          "label": "t:general.settings.content_position.options.bottom_center.label"
+        }
+      ],
+      "default": "center-md middle-md ta-center-md"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_mobile_screen.content"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.section_height.label",
+      "info": "t:general.settings.section_height.info",
+      "id": "height_mobile",
+      "options": [
+        {
+          "value": "auto",
+          "label": "t:general.settings.height.options.adapt_to_content.label"
+        },
+        {
+          "value": "50vh",
+          "label": "t:general.settings.height.options.option_50.label"
+        },
+        {
+          "value": "70vh",
+          "label": "t:general.settings.height.options.option_70.label"
+        },
+        {
+          "value": "100vh",
+          "label": "t:general.settings.height.options.fill_screen_height.label"
+        },
+        {
+          "value": "adapt_img",
+          "label": "t:general.settings.image_ratio.options.adapt.label"
+        }
+      ],
+      "default": "70vh"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.content_position.label",
+      "id": "content_position_mobile",
+      "options": [
+        {
+          "value": "start-xs top-xs ta-left",
+          "label": "t:general.settings.content_position.options.top_left.label"
+        },
+        {
+          "value": "center-xs top-xs ta-center",
+          "label": "t:general.settings.content_position.options.top_center.label"
+        },
+        {
+          "value": "start-xs middle-xs ta-left",
+          "label": "t:general.settings.content_position.options.middle_left.label"
+        },
+        {
+          "value": "center-xs middle-xs ta-center",
+          "label": "t:general.settings.content_position.options.middle_center.label"
+        },
+        {
+          "value": "start-xs bottom-xs ta-left",
+          "label": "t:general.settings.content_position.options.bottom_left.label"
+        },
+        {
+          "value": "center-xs bottom-xs ta-center",
+          "label": "t:general.settings.content_position.options.bottom_center.label"
+        }
+      ],
+      "default": "center-xs middle-xs ta-center"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.custom_color.content"
+    },
+    {
+      "type": "color",
+      "id": "section_mask_overlay_color",
+      "label": "t:general.settings.mask_overlay.label"
+    },
+    {
+      "type": "range",
+      "unit": "%",
+      "max": 90,
+      "min": 0,
+      "step": 1,
+      "default": 30,
+      "id": "section_overlay_opacity",
+      "label": "t:general.settings.overlay_opacity.label"
+    },
+    {
+      "type": "color",
+      "id": "section_content_overlay_color",
+      "label": "t:general.settings.text_overlay.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "subheading",
+      "name": "t:general.settings.headers.subheading.content",
+      "settings": [
+        {
+          "type": "text",
+          "label": "t:general.settings.text.label",
+          "id": "subheading",
+          "default": "Add a tagline"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "name": "t:general.settings.headers.heading.content",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:general.settings.text.label",
+          "info": "t:general.settings.prominent_font.info",
+          "default": "[Welcome] to our store"
+        },
+        {
+          "type": "select",
+          "label": "t:general.settings.heading_size.label",
+          "id": "heading_size",
+          "options": [
+            {
+              "value": "headline",
+              "label": "t:general.settings.heading_size.options.headline.label"
+            },
+            {
+              "value": "h1",
+              "label": "t:general.settings.heading_size.options.h1.label"
+            },
+            {
+              "value": "h2",
+              "label": "t:general.settings.heading_size.options.h2.label"
+            },
+            {
+              "value": "h3",
+              "label": "t:general.settings.heading_size.options.h3.label"
+            }
+          ],
+          "default": "h2"
+        }
+      ]
+    },
+    {
+      "type": "description",
+      "name": "t:general.settings.headers.description.content",
+      "settings": [
+        {
+          "type": "richtext",
+          "label": "t:general.settings.text.label",
+          "id": "description",
+          "default": "<p>Highlight your new collection or share content related to this image</p>"
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "name": "t:general.settings.headers.buttons.content",
+      "settings": [
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.button_1.content"
+        },
+        {
+          "type": "text",
+          "label": "t:general.settings.button.label",
+          "id": "button_main_text",
+          "info": "t:general.settings.hide_if_empty.info",
+          "default": "Check now"
+        },
+        {
+          "type": "select",
+          "label": "t:general.settings.style.label",
+          "id": "button_main_style",
+          "options": [
+            {
+              "value": "btn-primary",
+              "label": "t:general.settings.filled.label"
+            },
+            {
+              "value": "btn-outline",
+              "label": "t:general.settings.oulined.label"
+            },
+            {
+              "value": "btn-link",
+              "label": "t:general.settings.text_link.label"
+            }
+          ],
+          "default": "btn-primary"
+        },
+        {
+          "type": "url",
+          "id": "button_main_link",
+          "label": "t:general.settings.link.label"
+        },
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.button_2.content"
+        },
+        {
+          "type": "text",
+          "label": "t:general.settings.button.label",
+          "info": "t:general.settings.hide_if_empty.info",
+          "id": "button_sub_text",
+          "default": "View details"
+        },
+        {
+          "type": "select",
+          "label": "t:general.settings.style.label",
+          "id": "button_sub_style",
+          "options": [
+            {
+              "value": "btn-primary",
+              "label": "t:general.settings.filled.label"
+            },
+            {
+              "value": "btn-outline",
+              "label": "t:general.settings.oulined.label"
+            },
+            {
+              "value": "btn-link",
+              "label": "t:general.settings.text_link.label"
+            }
+          ],
+          "default": "btn-outline"
+        },
+        {
+          "type": "url",
+          "id": "button_sub_link",
+          "label": "t:general.settings.link.label"
+        }
+      ]
+    },
+    {
+      "type": "countdown",
+      "name": "t:general.settings.headers.countdown_timer.content",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "hide_on_end",
+          "label": "t:general.settings.hide_on_end.label",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "end_date",
+          "label": "t:general.settings.end_date.label",
+          "info": "t:general.settings.end_date.info"
+        },
+        {
+          "type": "text",
+          "id": "end_time",
+          "label": "t:general.settings.end_time.label",
+          "info": "t:general.settings.end_time.info"
+        },
+        {
+          "type": "richtext",
+          "id": "end_text",
+          "label": "t:general.settings.end_text.label",
+          "info": "t:general.settings.end_text.info",
+          "default": "<p>Event is finished</p>"
+        },
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.custom_color.content"
+        },
+        {
+          "type": "color",
+          "id": "countdown_background",
+          "label": "t:general.settings.countdown_background.label"
+        },
+        {
+          "type": "color",
+          "id": "countdown_number_color",
+          "label": "t:general.settings.countdown_number.label"
+        },
+        {
+          "type": "color",
+          "id": "color_end_text",
+          "label": "t:general.settings.end_text.label",
+          "default": "#FF0000"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.image_banner.name",
+      "blocks": [
+        {
+          "type": "subheading"
+        },
+        {
+          "type": "heading"
+        },
+        {
+          "type": "description"
+        },
+        {
+          "type": "button"
+        },
+        {
+          "type": "countdown"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,299 @@
+{%- liquid
+  assign content_align_desktop = section.settings.content_align_desktop
+
+  assign xs = 12.0 | divided_by: section.settings.columns_per_row_mobile
+  assign block_per_row = section.settings.columns_per_row_desktop | minus: 1
+  assign md = 12.0 | divided_by: section.settings.columns_per_row_desktop
+  if content_align_desktop == 'inline'
+    assign section_layout = ''
+    unless section.settings.heading == blank
+      assign section_layout = 's-layout--vertical d-grid-md'
+      assign md = 12.0 | divided_by: block_per_row
+    endunless
+  endif
+  assign carousel_style = 'js-carousel-items ox-auto p-relative scrollable scrollable-x disable-scrollbars'
+  assign carousel_item = 'js-carousel-item p-relative scrollable-aln-start'
+-%}
+
+{% liquid
+  assign detect_background = 1
+  if section.settings.color_scheme.settings.color_background.alpha != 0.0
+    assign no_transparent = 'no-transparent'
+    assign detect_background = section.settings.color_scheme.settings.color_background | color_brightness | times: 9999
+  endif
+%}
+<style>
+  #shopify-section-{{ section.id }} {
+    --section-background-hash: {{ detect_background }};
+  }
+  #shopify-section-{{ section.id }} + * {
+    --previous-section-background-hash: {{ detect_background }};
+  }
+</style>
+
+<div class="s--margin color-{{- section.settings.color_scheme }} s-container-radius o-hidden {{ no_transparent }}" data-ui-component="Related Products Section" role="region" aria-labelledby="sectionHeading-{{ section.id | md5 | truncate: 12, "" }}">
+  <div class="section ctnr d-flex fd-column {{ section_layout }}  " style="--item-per-row: {{ section.settings.columns_per_row_desktop }}">
+
+{% if section.settings.heading  != blank %}
+  
+    <div class="related-header {{ content_align_desktop }}">
+    <h2  class="related-header-title">{{  section.settings.heading }}   <span class="sparkle-related-heading">
+      <svg class="sparkle" width="31" height="23" viewBox="0 0 31 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M25.9685 0C21.8637 9.1762 22.2114 10.6191 30.0352 16.9333C20.859 12.8286 19.4161 13.1762 13.1018 21C17.2066 11.8238 16.859 10.3809 9.03516 4.06666C18.2114 8.17142 19.6542 7.82381 25.9685 0Z" fill="#8E2210"/>
+<path d="M7.2923 14C5.53312 17.9327 5.68211 18.551 9.03517 21.2571C5.10251 19.498 4.48415 19.6469 1.77802 23C3.53721 19.0673 3.38822 18.449 0.0351562 15.7429C3.96781 17.502 4.58618 17.3531 7.2923 14Z" fill="#8E2210"/>
+</svg>
+
+    </span></h2> 
+  
+  </div>
+{% endif %}
+
+    <div class="s-content">
+      <sht-prd-recom class="product-recommendations" data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ section.settings.items_to_show }}">
+      {%- if recommendations.performed and recommendations.products_count > 0 -%}
+        <sht-carousel class="sht-carousel p-relative d-block" data-enable="{{ section.settings.enable_carousel }}"  mobile-layout="{{ section.settings.columns_per_row_mobile }}">
+          <div aria-atomic="true" class="o-hidden rw r-gap-equal {{ carousel_style }} {{ section.settings.carousel_mobile | default: '' | replace: 'true', 'carousel-xs' }} {{ section.settings.carousel_desktop | default: '' | replace: 'true', 'carousel-md' }}">
+            {% for recommendation in recommendations.products limit: section.settings.items_to_show %}
+              <sht-carousel-itm class="clm {{ carousel_item }} {{ section.settings.carousel_mobile | default: '' | replace: 'true', 'carousel__item-xs' }} {{ section.settings.carousel_desktop | default: '' | replace: 'true', 'carousel__item-md' }}" style="--w-xs:{{- xs -}};--w-md: {{- md -}};" role="group" aria-roledescription="Slide" aria-label="{{ 'accessibility.slide' | t }} {{ forloop.index }} {{ 'accessibility.of' | t }} {{ forloop.length }}" data-item-index="{{ forloop.index }}">
+              <div class="product-item"> 
+              {% render 'card-product',
+                  product: recommendation,
+                  ratio: settings.product_card_image_ratio,
+                  show_vendor: section.settings.show_product_vendor,
+                  show_color_swatch: section.settings.show_color_swatch,
+                  ratio: settings.product_card_image_ratio,
+                  show_second_image: settings.show_second_image_on_hover,
+                  add_to_cart: section.settings.quick_shop_action,
+                  image_width: '320, 450, 550, 750',
+                  section: section
+                %}
+                </div>
+              </sht-carousel-itm>
+            {% endfor %}
+          </div>
+          <div class="carousel-pagination middle-y w-100 p-absolute no-js-hidden zi-2">
+            <div class="p-absolute left-0">
+              <button type="button" data-step="1" class="js-carousel-prev-btn btn btn-outline btn-icon icon middle-y btn--medium" aria-label="{{ 'accessibility.previous_slide' | t }}" name="previous" disabled>{% render 'icon-chevron-left' %}</button>
+            </div>
+            <div class="p-absolute right-0">
+              <button type="button" data-step="1" class="js-carousel-next-btn btn btn-outline btn-icon icon middle-y btn--medium" aria-label="{{ 'accessibility.next_slide' | t }}" name="next" disabled>{% render 'icon-chevron-right' %}</button>
+            </div>
+          </div>
+        </sht-carousel>
+      {%- endif -%}
+    </sht-prd-recom>
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "t:sections.related_products.name",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.general.content",
+      "info": "t:sections.related_products.settings.info"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_scheme.label"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:general.settings.heading.label",
+      "default": "You might want to see",
+      "info": "t:general.settings.prominent_font.info"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.heading_size.label",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "t:general.settings.heading_size.options.h2.label"
+        },
+        {
+          "value": "h3",
+          "label": "t:general.settings.heading_size.options.h3.label"
+        },
+        {
+          "value": "h4",
+          "label": "t:general.settings.heading_size.options.h4.label"
+        },
+        {
+          "value": "h5",
+          "label": "t:general.settings.heading_size.options.h5.label"
+        }
+      ],
+      "default": "h2"
+    },
+    {
+      "type": "range",
+      "id": "items_to_show",
+      "label": "t:general.settings.max_items_to_show.label",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.product_card.label",
+      "info": "t:general.settings.headers.product_card.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_vendor",
+      "label": "t:general.settings.show_vendor.label",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_color_swatch",
+      "label": "t:general.settings.show_variant_swatches.label",
+      "info": "t:general.settings.show_variant_swatches.info",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "quick_shop_action",
+      "label": "t:general.settings.quick_shop_action.label",
+      "info": "t:general.settings.quick_shop_action.info",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:general.settings.quick_shop_action.options.not_use.label"
+        },
+        {
+          "value": "quick_add",
+          "label": "t:general.settings.quick_shop_action.options.quick_add.label"
+        },
+        {
+          "value": "quick_view",
+          "label": "t:general.settings.quick_shop_action.options.quick_view.label"
+        }
+      ],
+      "default": "quick_add"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_large_screen.content"
+    },
+    {
+      "type": "select",
+      "id": "content_align_desktop",
+      "label": "t:general.settings.section_heading_position.label",
+      "default": "ta-center-md",
+      "options": [
+        {
+          "value": "ta-left-md",
+          "label": "t:general.settings.option_top_left.label"
+        },
+        {
+          "value": "ta-center-md",
+          "label": "t:general.settings.option_top_center.label"
+        },
+        {
+          "value": "inline",
+          "label": "t:general.settings.option_inline.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "carousel_desktop",
+      "label": "t:general.settings.list_style.label",
+      "default": "true",
+      "options": [
+        {
+          "value": "false",
+          "label": "t:general.settings.option_grid.label"
+        },
+        {
+          "value": "true",
+          "label": "t:general.settings.option_carousel.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "columns_per_row_desktop",
+      "label": "t:general.settings.columns_per_row.label",
+      "default": "4",
+      "options": [
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        },
+        {
+          "value": "5",
+          "label": "5"
+        },
+        {
+          "value": "6",
+          "label": "6"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_mobile_screen.content"
+    },
+    {
+      "type": "select",
+      "id": "content_align_mobile",
+      "label": "t:general.settings.section_heading_position.label",
+      "default": "ta-center",
+      "options": [
+        {
+          "value": "ta-left",
+          "label": "t:general.settings.option_top_left.label"
+        },
+        {
+          "value": "ta-center",
+          "label": "t:general.settings.option_top_center.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "carousel_mobile",
+      "label": "t:general.settings.list_style.label",
+      "default": "true",
+      "options": [
+        {
+          "value": "false",
+          "label": "t:general.settings.option_grid.label"
+        },
+        {
+          "value": "true",
+          "label": "t:general.settings.option_carousel.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "columns_per_row_mobile",
+      "label": "t:general.settings.columns_per_row.label",
+      "default": "2",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

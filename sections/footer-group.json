@@ -1,0 +1,67 @@
+{
+  "type": "footer",
+  "name": "Footer Group",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "store_information": {
+          "type": "store_information",
+          "settings": {
+            "heading": "",
+            "footer_image": "shopify:\/\/shop_images\/Natural_Girl_Red_Logo-2.png",
+            "image_width": 248,
+            "image_width_mobile": 148,
+            "description": "<p>Effortless Glam for the Coolest Girls<\/p>",
+            "email": "Hello@naturalgirlwigs.com",
+            "phone": "<a href=\"https:\/\/api.whatsapp.com\/send\/?phone=12812015867&text&type=phone_number&app_absent=0\" target=\"_blank\" title=\"https:\/\/api.whatsapp.com\/send\/?phone=12812015867&text&type=phone_number&app_absent=0\">Message us on WhatsApp<\/a>",
+            "enable_follow_on_shop": false,
+            "show_socical_icons": true,
+            "socical_icons_style": "btn-plain"
+          }
+        },
+        "newsletter": {
+          "type": "newsletter",
+          "settings": {
+            "newsletter_heading": "Our inner circle is a party!",
+            "newsletter_description": "<p>We don't do the spammy stuff, Get the sweetest deals plus access to exclusive drops straight to your inbox!<\/p>",
+            "submit_button": "Subscribe",
+            "enable_block_background": false,
+            "background_content": "",
+            "color_content": ""
+          }
+        },
+        "single_menu": {
+          "type": "single_menu",
+          "settings": {
+            "menu": "footer"
+          }
+        },
+        "single_menu_YTpEnk": {
+          "type": "single_menu",
+          "settings": {
+            "menu": "footer-menu-2"
+          }
+        }
+      },
+      "block_order": [
+        "store_information",
+        "newsletter",
+        "single_menu",
+        "single_menu_YTpEnk"
+      ],
+      "settings": {
+        "color_scheme": "scheme-9de40e92-c2a4-4eda-a451-36a5f0704118",
+        "enable_back_to_top": false,
+        "show_currency_selector": true,
+        "show_language_selector": true,
+        "show_payment_methods": true,
+        "menu": "",
+        "open_external_link": false
+      }
+    }
+  },
+  "order": [
+    "footer"
+  ]
+}

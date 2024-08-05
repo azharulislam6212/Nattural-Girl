@@ -1,0 +1,46 @@
+{% comment %}
+	Accepts:
+    - paginate: {Object} Paginate object.
+    - anchor: {String} custom ID.
+
+Example usage:
+	{% render 'pagination',
+		paginate: paginate,
+		anchor: '#yourID'
+	%}
+{% endcomment %}
+
+{%- if paginate.parts.size > 0 -%}
+<div class="d-flex fw-wrap center-xs gap-1x" role="navigation" aria-label="{{ 'general.pagination.label' | t }}">
+	{%- if paginate.previous -%}
+		<a href="{{ paginate.previous.url }}{{ anchor }}" rel="prev" class="btn-pagination btn-outline  btn btn--medium" aria-label="{{ 'general.pagination.previous' | t }}">
+			{%- render 'icon-chevron-left' -%}
+		</a>
+	{%- else -%}
+		<span class="btn-pagination btn-outline  btn btn--medium" disabled>
+			{%- render 'icon-chevron-left' -%}
+		</span>
+	{%- endif -%}
+	{%- for part in paginate.parts -%}
+		{%- if part.is_link -%}
+		  <a href="{{ part.url }}{{ anchor }}" aria-label="{{ 'general.pagination.page' | t: number: part.title }}" class="btn-pagination btn-outline  btn btn--medium fw-700">{{ part.title }}</a>
+		{%- else -%}
+      {%- if part.title == paginate.current_page -%}
+        <span aria-current="page" aria-label="{{ 'general.pagination.page' | t: number: part.title }}" class="btn-pagination btn pagination-active btn--medium btn-unlink fw-700">{{ part.title }}</span>
+      {%- else -%}
+        <span class="btn-pagination b-zero btn btn--medium fw-700 c-default">{{ part.title }}</span>
+      {%- endif -%}
+		{%- endif -%}
+	{%- endfor -%}
+
+	{%- if paginate.next -%}
+		<a href="{{ paginate.next.url }}{{ anchor }}" rel="next" class="btn-pagination btn-outline  btn btn--medium" aria-label="{{ 'general.pagination.next' | t }}">
+			{%- render 'icon-chevron-right' -%}
+		</a>
+	{%- else -%}
+		<span class="btn-pagination btn-outline  btn btn--medium" disabled>
+    {%- render 'icon-chevron-right' -%}
+		</span>
+	{%- endif -%}
+</div>
+{%- endif -%}

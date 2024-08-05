@@ -1,0 +1,135 @@
+@media (min-width: 1025px) {
+    .hero-banner [style*="--mh-md"] {
+        min-height: var(--mh-md);
+        height: 675px;
+    }
+    .banner_gift .s-header__content.ta-center-md{
+        margin-right:0;
+        max-width: 375px;
+    }
+
+}
+
+@media (min-width: 1366px) {
+
+    .hero-banner .s-banner {
+        padding: 45px 113px;
+    }
+
+
+}
+@media (min-width: 459px) {
+    .hero-banner .s-banner {
+        padding: 63px;
+    }
+
+    .hero-banner .banner_gift{
+     padding-right: 0;
+    }
+
+
+}
+
+
+.s-header__banner .s-header__title{
+font-family: var(--heading-font);
+font-style: normal;
+font-weight: 400;
+font-size: 48px;
+line-height: 53px;
+letter-spacing: -2.2px;
+margin-bottom: 24px;
+}
+
+.s-header__banner .s-header__desc {
+    margin-bottom: 28px;
+}
+
+
+
+.s-header__gift-image{
+    max-width: 254px;
+    margin-bottom: 20px;
+    /* Frame 2147223637 */
+        border: 3px solid #FFFFFF;
+
+}
+
+.btn-custom-link {
+font-family: var(--body-font);
+font-style: normal;
+font-weight: 700;
+font-size: 14px;
+line-height: 28px;
+align-items: center;
+text-decoration-line: underline;
+text-transform: uppercase;
+
+}
+
+@media (min-width: 1025px) {
+
+
+    .s-header__content {
+        max-width: 420px;
+    }
+
+    .s-header__content.ta-right-md{
+        margin-left: auto;
+    }
+
+    .s-header__content.ta-center-md{
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+
+
+
+}
+
+
+@media (max-width: 1025px) {
+
+    .banner_gift .s-header__content.ta-center-md{
+        margin-right: 0;
+        max-width: 262px;
+        margin-left: auto;
+    }
+
+}
+@media (max-width: 991px) {
+
+    .s-header__gift-image {
+        margin-bottom: 10px;
+    }
+    .s-header__banner .s-header__title{
+        font-size: 40px;
+        line-height: 46px;
+  
+        }
+        
+        .s-header__banner .s-header__desc {
+           font-size: 14px;
+        }
+
+        .s-header__gift-image {
+            max-width: 160px;
+        }
+
+
+        .s-header__banner .s-header__title {
+            margin-bottom: 8px;
+        }
+
+}
+
+
+@media (max-width: 767px) {
+
+.banner_gift .s-header__content.ta-center-md {
+    max-width: 167px;
+    margin: 0 auto;
+}
+
+}

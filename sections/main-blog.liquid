@@ -1,0 +1,246 @@
+{% liquid
+  assign show_image = section.settings.show_featured_image
+  assign show_blog_tag = section.settings.show_blog_tags
+  assign show_excerpt = section.settings.show_excerpt
+  assign show_published_date = section.settings.show_published_date
+  assign show_author = section.settings.show_author
+  assign clm = 12.0 | divided_by: section.settings.columns_per_row
+ %}
+
+{% liquid
+  assign detect_background = 1
+  if section.settings.color_scheme.settings.color_background.alpha != 0.0
+    assign no_transparent = 'no-transparent'
+    assign detect_background = section.settings.color_scheme.settings.color_background | color_brightness | times: 9999
+  endif
+%}
+<style>
+  #shopify-section-{{ section.id }} {
+    --section-background-hash: {{ detect_background }};
+  }
+  #shopify-section-{{ section.id }} + * {
+    --previous-section-background-hash: {{ detect_background }};
+  }
+</style>
+
+  <div class="s--margin color-{{- section.settings.color_scheme }} s-container-radius {{ no_transparent }}" data-ui-component="Main Blog" role="region" aria-labelledby="sectionHeading-{{ section.id | md5 | truncate: 12, "" }}">
+    <div class="section ctnr d-grid  ">
+      <div class="s-header ">
+        <h1 class="h2 s-header__title mb-0 {{ section.settings.content_align_desktop }} {{ section.settings.content_align_mobile }}">{{- blog.title | escape -}}
+          <a class="btn btn-icon btn--large btn-plain ml-8  {{ section.settings.show_rss | default: 'd-none-important' | replace: 'true', '' }}" href="{{ shop.url }}{{ blog.url }}.atom" title="RSS">
+            {% render 'icon-rss' %}
+          </a>
+        </h1>
+      </div>
+      <div class="s-content">
+        {%- paginate blog.articles by section.settings.items_per_load -%}
+          <div id="collectionProductGrid" class="rw r-gap-equal" data-id="{{ section.id }}">
+              {%- for article in blog.articles limit: section.settings.items_per_load -%}
+                <div class="clm" style="--w-xs: 12; --w-sm: 6; --w-md: {{- clm -}}">
+                  {% render 'card-article',
+                    article: article,
+                    blog: blog,
+                    show_image: show_image,
+                    image_ratio: settings.blog_card_image_ratio,
+                    show_blog_tag: show_blog_tag,
+                    show_excerpt: show_excerpt,
+                    show_published_date: show_published_date,
+                    show_author: show_author,
+                    is_first: forloop.first,
+                    force_eager: false
+                    %}
+                </div>
+            {%- endfor -%}
+          </div>
+          {%- if paginate.pages > 1 -%}
+            {%- if section.settings.blogs_load_method == 'pagination' -%}
+              <div class="s-footer mt-content">
+                {%- render 'pagination', paginate: paginate -%}
+              </div>
+            {%- elsif section.settings.blogs_load_method == 'loadmore'-%}
+              <sht-load-more class="d-flex maw-fit-content m-auto mt-content"
+                data-next-url="{{ paginate.next.url }}"
+                data-current-page="{{ paginate.current_page }}"
+                data-total-pages="{{ paginate.pages }}"
+                data-page-size="{{ paginate.page_size }}"
+                data-total-items="{{ paginate.items }}"
+              >
+                <button class="btn btn-outline btn--large js-load-more" type="button"> {{ 'general.load_more.label' | t }} </button>
+              </sht-load-more>
+            {%- else -%}
+              <sht-infinity-scroll class="d-flex center-xs middle-xs"
+                data-next-url="{{ paginate.next.url }}"
+                data-current-page="{{ paginate.current_page }}"
+                data-total-pages="{{ paginate.pages }}">
+                <div class="js-loading-overlay-wrapper hidden">
+                  {% render 'icon-spinner', size: '24px' %}
+                </div>
+              </sht-infinity-scroll>
+            {%- endif -%}
+          {%- endif -%}
+        {%- endpaginate -%}
+      </div>
+    </div>
+  </div>
+{% schema %}
+{
+  "name": "t:sections.main_blog.name",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.general.content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_schemes.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "select",
+      "id": "items_per_load",
+      "default": "20",
+      "label": "t:general.settings.items_per_load.label",
+      "options": [
+        {
+          "value": "20",
+          "label": "t:general.settings.items_per_load.options_1.label"
+        },
+        {
+          "value": "30",
+          "label": "t:general.settings.items_per_load.options_2.label"
+        },
+        {
+          "value": "40",
+          "label": "t:general.settings.items_per_load.options_3.label"
+        },
+        {
+          "value": "50",
+          "label": "t:general.settings.items_per_load.options_4.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "blogs_load_method",
+      "label": "t:sections.main_blog.settings.load_blog_method.label",
+      "options": [
+        {
+          "value": "pagination",
+          "label": "t:general.settings.load_method.options_1.label"
+        },
+        {
+          "value": "loadmore",
+          "label": "t:general.settings.load_method.options_2.label"
+        },
+        {
+          "value": "infinity_scroll",
+          "label": "t:general.settings.load_method.options_3.label"
+        }
+      ],
+      "default": "pagination"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rss",
+      "label": "t:sections.main_blog.settings.show_rss.label",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "t:sections.main_blog.settings.headers.blog_post_card.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_featured_image",
+      "label": "t:sections.main_blog.settings.show_featured_image.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_blog_tags",
+      "info": "t:general.settings.blog_post.show_excerpt.info",
+      "label": "t:general.settings.blog_post.show_blog_tags.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_published_date",
+      "label": "t:general.settings.blog_post.show_published_date.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "t:general.settings.blog_post.show_author.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_excerpt",
+      "label": "t:general.settings.blog_post.show_excerpt.label",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_large_screen.content"
+    },
+    {
+      "type": "select",
+      "id": "columns_per_row",
+      "label": "t:sections.main_collection_products.settings.mobile_item_per_row.label",
+      "default": "4",
+      "options": [
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        },
+        {
+          "value": "5",
+          "label": "5"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "content_align_desktop",
+      "label": "t:general.settings.section_heading_alignment.label",
+      "default": "ta-center-md m-0-auto-md",
+      "options": [
+        {
+          "value": "ta-left-md",
+          "label": "t:general.settings.option_left.label"
+        },
+        {
+          "value": "ta-center-md m-0-auto-md",
+          "label": "t:general.settings.option_center.label"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_mobile_screen.content"
+    },
+    {
+      "type": "select",
+      "id": "content_align_mobile",
+      "label": "t:general.settings.section_heading_alignment.label",
+      "default": "ta-center",
+      "options": [
+        {
+          "value": "ta-left",
+          "label": "t:general.settings.option_left.label"
+        },
+        {
+          "value": "ta-center",
+          "label": "t:general.settings.option_center.label"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,304 @@
+{%- liquid
+  assign show_pagination = section.settings.show_pagination | default: 'd-none-important' | replace: 'true', ''
+  assign show_navigation = section.settings.show_navigation | default: 'd-none-important' | replace: 'true', ''
+  assign show_autoplay = section.settings.enable_autoplay | default: 'd-none-important' | replace: 'true', ''
+  assign icon_pause_class = section.settings.enable_autoplay | default: 'js-spotlight-pause-icon d-none' | replace: 'true', 'js-spotlight-pause-icon'
+  if section.settings.content_alignment == 'ta-center'
+    assign content_align_class = 'center-xs'
+    assign m_auto = 'm-auto'
+  endif
+  -%}
+
+{% liquid
+  assign detect_background = 1
+  if section.settings.color_scheme.settings.color_background.alpha != 0.0
+    assign no_transparent = 'no-transparent'
+    assign detect_background = section.settings.color_scheme.settings.color_background | color_brightness | times: 9999
+  endif
+%}
+<style>
+  #shopify-section-{{ section.id }} {
+    --section-background-hash: {{ detect_background }};
+  }
+  #shopify-section-{{ section.id }} + * {
+    --previous-section-background-hash: {{ detect_background }};
+  }
+</style>
+
+<div class="s--margin color-{{- section.settings.color_scheme }} s-container-radius  o-hidden p-relative {{ no_transparent }}" data-ui-component="Spotlight Quotes Section">
+  <sht-spotlight-quote class="section spotlight-quote p-zero-inline d-block color-{{ section.settings.color_scheme }} s-container-radius o-hidden" data-spotlight-properties='{"sectionId": "{{ section.id }}", "autoplayAccessibilityText": ["{{ 'accessibility.start_slideshow' | t }}","{{ 'accessibility.stop_slideshow' | t }}"], "autoplayText": ["▶","||"], "separatorText": "{{ 'accessibility.of' | t }}", "autoplay": {{ section.settings.enable_autoplay }}, "duration": {{ section.settings.delay | times: 1000 }}}'>
+    <div aria-roledescription="Carousel" class="js-spotlight p-relative d-flex fd-column gap-content">
+      <div aria-live="polite" aria-atomic="true" id="spotlight-{{ section.id }}" class="js-spotlight-items scrollable scrollable-x scrl-bhvr-auto disable-scrollbars w-100 ox-auto fd-row ls-none p-zero m-zero d-flex">
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign loading = "lazy"
+            assign decoding ="async"
+            assign fetchpriority = "auto"
+            assign current_pagination_item = ''
+            assign current_item = ''
+            if forloop.first
+              assign current_pagination_item = ' is-active'
+              assign current_item = ' js-spotlight-content--current'
+              if section.index <= 2
+                assign loading = "eager"
+                assign fetchpriority = "high"
+              endif
+            endif
+            assign rest_star = 5 | minus: block.settings.star
+          -%}
+          <div role="group" aria-roledescription="Slide" data-item-index="{{ forloop.index }}" aria-label="{{ 'accessibility.slide' | t }} {{ forloop.index }} {{ 'accessibility.of' | t }} {{ forloop.length }}" class="slider-slide slider-slide-{{ forloop.index }} js-spotlight-item scrollable-aln-start miw d-flex p-relative" style="--miw:100%;" aria-hidden="true" {{ block.shopify_attributes }}>
+            <div class="js-spotlight-content spotlight-content ctnr {{ section.settings.content_alignment }} flex-1 {{ current_item }}" data-spotlight-index="{{ forloop.index }}">
+              <div class="spotlight-quote__icon {{ section.settings.show_quote_symbol | default: 'd-none' | replace: 'true', 'd-inline-block' }}">
+                {% render 'icon-spotlight-quote', class: "color-light" %}
+              </div>
+              <div class="stars spotlight-quote__star {{ content_align_class }} {{ section.settings.show_rating | default: 'd-none' | replace: 'true', 'd-flex' }}" style="--color-star: {{- section.settings.star_rating_color -}}">
+                {% for i in (1..block.settings.star) %}
+                  {% render 'icon-star', size: 24 %}
+                {% endfor %}
+                {% for i in (1..rest_star) %}
+                  {% render 'icon-star-line', size: 24 %}
+                {% endfor %}
+              </div>
+              <div class="spotlight-quote__label rte s-header__title hide-empty mb-2x {{ m_auto }}">
+                {{- block.settings.quote_label -}}
+              </div>
+              <div class="d-flex gap-1x middle-xs flex-auto {{ content_align_class }}">
+                {% liquid
+                  if block.settings.avatar != blank
+                    assign media = ''
+                    assign media = block.settings.avatar | image_url: width: block.settings.avatar.width | image_tag: widths: '320, 450', sizes: '100vw', alt: block.settings.quote_label, class: 'js-image-lazy media of-cover h-100 w-100', loading: loading, fetchpriority: fetchpriority, decoding: decoding
+                    assign media_wrap_style = "--avatar-width-desktop: " | append: block.settings.avatar_width | append: "px;--avatar-width-mobile:" | append: block.settings.avatar_width_mobile | append: "px;"
+                    render 'image', image_item: media, image_classes: 'spotlight-quote__media', media_wrap_style: media_wrap_style, image_wrap_classes: section.settings.image_shape, ratio: 1
+                  endif
+                %}
+                <span class="spotlight-quote__author flex-1 maw-fit-content ta-left fw-700 hide-empty wb-break-word">
+                  {{- block.settings.author -}}
+                </span>
+              </div>
+            </div>
+          </div>
+          {% capture spotlight_pagination %}
+            {{ spotlight_pagination }}
+            <li class="dots-pagination js-spotlight-pagination-item{{ current_pagination_item }}" data-spotlight-index="{{ forloop.index }}"></li>
+          {% endcapture %}
+        {%- endfor -%}
+      </div>
+      {% if section.blocks.size > 1 %}
+        <div class="zi-2 w-100 no-js-hidden gap-12 gap-md-16 d-flex center-xs pt-16 pb-16">
+          <div class="pagination d-flex">
+            <button aria-label="{{ 'accessibility.start_slideshow' | t }}" aria-controls="spotlight-{{ section.id }}" class="btn btn-icon color-btn-outline btn--medium bs-none b-zero bg-transparent js-spotlight-start-n-stop-btn p-relative {{ show_autoplay }}" type="button">
+              {% liquid
+                render 'icon-pause', class: icon_pause_class
+                render 'icon-play', class: 'js-spotlight-play-icon d-none'
+              %}
+            </button>
+            <button aria-label="{{ 'accessibility.previous_slide' | t }}" aria-controls="spotlight-{{ section.id }}" class="btn btn-icon color-btn-outline btn--medium bs-none b-zero bg-transparent js-spotlight-prev-btn {{ show_navigation }}" type="button">
+              {% render 'icon-chevron-left' %}
+            </button>
+            <ul class="spotlight__pagination pagination-list js-spotlight-pagination d-flex middle-xs ls-none gap-20 {{ show_pagination }}">
+              {{ spotlight_pagination }}
+            </ul>
+            <div class="spotlight_counter d-flex center-xs middle-xs d-none-important">
+              <span class="js-spotlight-current">1</span>
+              <span class="spotlight_counter--separator" aria-hidden="true">/</span>
+              <span class="spotlight_counter--separator js-spotlight-separator visually-hidden">{{ 'accessibility.of' | t }}</span>
+              <span class="js-spotlight-total">{{ section.blocks.size }}</span>
+            </div>
+            <button aria-label="{{ 'accessibility.next_slide' | t }}" aria-controls="spotlight-{{ section.id }}" class="btn btn-icon color-btn-outline btn--medium bs-none b-zero bg-transparent js-spotlight-next-btn {{ show_navigation }}" type="button">
+              {% render 'icon-chevron-right' %}
+            </button>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </sht-spotlight-quote>
+</div>
+{% schema %}
+{
+  "name": "t:sections.spotlight_quotes.name",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.general.content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_schemes.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.quote.content"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "t:general.settings.content_alignment.label",
+      "default": "ta-center",
+      "options": [
+        {
+          "value": "ta-left",
+          "label": "t:general.settings.option_left.label"
+        },
+        {
+          "value": "ta-center",
+          "label": "t:general.settings.option_center.label"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quote_symbol",
+      "label": "t:genaral.settings.show_quote_symbol.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "label": "t:genaral.settings.show_star_rating.label",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "star_rating_color",
+      "label": "t:genaral.settings.star_rating.label",
+      "default": "#F8CC46"
+    },
+    {
+      "type": "select",
+      "label": "t:genaral.settings.image_shape.label",
+      "id": "image_shape",
+      "options": [
+        {
+          "value": "shape",
+          "label": "t:general.settings.option_sharp.label"
+        },
+        {
+          "value": "br-50p",
+          "label": "t:general.settings.option_rounded.label"
+        }
+      ],
+      "default": "br-50p"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.controller.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pagination",
+      "label": "t:sections.slideshow.blocks.settings.show_pagination.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_navigation",
+      "label": "t:sections.slideshow.blocks.settings.show_navigation.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_autoplay",
+      "label": "t:sections.slideshow.settings.enable_autoplay.label",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "delay",
+      "label": "t:sections.slideshow.settings.autoplay_delay.label",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "default": 5,
+      "unit": "s"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "quocte",
+      "name": "t:sections.spotlight_quotes.blocks.quote.name",
+      "limit": 5,
+      "settings": [
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.brand.content"
+        },
+        {
+          "type": "image_picker",
+          "id": "avatar",
+          "label": "t:general.settings.image.label",
+          "info": "t:general.settings.recomended_3.info"
+        },
+        {
+          "type": "range",
+          "id": "avatar_width",
+          "min": 40,
+          "max": 200,
+          "label": "t:general.settings.image_width_desktop.label",
+          "unit": "px",
+          "default": 140,
+          "step": 5
+        },
+        {
+          "type": "range",
+          "id": "avatar_width_mobile",
+          "min": 40,
+          "max": 140,
+          "label": "t:general.settings.image_width_mobile.label",
+          "unit": "px",
+          "default": 70,
+          "step": 5
+        },
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.quote_content.content"
+        },
+        {
+          "type": "range",
+          "id": "star",
+          "min": 1,
+          "max": 5,
+          "label": "t:genaral.settings.star_rating.label",
+          "default": 3,
+          "step": 1
+        },
+        {
+          "type": "richtext",
+          "id": "quote_label",
+          "label": "t:general.settings.quote.label",
+          "default": "<p>Showcase your happy customers' stories</p>"
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "t:general.settings.author.label",
+          "default": "A happy customer"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.spotlight_quotes.name",
+      "blocks": [
+        {
+          "type": "quocte"
+        },
+        {
+          "type": "quocte"
+        },
+        {
+          "type": "quocte"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

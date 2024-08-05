@@ -1,0 +1,1099 @@
+{{ 'filter-drawer.css' | asset_url | stylesheet_tag: preload: true }}
+{%- liquid
+  assign section_id = section.id | md5 | truncate: 12, ''
+  assign sort_by = collection.sort_by | default: collection.default_sort_by
+
+  if collection.url
+    assign results_url = collection.url
+  else
+    assign terms = collection.terms | escape
+    assign results_url = '?q=' | append: terms | append: '&options%5Bprefix%5D=last&sort_by=' | append: sort_by
+  endif
+
+  if section.settings.filter_sort_layout == 'top-bar'
+    assign filter_dropdown = 'filter-dropdown'
+  endif
+  if section.settings.enable_filter == false
+    assign hide_filter = 'd-none-important'
+  endif
+
+  capture icon_check
+    render 'icon-check', class: 'input__checkbox__icon mr-12 field--hover checkbox--hover'
+  endcapture
+  capture icon_close
+    render 'icon-close', size: 16, class: 'ml-8'
+  endcapture
+-%}
+{% capture accordion_icon %}
+  <span class="btn btn--small btn-icon bg-transparent">
+    {% render 'icon-chevron-down', size: '16' class: 'open icon-chevron-down p-absolute' %}
+  </span>
+{% endcapture %}
+
+{% liquid
+  assign detect_background = 1
+  if section.settings.color_scheme.settings.color_background.alpha != 0.0
+    assign no_transparent = 'no-transparent'
+    assign detect_background = section.settings.color_scheme.settings.color_background | color_brightness | times: 9999
+  endif
+%}
+<style>
+  #shopify-section-{{ section.id }} {
+    --section-background-hash: {{ detect_background }};
+  }
+  #shopify-section-{{ section.id }} + * {
+    --previous-section-background-hash: {{ detect_background }};
+  }
+</style>
+<div
+  class="s--margin color-{{- section.settings.color_scheme }} s-container-radius  {{ no_transparent }}"
+  data-ui-component="Main Collection Products Section"
+  role="region"
+  aria-labelledby="sectionHeading-{{ section.id | md5 | truncate: 12, "" }}"
+>
+  {% liquid
+    assign block_items = section.blocks | where: 'type', 'block_item'
+    
+  %}
+
+  {% if section.settings.enable_custom_filter %}
+
+    <div class="mobile-filter-header--wrapper"> 
+ 
+
+    {% render "mobile-filter-header" %}
+
+    {% liquid
+    assign block_items = section.blocks | where: 'type', 'block_item'
+    assign sub_collections = collection.metafields.custom.sub_collections.value 
+  %}
+
+  {% if sub_collections != blank %}
+
+    <div class="collection-list-wrap-mobile  collection-list-mobile">
+      <ul class="collection-list">
+        {%- for sub_collection in sub_collections -%}
+          {% liquid
+           assign choose_collection = sub_collection.choose_collection.value
+
+          if sub_collection.title != blank
+            assign collection_title = sub_collection.title
+          else
+            assign collection_title = choose_collection.title
+          endif
+
+          if sub_collection.image != blank
+            assign collection_image = sub_collection.image
+          else
+            assign collection_image = choose_collection.image
+          endif
+          %}
+  
+          <li>
+            <a href="{{ choose_collection.url }}">
+              <div class="collection-list__item">
+                {% if collection_image != blank %}
+                  <div class="collection-list__media">
+                    {% render 'resposive-img' with image: collection_image %}
+                  </div>
+                {% else %}
+                  <div class="collection-list__media">
+                    {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                  </div>
+                {% endif %}
+  
+                <div class="collection-list__name">
+                  {{ collection_title }}
+                </div>
+              </div>
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+      </div>
+
+      
+
+    {% else %}
+  {% if block_items != blank %}
+    <div class="collection-list-wrap-mobile  collection-list-mobile">
+    <ul class="collection-list">
+      {%- for block in block_items -%}
+        {% liquid
+          if block.settings.title != blank
+            assign collection_title = block.settings.title
+          else
+            assign collection_title = block.settings.collection.title
+          endif
+
+          if block.settings.image != blank
+            assign collection_image = block.settings.image
+          else
+            assign collection_image = block.settings.collection.image
+          endif
+        %}
+
+        <li>
+          <a href="{{ block.settings.collection.url }}">
+            <div class="collection-list__item">
+              {% if collection_image != blank %}
+                <div class="collection-list__media">
+                  {% render 'resposive-img' with image: collection_image %}
+                </div>
+              {% else %}
+                <div class="collection-list__media">
+                  {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                </div>
+              {% endif %}
+
+              <div class="collection-list__name">
+                {{ collection_title }}
+              </div>
+            </div>
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+    </div>
+  {% endif %}
+
+  {% endif %}
+
+  </div>
+
+    {% render 'mobile-flter-drwer' %}
+  {% endif %}
+
+  <div class="section ctnr collection-products-wrap js-collection-products collection-products--{{- section.settings.filter_sort_layout }} d-grid  ">
+    {% comment %}
+      <div class="collection-products-header d-flex middle-xs between-xs">
+        <div class="collection-products-header--left fw-700 flex-1">
+          {% if section.settings.show_collection_title %}
+            {{ collection.title }}
+          {% endif %}
+
+          {% if section.settings.product_count %}
+
+
+          <span class="js-product-count">(
+            {%- if collection.results_count -%}
+              {{ 'sections.main_collection_product.filter_form.results_with_count' | t: terms: collection.terms, count: collection.results_count }}
+            {%- elsif collection.products_count == collection.all_products_count -%}
+              {{ 'sections.main_collection_product.filter_form.product_count_simple' | t: count: collection.products_count }}
+            {%- else -%}
+              {{ 'sections.main_collection_product.filter_form.product_count' | t: product_count: collection.products_count, count: collection.all_products_count }}
+            {%- endif -%}
+            )
+          </span>
+
+        {% endif %}
+        </div>
+        <div class="collection-product-header--right d-flex middle-xs gap-24">
+          <sht-coll-prd-drwer-opner class="filter-drawer-open no-js-hidden d-block {{ hide_filter }}">
+              <button type="button" aria-haspopup="true" aria-expanded="false" aria-controls="filterDrawer" class="js-collection-product-drawer-trigger btn-medium d-flex middle-xs center-xs w-100 color-btn-outline bg-transparent btn">
+                {{ 'sections.main_collection_product.filter_form.filter' | t }}
+                {% render 'icon-filter-2', size: 20, class: 'ml-8' %}
+              </button>
+            </sht-coll-prd-drwer-opner>
+            <sht-coll-prd-filter-switch class="products-filter-switch d-none d-block-md {{ hide_filter }}">
+              <button type="button" aria-haspopup="true" aria-expanded="false" aria-controls="filterDrawer" class="btn-switch-filter js-collection-switch-filter-trigger bg-transparent btn--medium d-flex-lg d-none middle-xs center-xs w-100 color-btn-outline btn">
+                <span class="show_filter">{{ 'sections.main_collection_product.filter_form.hide_filter' | t }}</span>
+                <span class="hide_filter d-none">{{ 'sections.main_collection_product.filter_form.show_filter' | t }}</span>
+                {% render 'icon-filter-2', size: 20, class: 'ml-8' %}
+              </button>
+            </sht-coll-prd-filter-switch>
+          {% if section.settings.enable_change_layout %}
+            <sht-coll-prd-switch-layout class="prd-swh-layout d-flex p-relative">
+              <span class=" d-flex-md d-none">
+                <input class="prd-swh-layout-item js-coll-prd-switch-layout-item visually-hidden" type="radio" id="desktop_layout_3" name="desktop_layout" value="3" {{ section.settings.item_per_row | replace: '3', 'checked' | replace: section.settings.item_per_row, '' }} >
+                <label class="prd-swh-layout-label btn bg-transparent btn--medium d-flex middle-xs center-xs p-relative " for="desktop_layout_3">
+                  {% render 'icon-grid-3' %}
+                  <span class="visually-hidden">{{ 'accessibility.layout_3_items_per_row_desktop' | t }}</span>
+                </label>
+                <input class="prd-swh-layout-item js-coll-prd-switch-layout-item visually-hidden" type="radio" id="desktop_layout_4" name="desktop_layout" value="4" {{ section.settings.item_per_row | replace: '4', 'checked' | replace: section.settings.item_per_row, '' }}>
+                <label class="prd-swh-layout-label btn bg-transparent btn--medium d-flex middle-xs center-xs p-relative " for="desktop_layout_4">
+                  {% render 'icon-grid-4' %}
+                  <span class="visually-hidden">{{ 'accessibility.layout_4_items_per_row_desktop' | t }}</span>
+                </label>
+                <input class="prd-swh-layout-item js-coll-prd-switch-layout-item visually-hidden" type="radio" id="desktop_layout_6" name="desktop_layout" value="6" {{ section.settings.item_per_row | replace: '6', 'checked' | replace: section.settings.item_per_row, '' }}>
+                <label class="prd-swh-layout-label btn bg-transparent btn--medium d-flex middle-xs center-xs p-relative " for="desktop_layout_6">
+                  {% render 'icon-grid-6' %}
+                  <span class="visually-hidden">{{ 'accessibility.layout_6_items_per_row_desktop' | t }}</span>
+                </label>
+              </span>
+              <span class="d-none-md d-flex">
+                <input class="prd-swh-layout-item js-coll-prd-switch-layout-item visually-hidden" type="radio" id="mobile_layout_1" name="mobile_layout" value="1" {{ section.settings.mobile_items_per_row | replace: '1', 'checked' }}>
+                <label class="prd-swh-layout-label btn bg-transparent btn--medium d-flex middle-xs center-xs p-relative " for="mobile_layout_1">
+                  {% render 'icon-grid-1', size: '20' %}
+                  <span class="visually-hidden">{{ 'accessibility.layout_1_items_per_row_mobile' | t }}</span>
+                </label>
+                <input class="prd-swh-layout-item js-coll-prd-switch-layout-item visually-hidden" type="radio" id="mobile_layout_2" name="mobile_layout" value="2" {{ section.settings.mobile_items_per_row | replace: '2', 'checked' }}>
+                <label class="prd-swh-layout-label btn bg-transparent btn--medium d-flex middle-xs center-xs p-relative " for="mobile_layout_2">
+                  {% render 'icon-grid-2', size: '20' %}
+                  <span class="visually-hidden">{{ 'accessibility.layout_2_items_per_row_mobile' | t }}</span>
+                </label>
+              </span>
+            </sht-coll-prd-switch-layout>
+          {% endif %}
+          {% if section.settings.enable_sort %}
+            <div class="filter-form-sorting js-filter-form-sorting d-flex middle-xs p-relative gap-8">
+              <div class="color-btn-outline">{{- 'sections.main_collection_product.filter_form.sort' | t -}}:&nbsp;</div>
+              <sht-coll-prd-sort-by-field class="sort_field field__select d-flex middle-xs p-relative p-zero w-100 maw-fit-content gap-8">
+                <select name="sort_by" aria-label="{{ 'accessibility.sort_by_label' | t }}" class="js-collection-product-sort-by-field-select field-text field--focus w-100 h-100 fw-700 c-pointer" form="mainCollectionProductFiltersForm" id="SortByField" aria-describedby="a11y-refresh-page-message">
+                  {%- for option in collection.sort_options -%}
+                    {%- liquid
+                      assign option_selected = ''
+                      if option.value == sort_by
+                        assign option_selected = ' selected="selected"'
+                      endif
+                    -%}
+                    <option value="{{ option.value | escape }}" {{ option_selected }}>{{ option.name | escape }}</option>
+                  {%- endfor -%}
+                </select>
+                {% render 'icon-chevron-down', class: "p-absolute right-0 pe-none" %}
+              </sht-coll-prd-sort-by-field>
+              <noscript>
+                <button type="submit" class="btn btn-primary  btn--small center-xs ta-center w-100 mt-4" form="mainCollectionProductFiltersForm">{{ 'sections.main_collection_product.filter_form.sort_button' | t }}</button>
+              </noscript>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    {% endcomment %}
+    {% liquid
+      assign block_items = section.blocks | where: 'type', 'block_item'
+      assign sub_collections = collection.metafields.custom.sub_collections.value 
+    %}
+
+
+
+    {% if sub_collections != blank %}
+
+
+      <div class="collection-list-desktop">
+        <ul class="collection-list">
+          {%- for sub_collection in sub_collections -%}
+            {% liquid
+            assign choose_collection = sub_collection.choose_collection.value
+
+
+      
+
+              if sub_collection.title != blank
+                assign collection_title = sub_collection.title
+              else
+                assign collection_title = choose_collection.title
+              endif
+  
+              if sub_collection.image != blank
+                assign collection_image = sub_collection.image
+              else
+                assign collection_image = choose_collection.image
+              endif
+            %}
+
+  
+  
+            <li>
+              <a href="{{ choose_collection.url }}">
+                <div class="collection-list__item">
+                  {% if collection_image != blank %}
+                    <div class="collection-list__media">
+                      {% render 'resposive-img' with image: collection_image %}
+                    </div>
+                  {% else %}
+                    <div class="collection-list__media">
+                      {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                    </div>
+                  {% endif %}
+  
+                  <div class="collection-list__name">
+                    {{ collection_title }}
+                  </div>
+                </div>
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+        </div>
+
+
+      {% else %}
+        
+    {% if block_items != blank %}
+      <div class="collection-list-desktop">
+      <ul class="collection-list">
+        {%- for block in block_items -%}
+          {% liquid
+            if block.settings.title != blank
+              assign collection_title = block.settings.title
+            else
+              assign collection_title = block.settings.collection.title
+            endif
+
+            if block.settings.image != blank
+              assign collection_image = block.settings.image
+            else
+              assign collection_image = block.settings.collection.image
+            endif
+          %}
+
+          <li>
+            <a href="{{ block.settings.collection.url }}">
+              <div class="collection-list__item">
+                {% if collection_image != blank %}
+                  <div class="collection-list__media">
+                    {% render 'resposive-img' with image: collection_image %}
+                  </div>
+                {% else %}
+                  <div class="collection-list__media">
+                    {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                  </div>
+                {% endif %}
+
+                <div class="collection-list__name">
+                  {{ collection_title }}
+                </div>
+              </div>
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+      </div>
+    {% endif %}
+
+
+  {% endif %}
+    {% if section.settings.enable_custom_filter %}
+      {% render 'custom-filter' %}
+    {% endif %}
+
+    <div
+      id="mainCollectionProductContainer"
+      data-coll-expand="{{ section.settings.expand_all_filter }}"
+      class="collection-products-container"
+      data-layout="{{- section.settings.filter_sort_layout -}}"
+    >
+      {% if section.settings.expand_all_filter %}
+        {% unless section.settings.filter_sort_layout == 'top-bar' %}
+          {% assign open = 'open' %}
+        {% endunless %}
+        <script type="text/javascript">
+          let main_collection_expand_all_filter = true;
+        </script>
+      {% else %}
+        <script type="text/javascript">
+          let main_collection_expand_all_filter = false;
+        </script>
+      {% endif %}
+      <sht-coll-prd-drwer
+        aria-hidden="true"
+        id="filterCollectionProductDrawer"
+        class="{{ hide_filter }} color-{{- settings.color_scheme_drawer_popover }} bg-transparent collection-products-filter js-collection-product-drawer collection-products-filter collection-products-filter--{{- section.settings.filter_sort_layout | replace: 'top-bar', 'horizontal' }} filter__drawer drawer--left no-focus-visible"
+        tabindex="-1"
+        {% unless section.settings.filter_sort_layout == 'top-bar' %}
+          {% if section.settings.expand_all_filter %}
+            data-expanded="true"
+          {% endif %}
+        {% endunless %}
+      >
+        <div class="collection-product-drawer filter__drawer__container zi-4" id="collectionProductDrawer">
+          <div
+            class="filter__drawer__overlay js-collection-product-drawer-overlay js-drawer-overlay p-absolute w-100 h-100 right-0 left-0 top-0 bottom-0 d-none-lg"
+          ></div>
+          <div
+            class="filter__drawer__wrapper js-collection-product-drawer-wrapper js-drawer-wrapper p-relative zi-2"
+            role="dialog"
+            aria-modal="true"
+            aria-label="{{ 'general.collection.search_filter' | t }}"
+          >
+            <div class="filter__drawer__header d-flex middle-xs between-xs">
+              <h2 class="filter__drawer__heading drawer__heading h4 m-zero mr-16">{{ 'accessibility.filter' | t }}</h2>
+              <button
+                class="drawer__btn-close btn btn-circle btn--large btn-plain btn-icon  js-collection-product-drawer-btn-close js-drawer-btn-close"
+                type="button"
+                aria-label="{{ 'accessibility.close' | t }}"
+              >
+                {% render 'icon-close' %}
+              </button>
+            </div>
+            <div class="filter__drawer__body filters-toolbar scrollbars js-collection-product-drawer-body js-drawer-body">
+              {%- liquid
+                assign variant_label = 'color,colour,couleur,colore,boja,farbe,색,色,warna,dath,боја,lliw,liw,колір,värvi,värv,գույն,krāsa,màu sắc,màu,cor,cцвят,färg,farve,ngjyrë,kleur,väri,farge,renk,culoare,szín,цвет,kolor,barva,χρώμα,litur,spalva,farba' | split: ','
+                assign sort_by = collection.sort_by | default: collection.default_sort_by
+              -%}
+              <sht-coll-prd-fltr-frm class="d-block js-animate anm " style="--duration: .7s; --delay: .15s">
+                <form id="mainCollectionProductFiltersForm" class="filter-form">
+                  {%- if collection.terms -%}
+                    <input type="hidden" name="q" value="{{ collection.terms | escape }}">
+                    <input name="options[prefix]" type="hidden" value="last">
+                  {%- endif -%}
+                  <div class="filter-form-wrapper {% if collection.products.size == 0 %}d-none-important{% endif %}">
+                    {%- for filter in collection.filters -%}
+                      {%- if filter.param_name contains 'availability' -%}
+                        {%- assign filter_value = filter.values[0] -%}
+                        <span
+                          class="js-details-filter field__checkbox d-flex middle-xs between-xs gap-half fw-700 {% if filter_value.count == 0 and filter_value.active == false %} disabled filter-form--disabled {% else %} c-pointer{% endif %}"
+                          data-index="0"
+                        >
+                          <label for="filter-{{- filter.label -}}-{{- forloop.index -}}">
+                            {{- 'sections.main_collection_product.filter_form.instock_only' | t -}}
+                          </label>
+                          <input
+                            type="checkbox"
+                            name="{{ filter_value.param_name }}"
+                            value="{{ filter_value.value }}"
+                            class="icon-switch input__checkbox p-relative field--focus"
+                            id="filter-{{- filter.label -}}-{{- forloop.index -}}"
+                            {% if filter_value.active %}
+                              checked
+                            {% endif %}
+                            {% if filter_value.count == 0 and filter_value.active == false %}
+                              disabled
+                            {% endif %}
+                          >
+                        </span>
+                      {% else %}
+                        {% case filter.type %}
+                          {% when 'boolean', 'list' %}
+                            {%- assign filter_name = filter.label | downcase -%}
+                            <details
+                              class="js-details-filter filter-form__details p-relative"
+                              data-index="{{ forloop.index }}"
+                              {{ open }}
+                            >
+                              <summary
+                                class="js-summary-filter filter-form__summary d-flex middle-xs between-xs p-relative ls-none c-pointer fw-700 gap-12"
+                                aria-controls="filterBlock-{{ section_id }}-{{ forloop.index }}"
+                              >
+                                {{ filter.label | escape }}
+                                {{ accordion_icon }}
+                              </summary>
+                              <div
+                                class="filter-form__display {{ filter_dropdown }}"
+                                id="filterBlock-{{ section_id }}-{{ forloop.index }}"
+                              >
+                                {%- if variant_label contains filter_name -%}
+                                  {% render 'main-collection-product-filter-color-swatch',
+                                    option: filter,
+                                    section: section
+                                  %}
+                                {%- else -%}
+                                  <ul class="filter-form__items d-grid gap-half ls-none scrollbars">
+                                    {%- for value in filter.values -%}
+                                      <li class="filter-form__item pt-8 pb-8">
+                                        <span class="field__checkbox d-flex middle-xs {% if value.count == 0 and value.active == false %} disabled filter-form--disabled {% else %} c-pointer{% endif %}">
+                                          <input
+                                            type="checkbox"
+                                            name="{{ value.param_name }}"
+                                            value="{{ value.value }}"
+                                            class="input__checkbox p-absolute opacity-0"
+                                            id="filter-{{- filter.label -}}-{{- forloop.index -}}"
+                                            {% if value.active %}
+                                              checked
+                                            {% endif %}
+                                            {% if value.count == 0 and value.active == false %}
+                                              disabled
+                                            {% endif %}
+                                          >
+                                          {{ icon_check }}
+                                          <label
+                                            for="filter-{{- filter.label -}}-{{- forloop.index -}}"
+                                            class="flex-1 wb-break-word"
+                                          >
+                                            {{- value.label | escape }} ({{ value.count }})</label
+                                          >
+                                        </span>
+                                      </li>
+                                    {%- endfor -%}
+                                  </ul>
+                                {%- endif -%}
+                                <sht-coll-prd-fltr-frm-rst class="d-flex mt-16">
+                                  <a
+                                    href="{{ filter.url_to_remove }}"
+                                    class="js-reset-form-btn btn btn-link btn--medium"
+                                  >
+                                    {{ 'sections.main_search.filter_form.reset' | t }}
+                                  </a>
+                                </sht-coll-prd-fltr-frm-rst>
+                              </div>
+                            </details>
+                          {% when 'price_range' %}
+                            {% liquid
+                              assign gte_value = 0
+
+                              assign currencies_using_comma_decimals = 'ANG,ARS,BRL,BYN,BYR,CLF,CLP,COP,CRC,CZK,DKK,EUR,HRK,HUF,IDR,ISK,MZN,NOK,PLN,RON,RUB,SEK,TRY,UYU,VES,VND' | split: ','
+                              assign uses_comma_decimals = false
+                              assign filter_range_max = filter.range_max | money_without_currency | replace: ',', ''
+                              if currencies_using_comma_decimals contains cart.currency.iso_code
+                                assign uses_comma_decimals = true
+                                assign filter_range_max = filter.range_max | money_without_currency | replace: '.', '' | replace: ',', '.'
+                              endif
+
+                              if filter.min_value.value
+                                if uses_comma_decimals
+                                  assign gte_value = filter.min_value.value | money_without_currency | replace: '.', '' | replace: ',', '.'
+                                else
+                                  assign gte_value = filter.min_value.value | money_without_currency | replace: ',', ''
+                                endif
+                              endif
+
+                              assign lte_value = filter_range_max
+                              if filter.max_value.value
+                                if uses_comma_decimals
+                                  assign lte_value = filter.max_value.value | money_without_currency | replace: '.', '' | replace: ',', '.'
+                                else
+                                  assign lte_value = filter.max_value.value | money_without_currency | replace: ',', ''
+                                endif
+                              endif
+                            %}
+                            <details
+                              class="js-details-filter filter-form__details p-relative"
+                              data-index="{{ forloop.index }}"
+                              {{ open }}
+                            >
+                              <summary
+                                class="js-summary-filter filter-form__summary d-flex middle-xs between-xs p-relative ls-none m-zero c-pointer fw-700 gap-12"
+                                aria-controls="filterBlock-{{ section_id }}-{{ forloop.index }}"
+                              >
+                                {{ filter.label | escape }}
+                                {{ accordion_icon }}
+                              </summary>
+                              <div
+                                class="filter-form__display {{ filter_dropdown }}"
+                                id="filterBlock-{{ section_id }}-{{ forloop.index }}"
+                              >
+                                <sht-coll-prd-fltr-frm-rgn class="d-flex fd-column gap-20">
+                                  <sht-adv-fltr-price-rgn-slider
+                                    class="mt-lg-16"
+                                    data-slider-color="{{ section.settings.color_scheme.settings.color_body_text }}"
+                                    data-slider-color-shadow="{{ section.settings.color_scheme.settings.color_body_text | color_modify: 'alpha', 0.12 }}"
+                                  >
+                                    <div class="range-slider p-relative">
+                                      <div
+                                        class="range-slider-bar js-range-slider-bar w-100 p-absolute m-auto bottom-0 right-0 left-0 zi-1"
+                                      ></div>
+                                      <input
+                                        class="input_range js-price-range-slider-input js-slider-gte w-100 p-absolute top-0 bottom-0 right-0 left-0 pe-none m-zero zi-2"
+                                        aria-label="{{ 'sections.main_collection_product.filter_form.from' | t }}"
+                                        type="range"
+                                        min="0"
+                                        max="{{ filter_range_max }}"
+                                        value="{{ gte_value }}"
+                                        id="Filter-{{ filter.label | escape }}-Slider-GTE"
+                                      >
+                                      <label
+                                        class="visually-hidden"
+                                        for="Filter-{{ filter.label | escape }}-Slider-GTE"
+                                      >
+                                        {{- 'sections.main_collection_product.filter_form.from' | t -}}
+                                      </label>
+                                      <input
+                                        class="input_range js-price-range-slider-input js-slider-lte w-100 p-absolute top-0 bottom-0 right-0 left-0 pe-none m-zero zi-2"
+                                        aria-label="{{ 'sections.main_collection_product.filter_form.to' | t }}"
+                                        type="range"
+                                        min="0"
+                                        max="{{ filter_range_max }}"
+                                        value="{{ lte_value }}"
+                                        id="Filter-{{ filter.label | escape }}-Slider-LTE"
+                                      >
+                                      <label
+                                        class="visually-hidden"
+                                        for="Filter-{{ filter.label | escape }}-Slider-LTE"
+                                      >
+                                        {{- 'sections.main_collection_product.filter_form.to' | t -}}
+                                      </label>
+                                    </div>
+                                  </sht-adv-fltr-price-rgn-slider>
+                                  <div class="d-flex gap-16 middle-xs">
+                                    <div class="filter-form__field flex-1">
+                                      <label class="visually-hidden" for="Filter-{{ filter.label | escape }}-GTE">
+                                        {{- 'sections.main_collection_product.filter_form.from' | t -}}
+                                      </label>
+                                      <div class="field p-relative mt-4">
+                                        <span class="field-currency p-absolute middle-y ml-16 zi-1">
+                                          {{- cart.currency.symbol -}}
+                                        </span>
+                                        <input
+                                          class="field__text filter-form__price field--focus field--hover js-filter-price js-price-gte w-100 ta-right input-number"
+                                          name="{{ filter.min_value.param_name }}"
+                                          id="Filter-{{ filter.label | escape }}-GTE"
+                                          value="{{ gte_value }}"
+                                          type="number"
+                                          placeholder="0"
+                                          min="0"
+                                          max="{{ filter_range_max }}"
+                                        >
+                                      </div>
+                                    </div>
+                                    <span>{{ 'sections.main_collection_product.filter_form.to' | t }}</span>
+                                    <div class="filter-form__field flex-1">
+                                      <label class="visually-hidden" for="Filter-{{ filter.label | escape }}-LTE">
+                                        {{- 'sections.main_collection_product.filter_form.to' | t -}}
+                                      </label>
+                                      <div class="field p-relative mt-4">
+                                        <span class="field-currency p-absolute middle-y ml-16 zi-1">
+                                          {{- cart.currency.symbol -}}
+                                        </span>
+                                        <input
+                                          class="field__text filter-form__price field--focus field--hover js-filter-price js-price-lte w-100 ta-right input-number"
+                                          name="{{ filter.max_value.param_name }}"
+                                          id="Filter-{{ filter.label | escape }}-LTE"
+                                          value="{{ lte_value }}"
+                                          type="number"
+                                          min="0"
+                                          placeholder="{{ filter_range_max }}"
+                                          max="{{ filter_range_max }}"
+                                        >
+                                      </div>
+                                    </div>
+                                  </div>
+                                </sht-coll-prd-fltr-frm-rgn>
+                                <div class="filter-form__header">
+                                  <sht-coll-prd-fltr-frm-rst class="d-flex mt-24 mb-24 mb-lg-0 mt-lg-16">
+                                    <a
+                                      href="{{ filter.url_to_remove }}"
+                                      class="js-reset-form-btn btn btn-link btn--small"
+                                    >
+                                      {{ 'sections.main_collection_product.filter_form.reset' | t }}
+                                    </a>
+                                  </sht-coll-prd-fltr-frm-rst>
+                                </div>
+                              </div>
+                            </details>
+                        {% endcase %}
+                      {% endif %}
+                    {%- endfor -%}
+                    <noscript>
+                      <button type="submit" class="btn btn-primary  btn--small center-xs ta-center w-100 mt-4">
+                        {{ 'sections.main_collection_product.filter_form.filter_button' | t }}
+                      </button>
+                    </noscript>
+                  </div>
+                  {% if collection.current_vendor or collection.current_type %}
+                    <input type="hidden" name="q" value="{{ collection.current_vendor }}{{ collection.current_type }}">
+                  {% endif %}
+                  <input type="hidden" name="" class="js-collection-product-sort-by-field-hidden" value="{{ sort_by }}">
+                  <script>
+                    SHTHelper.qs('.js-collection-product-sort-by-field-hidden').name = 'sort_by';
+                    document.addEventListener('shopify:section:load', function (event) {
+                      SHTHelper.qs('.js-collection-product-sort-by-field-hidden').name = 'sort_by';
+                    });
+                  </script>
+                </form>
+              </sht-coll-prd-fltr-frm>
+            </div>
+            <div class="filter__drawer__footer drawer__footer js-collection-product-drawer-footer d-none-md d-flex p-sticky bottom-0 gap-12">
+              <a
+                href="{{ results_url }}"
+                class="js-collection-product-clear-all-btn btn btn-outline  btn--large w-100"
+                onclick="event.preventDefault();window.filterCollectionProductDrawer.clearFormFilters(event);"
+              >
+                {{ 'sections.main_collection_product.filter_form.reset_all' | t }}
+              </a>
+              <button
+                type="button"
+                onclick="event.preventDefault();window.filterCollectionProductDrawer.closeDrawer();"
+                class="js-collection-product-done-btn btn btn-primary  btn--large w-100"
+              >
+                {{ 'sections.main_collection_product.filter_form.apply' | t }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </sht-coll-prd-drwer>
+      {%- if collection.products.size == 0 -%}
+        <div
+          class="js-product-grid ta-center h-100 d-flex middle-xs center-xs fd-column p-6x gap-content"
+          data-id="{{- section.id -}}"
+        >
+          <span class="flex-1">{{- 'sections.main_collection_product.filter_form.empty' | t -}}</span>
+          <a class="btn btn--large flex-1 btn-outline " href="{{- routes.root_url -}}">
+            {{- 'general.collections.back_to_home_page' | t -}}
+          </a>
+        </div>
+      {%- else -%}
+        <div
+          class="collection-product-main"
+          desktop-layout="{{ section.settings.item_per_row }}"
+          mobile-layout="{{ section.settings.mobile_items_per_row }}"
+        >
+          {%- if section.settings.enable_filter -%}
+            <div class="js-active-filters filter-form__active-filters gap-1x d-flex fw-wrap p-sides">
+              {%- for filter in collection.filters -%}
+                {%- for value in filter.active_values -%}
+                  <sht-coll-prd-fltr-frm-rst class="d-inline-block">
+                    <a href="{{ value.url_to_remove }}" class="js-reset-form-btn tag tag-close d-inline-flex middle-xs">
+                      {{ value.label | escape }}
+                      {{ icon_close }}
+                      <span class="visually-hidden">{{ 'products.facets.clear_filter' | t }}</span>
+                    </a>
+                  </sht-coll-prd-fltr-frm-rst>
+                {%- endfor -%}
+                {% if filter.type == 'price_range' %}
+                  {%- if filter.min_value.value != null or filter.max_value.value != null -%}
+                    <sht-coll-prd-fltr-frm-rst class="d-inline-block">
+                      <a
+                        href="{{ filter.url_to_remove }}"
+                        class="js-reset-form-btn tag tag-close d-inline-flex middle-xs"
+                      >
+                        {{ filter.min_value.value | money }} - {{ filter.max_value.value | money }}
+                        {{ icon_close }}
+                        <span class="visually-hidden">
+                          {{- 'sections.main_collection_product.filter_form.clear_filter' | t -}}
+                        </span>
+                      </a>
+                    </sht-coll-prd-fltr-frm-rst>
+                  {%- endif -%}
+                {% endif %}
+              {%- endfor -%}
+              <sht-coll-prd-fltr-frm-rst class="filter__clear__all">
+                <a href="{{ results_url }}" class="js-reset-form-btn btn btn-small btn-link m-zero p-zero">
+                  {{- 'sections.main_collection_product.filter_form.clear_all' | t -}}
+                </a>
+              </sht-coll-prd-fltr-frm-rst>
+            </div>
+          {%- endif -%}
+          {%- paginate collection.products by section.settings.products_per_load -%}
+            <div
+              id="collectionProductGrid"
+              class="collection-products js-product-grid rw r-gap-equal"
+              data-id="{{ section.id }}"
+              role="region"
+              aria-label="{{- 'accessibility.collection_results' | t -}}"
+            >
+              {%- for product in collection.products -%}
+                <div class="grid__item clm">
+                  <div class="product-item">
+                    {%- render 'card-product',
+                      product: product,
+                      show_vendor: section.settings.show_product_vendor,
+                      show_color_swatch: section.settings.show_product_variant_swatch,
+                      show_sale_badge: true,
+                      add_to_cart: section.settings.quick_shop_action,
+                      section: section,
+                      is_first: forloop.first
+                    -%}
+                  </div>
+                </div>
+              {%- endfor -%}
+            </div>
+            {%- if paginate.pages > 1 -%}
+              {%- if section.settings.products_load_method == 'pagination' -%}
+                <div class="s-footer mt-content">
+                  {%- render 'pagination', paginate: paginate -%}
+                </div>
+              {%- elsif section.settings.products_load_method == 'loadmore' -%}
+                <sht-load-more
+                  class="d-flex maw-fit-content m-auto mt-content load-more"
+                  data-next-url="{{ paginate.next.url }}"
+                  data-current-page="{{ paginate.current_page }}"
+                  data-total-pages="{{ paginate.pages }}"
+                  data-page-size="{{ paginate.page_size }}"
+                  data-total-items="{{ paginate.items }}"
+                >
+                  <button class="btn btn-primary btn-custom  btn-custom--large js-load-more" type="button">
+                    {{ 'general.load_more.label' | t }}
+
+                    <span class="spakle-btn">
+                      <img src="{{ 'twinkles.gif' | asset_url }}" alt="twinkles">
+                    </span>
+                  </button>
+                </sht-load-more>
+              {%- else -%}
+                <sht-infinity-scroll
+                  class="d-flex center-xs middle-xs"
+                  data-next-url="{{ paginate.next.url }}"
+                  data-current-page="{{ paginate.current_page }}"
+                  data-total-pages="{{ paginate.pages }}"
+                >
+                  <div class="js-loading-overlay-wrapper hidden">
+                    {% render 'icon-spinner', size: '24px' %}
+                  </div>
+                </sht-infinity-scroll>
+              {%- endif -%}
+            {%- endif -%}
+          {%- endpaginate -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+
+
+
+
+{% if collection.description != blank %}
+
+  <div class="section ctnr  color-{{- section.settings.color_scheme }}  s-container-radius o-hidden richtext-section">
+    <div class="s-header ">
+      <div class="s-header__content s-header__banner d-flex fd-column top-xs ta-left start-xs top-md ta-left-md start-md wb-break-word">
+        <h2
+          id="sectionHeading-9a8a296dc36d"
+          class="s-header__title h3 wb-break-word hide-empty d-block"
+          style="--duration: .6s; --delay: .3s"
+        >
+         <a href="{{ collection.url }}"> More about {{ collection.title }}</a>
+        </h2>
+        <div class="s-header__desc  rte hide-empty">
+
+        <div class="add-read-more show-less-content"> 
+              {{ collection.description }}
+          </div>
+
+        {% assign length = collection.description | size  %}
+
+          {% if length > 100 %}
+            
+
+
+        {% endif %}
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+  
+{% endif %}
+
+{%- liquid
+  render 'js-loader', files: "component-product-filter.js" | split: ', '
+-%}
+{% schema %}
+{
+  "name": "t:sections.main_collection_products.name",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.general.content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_scheme.label",
+      "default": "accent-1"
+    },
+    {
+      "type": "select",
+      "id": "products_per_load",
+      "label": "t:general.settings.items_per_load.label",
+      "options": [
+        {
+          "value": "20",
+          "label": "t:general.settings.items_per_load.options_1.label"
+        },
+        {
+          "value": "30",
+          "label": "t:general.settings.items_per_load.options_2.label"
+        },
+        {
+          "value": "40",
+          "label": "t:general.settings.items_per_load.options_3.label"
+        },
+        {
+          "value": "50",
+          "label": "t:general.settings.items_per_load.options_4.label"
+        }
+      ],
+      "default": "20"
+    },
+    {
+      "type": "select",
+      "id": "products_load_method",
+      "label": "t:sections.main_collection_products.settings.load_method.label",
+      "options": [
+        {
+          "value": "pagination",
+          "label": "t:general.settings.load_method.options_1.label"
+        },
+        {
+          "value": "loadmore",
+          "label": "t:general.settings.load_method.options_2.label"
+        },
+        {
+          "value": "infinity_scroll",
+          "label": "t:general.settings.load_method.options_3.label"
+        }
+      ],
+      "default": "pagination"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_title",
+      "label": "t:sections.main_collection_products.settings.show_collection_title.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_change_layout",
+      "label": "t:sections.main_collection_products.settings.enable_change_layout.label",
+      "default": true
+    },
+
+    {
+      "type": "header",
+      "content": "t:sections.main_collection_products.settings.header.filter_and_sort.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_custom_filter",
+      "label": "Enable Custom Filter",
+      "default": false
+    },
+
+    {
+      "type": "checkbox",
+      "id": "enable_filter",
+      "label": "t:sections.main_collection_products.settings.enable_filter.label",
+      "info": "t:sections.main_collection_products.settings.enable_filter.info",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "expand_all_filter",
+      "label": "t:sections.main_collection_products.settings.mobile_expand_all_filter.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sort",
+      "label": "t:sections.main_collection_products.settings.enable_sort.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "product_count",
+      "label": "Enable Product Count",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.product_card.label",
+      "info": "t:general.settings.headers.product_card.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_vendor",
+      "label": "t:general.settings.show_vendor.label",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_variant_swatch",
+      "label": "t:general.settings.show_variant_swatches.label",
+      "info": "t:general.settings.show_variant_swatches.info",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "quick_shop_action",
+      "label": "t:general.settings.quick_shop_action.label",
+      "info": "t:general.settings.quick_shop_action.info",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:general.settings.quick_shop_action.options.not_use.label"
+        },
+        {
+          "value": "quick_add",
+          "label": "t:general.settings.quick_shop_action.options.quick_add.label"
+        },
+        {
+          "value": "quick_view",
+          "label": "t:general.settings.quick_shop_action.options.quick_view.label"
+        }
+      ],
+      "default": "quick_add"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_large_screen.content"
+    },
+    {
+      "type": "select",
+      "id": "item_per_row",
+      "label": "t:sections.main_collection_products.product_card.settings.item_per_row.label",
+      "options": [
+        {
+          "value": "3",
+          "label": "t:sections.main_collection_products.settings.item_per_row.options_1.label"
+        },
+        {
+          "value": "4",
+          "label": "t:sections.main_collection_products.settings.item_per_row.options_2.label"
+        },
+        {
+          "value": "6",
+          "label": "t:sections.main_collection_products.settings.item_per_row.options_4.label"
+        }
+      ],
+      "default": "3"
+    },
+    {
+      "type": "select",
+      "id": "filter_sort_layout",
+      "label": "t:sections.main_collection_products.settings.filter_sort_layout.label",
+      "options": [
+        {
+          "value": "side-bar",
+          "label": "t:sections.main_collection_products.settings.filter_sort_layout.options_1"
+        },
+        {
+          "value": "top-bar",
+          "label": "t:sections.main_collection_products.settings.filter_sort_layout.options_2"
+        },
+        {
+          "value": "drawer",
+          "label": "t:sections.main_collection_products.settings.filter_sort_layout.options_3"
+        }
+      ],
+      "default": "drawer"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_mobile_screen.content"
+    },
+    {
+      "type": "select",
+      "id": "mobile_items_per_row",
+      "label": "t:sections.main_collection_products.settings.mobile_item_per_row.label",
+      "options": [
+        {
+          "value": "1",
+          "label": "t:sections.main_collection_products.settings.mobile_item_per_row.options_1"
+        },
+        {
+          "value": "2",
+          "label": "t:sections.main_collection_products.settings.mobile_item_per_row.options_2"
+        }
+      ],
+      "default": "1"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "block_item",
+      "name": "Collection Item",
+      "settings": [
+        {
+          "type": "collection",
+          "label": "Choose Collection",
+          "id": "collection"
+        },
+        {
+          "type": "image_picker",
+          "label": "Image",
+          "id": "image"
+        },
+        {
+          "type": "inline_richtext",
+          "label": "Title",
+          "id": "title"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,101 @@
+{% liquid
+  assign button_type = button_type | default: 'btn-primary '
+  assign classes = classes | append: ' ls-none d-flex fw-wrap hide-empty'
+%}
+<ul class="{{ classes }}">
+  {%- if settings.social_facebook_link != blank -%}
+    <li>
+      <a href="{{ settings.social_facebook_link }}" rel="noopener" aria-label="Facebook" class="btn btn-icon btn--large {{ button_type }} js-social-btn" >
+        {% render 'icon-facebook' %}
+      </a>
+    </li>
+  {%- endif -%}
+  {%- if settings.social_instagram_link != blank -%}
+    <li>
+    <a href="{{ settings.social_instagram_link }}" rel="noopener" title="Instagram" aria-label="Instagram" class="btn btn-icon btn--large {{ button_type }} js-social-btn">
+      {% comment %} {% render 'icon-instagram' %} {% endcomment %}
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M17 2H7C4.23858 2 2 4.23858 2 7V17C2 19.7614 4.23858 22 7 22H17C19.7614 22 22 19.7614 22 17V7C22 4.23858 19.7614 2 17 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M15.9997 11.3703C16.1231 12.2025 15.981 13.0525 15.5935 13.7993C15.206 14.5461 14.5929 15.1517 13.8413 15.53C13.0898 15.9082 12.2382 16.0399 11.4075 15.9062C10.5768 15.7726 9.80947 15.3804 9.21455 14.7855C8.61962 14.1905 8.22744 13.4232 8.09377 12.5925C7.96011 11.7619 8.09177 10.9102 8.47003 10.1587C8.84829 9.40716 9.45389 8.79404 10.2007 8.40654C10.9475 8.01904 11.7975 7.87689 12.6297 8.0003C13.4786 8.12619 14.2646 8.52176 14.8714 9.12861C15.4782 9.73545 15.8738 10.5214 15.9997 11.3703Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.5 6.5H17.51" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    </a>
+    </li>
+  {%- endif -%}
+
+  {%- if settings.social_twitter_link != blank -%}
+    <li>
+    <a href="{{ settings.social_twitter_link }}" rel="noopener" title="Twitter" aria-label="Twitter" class="btn btn-icon btn--large {{ button_type }} js-social-btn">
+
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M18.2048 2.25H21.5128L14.2858 10.51L22.7878 21.75H16.1298L10.9158 14.933L4.94984 21.75H1.63984L9.36984 12.915L1.21484 2.25H8.03984L12.7528 8.481L18.2028 2.25H18.2048ZM17.0438 19.77H18.8768L7.04484 4.126H5.07784L17.0438 19.77Z" fill="currentColor"/>
+</svg>
+
+
+    </a>
+    </li>
+  {%- endif -%}
+
+  {%- if settings.social_tiktok_link != blank -%}
+    <li>
+    <a href="{{ settings.social_tiktok_link }}" rel="noopener" title="Tiktok" aria-label="Tiktok" class="btn btn-icon btn--large {{ button_type }} js-social-btn">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16.6002 5.82C15.9166 5.03962 15.5399 4.03743 15.5402 3H12.4502V15.4C12.4263 16.071 12.143 16.7066 11.6599 17.1729C11.1768 17.6393 10.5316 17.8999 9.86016 17.9C8.44016 17.9 7.26016 16.74 7.26016 15.3C7.26016 13.58 8.92016 12.29 10.6302 12.82V9.66C7.18016 9.2 4.16016 11.88 4.16016 15.3C4.16016 18.63 6.92016 21 9.85016 21C12.9902 21 15.5402 18.45 15.5402 15.3V9.01C16.7932 9.90985 18.2975 10.3926 19.8402 10.39V7.3C19.8402 7.3 17.9602 7.39 16.6002 5.82Z" fill="currentColor"/>
+      </svg>
+      
+    </a>
+    </li>
+  {%- endif -%}
+
+
+  {%- if settings.social_youtube_link != blank -%}
+    <li>
+    <a href="{{ settings.social_youtube_link }}" rel="noopener" title="Youtube" aria-label="Youtube" aria-label="Youtube" class="btn btn-icon btn--large {{ button_type }} js-social-btn">
+
+      <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12.5 2C13.5688 2 14.665 2.0275 15.7275 2.0725L16.9825 2.1325L18.1838 2.20375L19.3088 2.28L20.3362 2.36C21.4513 2.44535 22.5006 2.92118 23.2994 3.7038C24.0983 4.48642 24.5955 5.52568 24.7038 6.63875L24.7537 7.17L24.8475 8.3075C24.935 9.48625 25 10.7712 25 12C25 13.2288 24.935 14.5138 24.8475 15.6925L24.7537 16.83C24.7375 17.0125 24.7213 17.1888 24.7038 17.3612C24.5955 18.4745 24.098 19.5139 23.2989 20.2966C22.4998 21.0792 21.4503 21.5549 20.335 21.64L19.31 21.7188L18.185 21.7962L16.9825 21.8675L15.7275 21.9275C14.6523 21.9742 13.5762 21.9984 12.5 22C11.4238 21.9984 10.3477 21.9742 9.2725 21.9275L8.0175 21.8675L6.81625 21.7962L5.69125 21.7188L4.66375 21.64C3.54869 21.5547 2.49944 21.0788 1.70059 20.2962C0.901742 19.5136 0.404468 18.4743 0.29625 17.3612L0.24625 16.83L0.1525 15.6925C0.0569219 14.4639 0.00605502 13.2323 0 12C0 10.7712 0.065 9.48625 0.1525 8.3075L0.24625 7.17C0.2625 6.9875 0.27875 6.81125 0.29625 6.63875C0.404426 5.52587 0.901521 4.48677 1.70011 3.70418C2.49871 2.92159 3.54766 2.44563 4.6625 2.36L5.68875 2.28L6.81375 2.20375L8.01625 2.1325L9.27125 2.0725C10.3469 2.02579 11.4234 2.00162 12.5 2ZM12.5 4.5C11.4688 4.5 10.4075 4.5275 9.375 4.57L8.1525 4.62875L6.97875 4.6975L5.87625 4.7725L4.86625 4.85125C4.33541 4.88891 3.83506 5.11331 3.45387 5.48466C3.07268 5.85601 2.83528 6.35033 2.78375 6.88C2.6375 8.39125 2.5 10.2725 2.5 12C2.5 13.7275 2.6375 15.6088 2.78375 17.12C2.89 18.21 3.755 19.0575 4.86625 19.1488L5.87625 19.2262L6.97875 19.3013L8.1525 19.3713L9.375 19.43C10.4075 19.4725 11.4688 19.5 12.5 19.5C13.5312 19.5 14.5925 19.4725 15.625 19.43L16.8475 19.3713L18.0212 19.3025L19.1237 19.2275L20.1338 19.1488C20.6646 19.1111 21.1649 18.8867 21.5461 18.5153C21.9273 18.144 22.1647 17.6497 22.2163 17.12C22.3625 15.6088 22.5 13.7275 22.5 12C22.5 10.2725 22.3625 8.39125 22.2163 6.88C22.1647 6.35033 21.9273 5.85601 21.5461 5.48466C21.1649 5.11331 20.6646 4.88891 20.1338 4.85125L19.1237 4.77375L18.0212 4.69875L16.8475 4.62875L15.625 4.57C14.5839 4.52521 13.542 4.50187 12.5 4.5ZM10 8.96875C9.99992 8.84658 10.0297 8.72624 10.0867 8.61819C10.1437 8.51015 10.2263 8.41767 10.3272 8.34879C10.4281 8.27992 10.5443 8.23674 10.6657 8.22301C10.7871 8.20928 10.91 8.22541 11.0238 8.27L11.125 8.32L16.375 11.35C16.4795 11.4103 16.568 11.495 16.6328 11.5968C16.6976 11.6986 16.7369 11.8146 16.7474 11.9348C16.7578 12.0551 16.739 12.176 16.6927 12.2875C16.6464 12.399 16.5738 12.4976 16.4813 12.575L16.375 12.65L11.125 15.6812C11.0192 15.7425 10.9 15.777 10.7779 15.7817C10.6557 15.7863 10.5342 15.7611 10.4241 15.7081C10.3139 15.6551 10.2183 15.576 10.1457 15.4776C10.0731 15.3793 10.0257 15.2646 10.0075 15.1438L10 15.0312V8.96875Z" fill="currentColor"/>
+      </svg>
+
+    </a>
+    </li>
+  {%- endif -%}
+
+  {%- if settings.social_linkedin_link != blank -%}
+    <li>
+    <a href="{{ settings.social_linkedin_link }}" rel="noopener" title="Linkedin" aria-label="Linkedin" class="btn btn-icon btn--large {{ button_type }} js-social-btn">
+      {% render 'icon-linkedin' %}
+    </a>
+    </li>
+  {%- endif -%}
+  {%- if settings.social_pinterest_link != blank -%}
+    <li>
+    <a href="{{ settings.social_pinterest_link }}" rel="noopener" title="Pinterest" aria-label="Pinterest" class="btn btn-icon btn--large {{ button_type }} js-social-btn">
+      {% render 'icon-pinterest' %}
+    </a>
+    </li>
+  {%- endif -%}
+  {%- if settings.social_vimeo_link != blank -%}
+    <li>
+    <a href="{{ settings.social_vimeo_link }}" rel="noopener" title="Vimeo" aria-label="Vimeo" class="btn btn-icon btn--large {{ button_type }} js-social-btn">
+      {% render 'icon-vimeo' %}
+    </a>
+    </li>
+  {%- endif -%}
+
+  {%- if settings.social_tumblr_link != blank -%}
+    <li>
+    <a href="{{ settings.social_tumblr_link }}" rel="noopener" title="Tumblr" aria-label="Tumblr" class="btn btn-icon btn--large {{ button_type }} js-social-btn">
+      {% render 'icon-tumblr' %}
+    </a>
+    </li>
+  {%- endif -%}
+  {%- if settings.social_snapchat_link != blank -%}
+    <li>
+    <a href="{{ settings.social_snapchat_link }}" rel="Snapchat" title="Tumblr" aria-label="Snapchat" class="btn btn-icon btn--large {{ button_type }} js-social-btn">
+      {% render 'icon-snapchat' %}
+    </a>
+    </li>
+  {%- endif -%}
+  </ul>

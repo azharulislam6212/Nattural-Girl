@@ -1,0 +1,44 @@
+{% comment %}
+Usage:
+{% render 'newsletter-form',
+          form_id:  FORMID
+          form_name: 'FORMNAME'
+          %}
+{% endcomment %}
+
+{%- form 'customer', id: form_id -%}
+    <input type="hidden" name="contact[tags]" value="newsletter">
+    <div class="d-flex fd-column fd-row-sm gap-12 middle-md {{ classes }} " style="">
+      <input id="newsletterForm--{{ form_id }}" type="email" name="contact[email]" class="newsletter__input field__text field--large field--hover {{ input_class }}" value="{{ form.email }}" aria-required="true" autocorrect="off" autocapitalize="off" autocomplete="email" {% if form.errors %} autofocus aria-invalid="true" aria-describedby="{{ form_name }}-error" {% elsif form.posted_successfully? %} aria-describedby="{{ form_name }}-success"{% endif %} placeholder="{{ 'general.newsletter.email_placeholder' | t }}" required>
+      <label hidden class="field__label" for="newsletterForm--{{ form_id }}">{{ 'general.newsletter.label' | t }}</label>
+      <button type="submit" class="btn fs-0 maw-fit-content-sm {{ btn_class | default: 'btn-primary ' }} btn--large lh-inherit" name="commit" id="subscribe-{{ form_id }}" aria-label="{{ 'general.newsletter.button_label' | t }}">
+        {%- if button_label != blank -%}
+          {{- button_label -}}
+        {%- elsif button_icon -%}
+          {%- render 'icon-chevron-right' -%}
+        {%- else -%}
+          {{- 'general.newsletter.button_label' | t -}}
+        {%- endif -%}
+      </button>
+    </div>
+    {%- if form.errors -%}
+      <div class="message--error d-flex middle-xs mt-16">
+        <div class="icon icon--small icon--error fs-0">
+          {% render 'icon-close', size: 16 %}
+        </div>
+        <span class="ml-8 subtext">
+          {{ form.errors.translated_fields['email'] | capitalize }} {{ form.errors.messages['email'] }}
+        </span>
+      </div>
+    {%- endif -%}
+    {%- if form.posted_successfully? -%}
+      <div class="js-success message--success d-flex middle-xs mt-16">
+        <div class="icon icon--small icon--success fs-0">
+          {% render 'icon-check', size: 16 %}
+        </div>
+        <span class="ml-8 subtext">
+          {{ 'general.newsletter.success' | t }}
+        </span>
+      </div>
+    {%- endif -%}
+{%- endform -%}

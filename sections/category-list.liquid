@@ -1,0 +1,479 @@
+{{ 'section-category-list.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top_mobile | append: 'px' }};
+    padding-bottom: {{ section.settings.padding_bottom_mobile | append: 'px' }};
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top | append: 'px'}};
+      padding-bottom: {{ section.settings.padding_bottom | append: 'px'}};
+    }
+  }
+{%- endstyle -%}
+
+{% liquid
+  assign items = section.blocks | where: 'type', 'item'
+
+  assign desktop_column = section.settings.desktop_column
+  assign tab_column = section.settings.tab_column
+  assign mobile_column = section.settings.mobile_column
+  assign enable_pagination = section.settings.enable_pagination
+  assign enable_navigation = section.settings.enable_navigation
+  assign autoPlay = section.settings.autoplay_enabled
+  assign loop = section.settings.loop_enabled
+  assign enable_scroll = section.settings.enable_scroll
+  assign pagination_type = section.settings.pagination_type
+%}
+
+<div class="category-list  solate section-{{ section.id }}-padding color-{{ section.settings.color_scheme }} gradient">
+  <slideshow-swiper>
+
+<div class="container p-0 g-0">
+
+    {% if section.settings.heading != blank %}
+      <div class="row g-0">
+        <div class="col-12">
+          <div class="category-list-header">
+            <div class="category-list-text-wrap">
+              {% if section.settings.sub_heading != blank %}
+                <h3 class="category-list-sub-title"> {{ section.settings.sub_heading }}</h3>
+              {% endif %}
+              <h2 class="category-list-title inline-richtext"> {{ section.settings.heading }} 
+                <span class="heading-right-csparkle">
+                  <svg  class="sparkle" width="29" height="23" viewBox="0 0 29 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M25.0691 22.2333C21.1011 13.363 21.4372 11.9683 29.0002 5.86445C20.1299 9.83239 18.7351 9.49637 12.6313 1.93336C16.5993 10.8037 16.2632 12.1984 8.7002 18.3022C17.5705 14.3343 18.9653 14.6703 25.0691 22.2333Z" fill="#8E2210"/>
+                  <path d="M7.01524 8.70001C5.31469 4.89845 5.45871 4.30069 8.7 1.68478C4.89844 3.38532 4.30069 3.24131 1.68477 2.00272e-05C3.38531 3.80158 3.24129 4.39934 0 7.01526C3.80156 5.31471 4.39932 5.45872 7.01524 8.70001Z" fill="#8E2210"/>
+                  </svg>
+                 </span>
+
+              </h2>
+
+
+         
+
+            </div>
+
+            <span class="heading-left-csparkle">
+              <svg  class="sparkle" width="29" height="23" viewBox="0 0 29 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M25.0691 22.2333C21.1011 13.363 21.4372 11.9683 29.0002 5.86445C20.1299 9.83239 18.7351 9.49637 12.6313 1.93336C16.5993 10.8037 16.2632 12.1984 8.7002 18.3022C17.5705 14.3343 18.9653 14.6703 25.0691 22.2333Z" fill="#8E2210"/>
+              <path d="M7.01524 8.70001C5.31469 4.89845 5.45871 4.30069 8.7 1.68478C4.89844 3.38532 4.30069 3.24131 1.68477 2.00272e-05C3.38531 3.80158 3.24129 4.39934 0 7.01526C3.80156 5.31471 4.39932 5.45872 7.01524 8.70001Z" fill="#8E2210"/>
+              </svg>
+             </span>
+
+            {% if enable_navigation %}
+              <div class="navigation--wrapper">
+        
+                  <div class="swiper-navigation-wrapper  color-{{ section.settings.secondary_color_scheme }}">
+                    <div class="swiper-button-prev">
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M3.8284 6.77812L9.1924 1.41421L7.7782 1.48994e-05L3.39997e-07 7.77812L7.7782 15.5563L9.1924 14.1421L3.8284 8.77812L16 8.77812L16 6.77812L3.8284 6.77812Z" fill="currentColor"/>
+                    </svg>
+                    </div>
+          
+                    <div class="swiper-button-next">
+                      <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12.3978 9.82499H1.84453C1.47653 9.82499 1.1637 9.69615 0.906031 9.43849C0.648365 9.18099 0.519531 8.86815 0.519531 8.49999C0.519531 8.13182 0.648365 7.81899 0.906031 7.56149C1.1637 7.30382 1.47653 7.17499 1.84453 7.17499H12.3978L8.04903 2.82599C7.78303 2.56015 7.65187 2.24674 7.65553 1.88574C7.65903 1.5249 7.79378 1.21157 8.05978 0.945737C8.32578 0.696403 8.6392 0.569904 9.00003 0.566237C9.36087 0.56257 9.67428 0.693737 9.94028 0.959737L16.5403 7.55974C16.6684 7.68807 16.7652 7.83407 16.8305 7.99774C16.8957 8.16157 16.9283 8.32899 16.9283 8.49999C16.9283 8.67099 16.8957 8.8384 16.8305 9.00224C16.7652 9.1659 16.6684 9.3119 16.5403 9.44024L9.92603 16.0542C9.66736 16.3131 9.35812 16.4425 8.99828 16.4425C8.63861 16.4425 8.32578 16.3131 8.05978 16.0542C7.79378 15.7884 7.66078 15.4732 7.66078 15.1087C7.66078 14.7442 7.79378 14.429 8.05978 14.163L12.3978 9.82499Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                  </div>
+          
+              </div>
+            {% endif %}
+
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+
+      <div
+        class="slideshow__swiper swiper-container category-slider  {%if enable_pagination or enable_scroll %} enable-pagination{%endif %} "
+          data-centeredslides="false"
+          data-slidesDesktop="{{ desktop_column }}"
+          data-slidesTab="{{ tab_column }}"
+          data-slidesMobile="{{ mobile_column }}"
+          data-autoPlay="{{ autoPlay }}"
+          data-loop="{{ loop }}"
+          data-freemode="false"
+          data-freemomentum="false"
+          data-mousewheel="true"
+          data-desktopspace="16"
+          data-tabspace="16"
+          data-mobilespace="16"
+          data-type="{{pagination_type}}"
+      >
+        <div
+          class=" swiper-wrapper"
+        >
+          {%- for block in items -%}
+            <div
+              class="swiper-slide"
+              {% if settings.animations_reveal_on_scroll %}
+                data-cascade
+                style="--animation-order: {{ forloop.index }};"
+              {% endif %}
+            >
+              <div class="category-item">
+                <a href="{{ block.settings.link }}">
+                <div class="category-img-wrapper">
+                  {% if block.settings.image != blank %}
+                    <div
+                      class="media media--{{ section.settings.image_ratio}}"
+                      {% if section.settings.image_ratio == 'adapt' and block.settings.image != blank %}
+                        style="padding-bottom: {{ 1 | divided_by: block.settings.image.aspect_ratio | times: 100 }}%;"
+                      {% endif %}
+                    >
+                      {% render 'resposive-img' with image: block.settings.image %}
+                    </div>
+
+                  {% else %}
+                    <div class="media  placeholder-media media--{{ section.settings.image_ratio}} ">
+                      {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                    </div>
+                  {% endif %}
+           
+                </div>
+
+                {% if  block.settings.title %}
+
+                  <div class="category--name  color-{{ section.settings.color_scheme_secondary }} gradient">
+                    <p>{{ block.settings.title }}</p>
+                  </div>
+                  
+                {% endif %}
+                </a>
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+
+
+        {% if enable_pagination %}
+          <div class="swiper-pagination color-{{ section.settings.secondary_color_scheme }}"></div>
+        {% endif %}
+
+        {% if  enable_scroll %}
+          <div class="swiper-scrollbar"></div>
+       {% endif %}
+      </div>
+
+  </div>
+
+  </slideshow-swiper>
+<span class="bottom-left-csparkle">
+  <svg class="sparkle" width="41" height="32" viewBox="0 0 41 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M35.442 0.283325C29.8322 12.8241 30.3073 14.796 40.9998 23.4255C28.459 17.8157 26.4871 18.2908 17.8576 28.9833C23.4674 16.4425 22.9923 14.4706 12.2998 5.84109C24.8406 11.4509 26.8125 10.9759 35.442 0.283325Z" fill="#8E2210"/>
+<path d="M9.91809 19.4166C7.51387 24.7913 7.71749 25.6364 12.3 29.3347C6.92538 26.9305 6.08028 27.1341 2.38191 31.7166C4.78613 26.342 4.58252 25.4969 0 21.7985C5.37462 24.2028 6.21972 23.9992 9.91809 19.4166Z" fill="#8E2210"/>
+</svg>
+
+</span>
+
+</div>
+
+{% schema %}
+{
+  "name": "Category List",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "default": "Ctegory List",
+      "label": "Heading"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "sub_heading",
+      "default": "discover",
+      "label": "Sub Heading"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "Adapt to image"
+        },
+        {
+          "value": "square",
+          "label": "Square"
+        },
+        {
+          "value": "landscape",
+          "label": "Landscape"
+        },
+        {
+          "value": "portrait",
+          "label": "Portrait"
+        },
+        {
+          "value": "16-9",
+          "label": "Custom 16:9"
+        }
+      ],
+      "default": "portrait",
+      "label": "Image ratio"
+    },
+    {
+      "type": "select",
+      "id": "desktop_column",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        },
+        {
+          "value": "5",
+          "label": "5"
+        }
+      ],
+      "default": "5",
+      "label": "Desktop Column"
+    },
+    {
+      "type": "select",
+      "id": "tab_column",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        }
+      ],
+      "default": "3",
+      "label": "Tab Column"
+    },
+    {
+      "type": "select",
+      "id": "mobile_column",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "default": "1",
+      "label": "Mobile Column"
+    },
+    {
+      "type": "header",
+      "content": "Slider Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay_enabled",
+      "label": "Enable Auto Play",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "autoplay_timeout",
+      "label": "Chnage Time",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "default": 5,
+      "unit": "s"
+    },
+    {
+      "type": "checkbox",
+      "id": "loop_enabled",
+      "label": "Enable Loop",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_pagination",
+      "label": "Enable Pagination",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "pagination_type",
+      "options": [
+        {
+          "value": "bullets",
+          "label": "Bullets"
+        },
+        {
+          "value": "progressbar",
+          "label": "Progress"
+        }
+      ],
+      "default": "bullets",
+      "label": "Pagination Type"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_navigation",
+      "label": "Enable Naviagtion",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_scroll",
+      "label": "Enable Scroll",
+      "default": false
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color",
+      "default": "background-1"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme_secondary",
+      "label": "Secondary Color",
+      "default": "background-1"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "paragraph",
+      "content": "Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 116
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 116
+    },
+    {
+      "type": "paragraph",
+      "content": " Mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 58
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 58
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Poster Image"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "title",
+          "default": "Collection",
+          "label": "Collection Title"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Category List",
+      "blocks": [
+        {
+          "type": "item"
+        },
+        {
+          "type": "item"
+        },
+        {
+          "type": "item"
+        },
+        {
+          "type": "item"
+        },
+        {
+          "type": "item"
+        },
+        {
+          "type": "item"
+        },
+        {
+          "type": "item"
+        },
+        {
+          "type": "item"
+        },
+        {
+          "type": "item"
+        },
+        {
+          "type": "item"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

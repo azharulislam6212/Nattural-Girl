@@ -1,0 +1,225 @@
+{% liquid
+  assign detect_background = 1
+  if section.settings.color_scheme.settings.color_background.alpha != 0.0
+    assign no_transparent = 'no-transparent'
+    assign detect_background = section.settings.color_scheme.settings.color_background | color_brightness | times: 9999
+  endif
+%}
+<style>
+  #shopify-section-{{ section.id }} {
+    --section-background-hash: {{ detect_background }};
+  }
+  #shopify-section-{{ section.id }} + * {
+    --previous-section-background-hash: {{ detect_background }};
+  }
+</style>
+
+<div class="s--margin color-{{- section.settings.color_scheme }} s-container-radius {{ no_transparent }}" data-ui-component="Main 404" role="region" aria-labelledby="sectionHeading-{{ section.id | md5 | truncate: 12, "" }}">
+  <div class="section section-gap-md ctnr d-flex fd-column middle-xs center-xs {{ section.settings.content_ordering_mobile }} {{ section.settings.content_ordering_desktop }}">
+    {% if section.blocks.size > 0 %}
+      <div class="s-header flex-1">
+        <div class="s-header__content s-header__banner d-flex fd-column wb-break-word ta-center middle-xs {% if section.settings.image == blank %} ta-center center-xs {% else %} ta-left-md top-md {% endif %}" >
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              {%- when 'subheading' -%}
+                <div class="s-header__sub s-header__item hide-empty d-block"{{ block.shopify_attributes }}>{{- block.settings.subheading | escape -}}</div>
+              {%- when 'heading' -%}
+                <h2 id="sectionHeading-{{ section.id | md5 | truncate: 12, "" }}" class="s-header__title {{ block.settings.heading_size }} wb-break-word hide-empty d-block" {{ block.shopify_attributes }}>{{- block.settings.heading | replace: '[', '<span class="prominent-heading">' | replace: ']', '</span>' -}}</h2>
+              {%- when 'description' -%}
+                <div class="s-header__desc s-header__item rte hide-empty" {{ block.shopify_attributes }}>{{- block.settings.description -}}</div>
+              {%- when 'button' -%}
+              <div class="s-header__buttons s-header__item d-flex fd-column fd-row-sm gap-12 fw-wrap w-100 flex-1 hide-empty" {{ block.shopify_attributes }}>
+                {%- if block.settings.home_page_link_text != blank -%}
+                  <a class="btn btn--large flex-1 btn-outline " href="{{- routes.root_url -}}">{{- block.settings.home_page_link_text -}}</a>
+                {%- endif -%}
+                {%- if block.settings.catalogue_link_text != blank -%}
+                  <a class="btn btn--large flex-1 btn-outline " href="{{- routes.all_products_collection_url -}}">{{- block.settings.catalogue_link_text -}}</a>
+                {%- endif -%}
+              </div>
+              {%- when 'search'-%}
+                <div class="s-header__item w-100 mb-24"  {{ block.shopify_attributes }}>
+                  <form action="{{- routes.search_url -}}" class="form-search p-relative">
+                    <label class="field__label visually-hidden" for="section404Input">{{ 'general.search.search' | t }}</label>
+                    <input
+                      id="section404Input"
+                      type="text"
+                      placeholder="{{ 'general.search.search_the_site' | t }}"
+                      name="q"
+                      value="{{ search.terms | escape }}"
+                      class="field__input-search field__text field--large field--hover w-100"
+                    >
+                    <div class="search-submit p-absolute middle-y right-0 pe-none">
+                      <button type="submit" aria-label="{{ "accessibility.search" | t }}" class="btn btn-icon bg-transparent btn--large">
+                        {% render 'icon-search', size: '20px' %}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+            {%- endcase -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    {% endif %}
+      {% if section.settings.image != blank %}
+      <div class="s-content {{ section.blocks.size | replace: '0', 'mw-content' }} flex-1 w-100 rounded-2x o-hidden media--hover-effect">
+          {{- section.settings.image | image_url: width: section.settings.image.width | image_tag: widths: '750, 950, 1024, 1200, 1400, 1600, 1800, 2000', sizes: '(min-width: 1025px) calc(100vw/2), 100vw', alt: section.settings.image.alt, class: 'w-100 h-100 of-cover media' -}}
+        </div>
+      {% endif %}
+  </div>
+</div>
+
+
+{% schema %}
+{
+  "name": "t:sections.main_404.name",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.general.content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_scheme.label"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.image.content"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:general.settings.image.label"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_large_screen.content"
+    },
+    {
+      "type": "select",
+      "id": "content_ordering_desktop",
+      "label": "t:general.settings.section_ordering.label",
+      "default": "fd-row-md",
+      "options": [
+        {
+          "value": "fd-row-md",
+          "label": "t:general.settings.section_ordering.option_text_first.label"
+        },
+        {
+          "value": "fd-row-reverse-md",
+          "label": "t:general.settings.section_ordering.option_image_first.label"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.header.mobile_screen.content"
+    },
+    {
+      "type": "select",
+      "id": "content_ordering_mobile",
+      "label": "t:general.settings.section_ordering.label",
+      "options": [
+        {
+          "value": "text-first-mb",
+          "label": "t:general.settings.section_ordering.option_text_first.label"
+        },
+        {
+          "value": "fd-column-reverse",
+          "label": "t:general.settings.section_ordering.option_image_first.label"
+        }
+      ],
+      "default": "text-first-mb"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "subheading",
+      "name": "t:general.settings.headers.subheading.content",
+      "settings": [
+        {
+          "type": "text",
+          "label": "t:general.settings.text.label",
+          "id": "subheading",
+          "default": "404 — Page not found"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "name": "t:general.settings.headers.heading.content",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:general.settings.text.label",
+          "info": "t:general.settings.prominent_font.info",
+          "default": "We're sorry, this page is not available!"
+        },
+        {
+          "type": "select",
+          "label": "t:general.settings.heading_size.label",
+          "id": "heading_size",
+          "options": [
+            {
+              "value": "headline",
+              "label": "t:general.settings.heading_size.options.headline.label"
+            },
+            {
+              "value": "h1",
+              "label": "t:general.settings.heading_size.options.h1.label"
+            },
+            {
+              "value": "h2",
+              "label": "t:general.settings.heading_size.options.h2.label"
+            },
+            {
+              "value": "h3",
+              "label": "t:general.settings.heading_size.options.h3.label"
+            }
+          ],
+          "default": "h2"
+        }
+      ]
+    },
+    {
+      "type": "description",
+      "name": "t:general.settings.headers.description.content",
+      "settings": [
+        {
+          "type": "richtext",
+          "label": "t:general.settings.text.label",
+          "id": "description",
+          "default": "<p>The page URL might be outdated or contains typo errors. Please contact us at Shine or select options below.</p>"
+        }
+      ]
+    },
+    {
+      "type": "search",
+      "name": "t:settings_schema.search.name",
+      "limit": 1
+    },
+    {
+      "type": "button",
+      "name": "t:general.settings.headers.button.content",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "home_page_link_text",
+          "label": "t:sections.main_404.settings.home_page_link_text.label",
+          "info": "t:general.settings.hide_if_empty.info",
+          "default": "Back to home page"
+        },
+        {
+          "type": "text",
+          "id": "catalogue_link_text",
+          "label": "t:sections.main_404.settings.catalogue_link_text.label",
+          "info": "t:general.settings.hide_if_empty.info",
+          "default": "Explore our catalogue"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,41 @@
+<sht-featured-variant-selects class="product__variants--selects d-flex fd-column gap-24 no-js-hidden" data-section="{{ section.id }}" data-url="{{ product.url }}">
+  {%- for option in product.options_with_values -%}
+    {%- liquid
+        assign index = forloop.index | minus: 1
+        assign variant_name = option.name | downcase
+        assign hide_select = ''
+      -%}
+        <div class="product-form__input product-form__input--dropdown js-selectbox-wrapper">
+          <label class="form__label d-inline-block p-zero m-zero product-option__name mb-16 d-flex center-xs between-xs w-100 middle-xs gap-16" for="Option-{{ section.id }}-{{ forloop.index0 }}">
+            <span class="d-flex flex-1">
+              <span class="mr-8">{{ option.name }}</span>
+              <span class="js-variant-select-option-name color-light hide-empty" data-option-index="{{ index }}" data-option-name="{{ option.name }}">
+                  {{ product.selected_or_first_available_variant.options[index] }}
+              </span>
+            </span>
+            {%- if enable_size_guide and variant_name == 'size' -%}
+            	<button class="btn-plain btn-link subtext fw-700 pt-8 pb-8 c-pointer ta-right" type="button" aria-haspopup="dialog" onclick="window.dialogSizeGuide{{ size_guide_dialog_id }}.showModal(this, true)" {{ size_guide_cta }}>
+                {{ block.settings.size_guide_label }}
+              </button>
+            {%- endif -%}
+          </label>
+          {%- if variant_label == variant_name and block.settings.enable_variant_swatches -%}
+            <fieldset class="form__fields product-option js-variant-radio-container d-flex fw-wrap p-zero m-zero b-zero">
+              {% render 'featured-product-color-swatch-w-select', product: product, option: option, section: section, product_form_id: product_form_id, index: index %}
+              {%- assign hide_select = "d-none-important" -%}
+            </fieldset>
+          {%- endif -%}
+          <div class="{{ hide_select }} field__select p-relative p-zero">
+            <select id="Option-{{ section.id }}-{{ forloop.index0 }}" class="form__control w-100 h-100 field__text field--focus field--hover js-variant-select-item" name="options[{{ option.name | escape }}]" form="{{ product_form_id }}">
+              {% render 'product-variant-options', product: product, option: option, block: block, index: index %}
+            </select>
+            <div class="p-absolute right-0 top-0 pe-none">
+              <span class="btn btn--medium btn-plain btn-icon pe-none">
+                {% render 'icon-chevron-down' %}
+              </span>
+            </div>
+          </div>
+        </div>
+  {%- endfor -%}
+  <script type="application/json">{{ product.variants | json }}</script>
+</sht-featured-variant-selects>

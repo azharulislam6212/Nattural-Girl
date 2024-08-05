@@ -1,0 +1,21 @@
+<sht-dialog-quickshop class="sht-dialog dialog__quickshop color-{{- settings.color_scheme_drawer_popover }} no-focus-visible bottom-xs end-xs p-fixed left-0 top-0 h-100 w-100 o-auto zi-9 d-flex" id="dialogQuickShop" hidden tabindex="-1">
+  <div class="dialog disable-scrollbars" role="dialog" aria-labelledby="dialogQuickShopTitle" aria-modal="true">
+    <div class="dialog__content d-flex fd-column h-100">
+      <div class="dialog__header d-flex between-xs middle-xs p-sticky top-0">
+        <h3 class="dialog--animate h6 m-zero" id="dialogQuickShopTitle">
+          <span class="title--quickview">
+            {{ 'products.product.quick_view' | t }}
+          </span>
+          <span class="title--quickadd d-none">
+            {{ 'products.product.select_variant' | t }}
+          </span>
+        </h3>
+        <button type="button" aria-label="{{- "accessibility.close_modal" | t -}}" class="dialog--animate js-dialog-close-btn btn btn-icon  btn--medium btn-plain btn-close">
+          {%- render 'icon-close' -%}
+        </button>
+      </div>
+      <div class="dialog__body js-dialog-body oy-scroll disable-scrollbars p-relative">
+      </div>
+    </div>
+  </div>
+</sht-dialog-quickshop>

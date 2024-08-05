@@ -1,0 +1,128 @@
+{%- liquid
+  assign btn_class = 'btn btn--small btn-icon no-js-hidden d-none-' | append: section.blocks.size
+  if section.settings.color_scheme.settings.color_background.alpha != 0.0
+    assign no_transparent = 'no-transparent'
+  endif
+  -%}
+{%- if section.blocks.size > 0 -%}
+<div class="s-container-radius color-{{ section.settings.color_scheme }} s-small-margin--outer anmb p-relative zi-3 js-anmb-section {{ no_transparent }}" data-ui-component="Announcement Bar Section">
+  <sht-ann-bar role="region" aria-label="{{ 'accessibility.announcement' | t }}" aria-roledescription="Carousel" class="ctnr s-small-padding d-flex middle-xs o-hidden gap-1x" data-props='{"autoPlay":{{ section.settings.enable_autoplay }},"duration":{{ section.settings.duration | times: 1000 }}}'>
+    <button aria-label="{{ 'accessibility.previous_slide' | t }}" name="previous" class="jjs-anmb-control-prev bg-transparent {{ btn_class | replace: 'd-none-1', 'd-none-important' }}" type="button">
+      {%- render 'icon-chevron-left' -%}
+    </button>
+    <div aria-live="polite" aria-atomic="true" class="anmb-content m-auto js-anmb-items ox-auto disable-scrollbars d-flex middle-xs scrollable-stop-always scrollable-x w-100 p-relative {{ section.settings.text_size }}">
+      {%- for block in section.blocks -%}
+        <div {{ block.shopify_attributes }} role="group" aria-roledescription="Slide" aria-label="{{ 'accessibility.slide' | t }} {{ forloop.index }} {{ 'accessibility.of' | t }} {{ forloop.length }}" aria-hidden="true" class="js-anmb-item fs-0 scrollable-aln-start w-100 ta-center" data-item-index="{{ forloop.index }}">
+          <div class="anmb-link-item d-flex mobile-hidden fd-column center-xs middle-xs rte">
+            {{- block.settings.message_text | replace: '<a', '<a tabindex="-1" class="js-anmb-link-items"' -}}
+          </div>
+          <div class="anmb-link-item d-flex desktop-hidden  fd-column center-xs middle-xs rte">
+            {{- block.settings.message_text_mobile | replace: '<a', '<a tabindex="-1" class="js-anmb-link-items"' -}}
+          </div>
+        </div>
+      {%- endfor -%}
+      {%- if section.blocks.size == 2 -%}
+        <div role="group" aria-roledescription="Slide" aria-label="{{ 'accessibility.slide' | t }} 1 {{ 'accessibility.of' | t }} 2" aria-hidden="true" class="js-anmb-item fs-0 scrollable-aln-start w-100 ta-center" data-item-index="3">
+          <div class="anmb-link-item d-flex fd-column center-xs middle-xs rte">
+            {{- section.blocks[0].settings.message_text | replace: '<a', '<a tabindex="-1" class="js-anmb-link-items"' -}}
+          </div>
+        </div>
+        <div role="group" aria-roledescription="Slide" aria-label="{{ 'accessibility.slide' | t }} 2 {{ 'accessibility.of' | t }} 2" aria-hidden="true" class="js-anmb-item fs-0 scrollable-aln-start w-100 ta-center" data-item-index="4">
+          <div class="anmb-link-item d-flex fd-column center-xs middle-xs rte">
+            {{- section.blocks[1].settings.message_text | replace: '<a', '<a tabindex="-1" class="js-anmb-link-items"' -}}
+          </div>
+          </div>
+        {%- endif -%}
+    </div>
+    <button aria-label="{{ 'accessibility.next_slide' | t }}" name="next" class="jjs-anmb-control-next bg-transparent {{ btn_class | replace: 'd-none-1', 'd-none-important' }}" type="button">
+      {%- render 'icon-chevron-right' -%}
+    </button>
+  </sht-ann-bar>
+</div>
+{%- endif -%}
+{% schema %}
+{
+  "name": "t:sections.announcement_bar.name",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.general.content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_scheme.label"
+    },
+    {
+      "type": "checkbox",
+      "label": "t:sections.announcement_bar.settings.enable_message_autoplay.label",
+      "id": "enable_autoplay",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "duration",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "label": "t:sections.announcement_bar.settings.change_message_every.label",
+      "default": 5,
+      "unit": "s"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.messages.content"
+    },
+    {
+      "type": "select",
+      "label": "t:settings_schema.typography.settings.text_size.label",
+      "id": "text_size",
+      "options": [
+        {
+          "value": "subtext",
+          "label": "t:sections.announcement_bar.settings.text_size.option_1.label"
+        },
+        {
+          "value": "fs-body",
+          "label": "t:sections.announcement_bar.settings.text_size.option_2.label"
+        }
+      ],
+      "default": "fs-body"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "t:sections.announcement_bar.blocks.message.name",
+      "type": "message",
+      "limit": 5,
+      "settings": [
+        {
+          "type": "richtext",
+          "label": "t:general.settings.text.label",
+          "id": "message_text",
+          "default": "<p>Highlight your significant announcement here</p>"
+        },
+        {
+          "type": "richtext",
+          "label": "Mobile Text",
+          "id": "message_text_mobile",
+          "default": "<p>Highlight your significant announcement here</p>"
+        }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      {
+        "type": "message"
+      },
+      {
+        "type": "message"
+      },
+      {
+        "type": "message"
+      }
+    ]
+  }
+}
+{% endschema %}

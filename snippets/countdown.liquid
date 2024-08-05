@@ -1,0 +1,93 @@
+{%- liquid
+  assign is_expried = false
+  assign hide_countdown_cls = ''
+  assign hide_countdown_message_cls = 'd-none'
+  assign today = "now" | date: "%Y-%m-%d"
+  assign end_time = block.settings.end_time | default: '23:59' | append: ':00'
+  assign end_date = block.settings.end_date | default: today
+
+  assign timezone_offset = "now" | date: "%z"
+  assign expired_at = end_date | append: ' ' | append: end_time | append: ' ' | append: timezone_offset
+
+  assign expired_at_timestamp = expired_at | date: '%s'
+  assign now_timestamp = 'now' | date: '%s'
+
+  assign diff_seconds = expired_at_timestamp | minus: now_timestamp
+
+  assign days = diff_seconds | divided_by: 3600 | divided_by: 24 | round
+  assign hours = diff_seconds | modulo: 86400 | divided_by: 3600 | round
+  assign minutes = diff_seconds | modulo: 3600 | divided_by: 60 | round
+  assign seconds = diff_seconds | modulo: 60 | round
+
+  assign days_string = '00'
+  assign hours_string = '00'
+  assign minutes_string = '00'
+  assign seconds_string = '00'
+
+  if diff_seconds > 0 and days < 9 and days >= 0
+    assign days_string = days | prepend: '0'
+  elsif diff_seconds > 0 and days > 9
+    assign days_string = days
+  endif
+
+  if diff_seconds > 0 and hours < 9 and hours >= 0
+    assign hours_string = hours | prepend: '0'
+  elsif diff_seconds > 0 and hours > 9
+    assign hours_string = hours
+  endif
+
+  if diff_seconds > 0 and minutes < 9 and minutes >= 0
+    assign minutes_string = minutes | prepend: '0'
+  elsif diff_seconds > 0 and minutes > 9
+    assign minutes_string = minutes
+  endif
+
+  if diff_seconds > 0 and seconds < 9 and seconds >= 0
+    assign seconds_string = seconds | prepend: '0'
+  elsif diff_seconds > 0 and seconds > 9
+    assign seconds_string = seconds
+  endif
+
+  if diff_seconds <= 0
+    assign is_expried = true
+    if block.settings.hide_on_end
+      assign hide_countdown_cls = "d-none-important"
+    endif
+    if block.settings.end_text != blank
+      assign hide_countdown_message_cls = ''
+    endif
+  endif
+  assign background_color = background | default: 'background: var(--color-background);'
+
+  unless block.settings.countdown_background.alpha == 0.0 or block.settings.countdown_background == blank
+    assign background_color = 'background:' | append: block.settings.countdown_background | append: ';'
+  endunless
+  unless block.settings.countdown_number_color.alpha == 0.0 or block.settings.countdown_number_color == blank
+    assign content_color =  'color:' | append: block.settings.countdown_number_color | append: ';'
+    assign color_border =  '--color-normal-text-rgb:' | append: block.settings.countdown_number_color.red | append: ',' | append: block.settings.countdown_number_color.green | append: ',' | append: block.settings.countdown_number_color.blue | append: ';'
+  endunless
+  unless block.settings.color_end_text.alpha == 0.0 or block.settings.color_end_text == blank
+    assign message_color = 'color:' | append: block.settings.color_end_text
+  endunless
+-%}
+<sht-countdown class="s-header__countdown d-block {{ class }}" data-is-expired="{{ is_expried }}" data-hide-on-end="{{ block.settings.hide_on_end }}" data-time-zone-name="{{ "now" | date: "%Z" }}" data-time-zone-offset="{{ timezone_offset }}" data-end-time="{{ end_time }}" data-end-date="{{ end_date }}" {{ block.shopify_attributes }}>
+  <time style="{{- content_color -}} {{- color_border -}} {{- background_color -}}" class="countdown_counter js-counter d-inline-flex fw-wrap gap-equal p-2x border br-card-content {{ hide_countdown_cls }} {%- if block.settings.content_position contains 'ta-center' -%} center-xs {%- endif -%}">
+    <span class="d-flex fd-column middle-xs">
+      <span class="{{- number_size | default: 'h2' }} m-zero js-counter-days">{{ days_string }}</span>
+      <span class="subtext">{{ 'sections.countdown_banner.days' | t }}</span>
+    </span>
+    <span class="d-flex fd-column middle-xs">
+      <span class="{{- number_size | default: 'h2' }} m-zero js-counter-hours">{{ hours_string }}</span>
+      <span class="subtext">{{ 'sections.countdown_banner.hours' | t }}</span>
+    </span>
+    <span class="d-flex fd-column middle-xs">
+      <span class="{{- number_size | default: 'h2' }} m-zero js-counter-minutes">{{ minutes_string }}</span>
+      <span class="subtext">{{ 'sections.countdown_banner.minutes' | t }}</span>
+    </span>
+    <span class="d-flex fd-column middle-xs">
+      <span class="{{- number_size | default: 'h2' }} m-zero js-counter-seconds">{{ seconds_string }}</span>
+      <span class="subtext">{{ 'sections.countdown_banner.seconds' | t }}</span>
+    </span>
+  </time>
+  <div class="{% unless block.settings.hide_on_end %} countdown_message mt-3x {% endunless %} hide-empty rte {{ hide_countdown_message_cls }} js-counter-message" style="{{ message_color }}">{{- block.settings.end_text -}}</div>
+</sht-countdown>

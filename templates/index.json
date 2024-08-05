@@ -1,0 +1,1066 @@
+{
+  "sections": {
+    "hero_banner_PTEULR": {
+      "type": "hero-banner",
+      "blocks": {
+        "banner_text_LaHEKY": {
+          "type": "banner_text",
+          "settings": {
+            "enable_video": false,
+            "video_source": "video_hosted",
+            "video_url": "",
+            "desktop_image": "shopify:\/\/shop_images\/Home_Page_A1_first_option_web_version_1_1.jpg",
+            "mobile_image": "shopify:\/\/shop_images\/Home_Page_A1_first_option_mobile_version_1.png",
+            "section_mask_overlay_color": "",
+            "section_overlay_opacity": 0,
+            "section_content_overlay_color": "",
+            "heading": "Effortless Glam for the coolest girls",
+            "description": "<p>Switch up your style in seconds, powered by ReXI™ lab-made hair <\/p>",
+            "button_main_text": "Shop now",
+            "button_main_link": "shopify:\/\/collections\/all",
+            "content_position_desktop": "start-md bottom-md ta-left-md",
+            "content_position_mobile": "center-xs bottom-xs ta-center"
+          }
+        },
+        "banner_gift_pP3rtG": {
+          "type": "banner_gift",
+          "settings": {
+            "enable_video": true,
+            "video_source": "video_hosted",
+            "video_url": "",
+            "video_hosted": "shopify:\/\/files\/videos\/Home Page A2 web version.mp4",
+            "section_mask_overlay_color": "",
+            "section_overlay_opacity": 0,
+            "section_content_overlay_color": "",
+            "gift_image": "shopify:\/\/shop_images\/Home_Page_A1_second_option_web_version_1.png",
+            "image_link": "shopify:\/\/collections\/all",
+            "button_main_text": "Find your signature Wig",
+            "button_main_link": "shopify:\/\/collections\/all",
+            "content_position_desktop": "center-md bottom-md ta-center-md",
+            "content_position_mobile": "center-xs bottom-xs ta-center"
+          }
+        }
+      },
+      "block_order": [
+        "banner_text_LaHEKY",
+        "banner_gift_pP3rtG"
+      ],
+      "settings": {
+        "color_scheme": "scheme-6412762b-19a3-4589-8641-1ac66362d9a3",
+        "height_desktop": "70vh",
+        "height_mobile": "70vh"
+      }
+    },
+    "running_content_RdgtdV": {
+      "type": "running-content",
+      "blocks": {
+        "icon_NNRzwr": {
+          "type": "icon",
+          "settings": {
+            "icon_source": "custom_svg",
+            "options_icon": "subscription",
+            "html_code": "<svg width=\"12\" height=\"12\" viewbox=\"0 0 12 12\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M9.67619 0C7.33062 5.24354 7.52926 6.06803 12 9.6762C6.75648 7.33062 5.93199 7.52925 2.32382 12C4.6694 6.75646 4.47075 5.93197 0 2.3238C5.24354 4.66938 6.06803 4.47075 9.67619 0Z\" fill=\"#8E2210\"><\/path>\n<\/svg>",
+            "color_content": ""
+          }
+        },
+        "text_zeNPQD": {
+          "type": "text",
+          "settings": {
+            "text": "<p>High Heat Resitant<\/p>",
+            "svg_icon": "",
+            "color_text": "",
+            "text_color_gradient": ""
+          }
+        },
+        "icon_7Bwhqy": {
+          "type": "icon",
+          "settings": {
+            "icon_source": "custom_svg",
+            "options_icon": "subscription",
+            "html_code": "<svg width=\"12\" height=\"12\" viewbox=\"0 0 12 12\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M9.67619 0C7.33062 5.24354 7.52926 6.06803 12 9.6762C6.75648 7.33062 5.93199 7.52925 2.32382 12C4.6694 6.75646 4.47075 5.93197 0 2.3238C5.24354 4.66938 6.06803 4.47075 9.67619 0Z\" fill=\"#8E2210\"><\/path>\n<\/svg>",
+            "color_content": ""
+          }
+        },
+        "text_3xPWC9": {
+          "type": "text",
+          "settings": {
+            "text": "<p>10x Style Memory<\/p>",
+            "svg_icon": "",
+            "color_text": "",
+            "text_color_gradient": ""
+          }
+        },
+        "icon_tQpH3R": {
+          "type": "icon",
+          "settings": {
+            "icon_source": "custom_svg",
+            "options_icon": "subscription",
+            "html_code": "<svg width=\"12\" height=\"12\" viewbox=\"0 0 12 12\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M9.67619 0C7.33062 5.24354 7.52926 6.06803 12 9.6762C6.75648 7.33062 5.93199 7.52925 2.32382 12C4.6694 6.75646 4.47075 5.93197 0 2.3238C5.24354 4.66938 6.06803 4.47075 9.67619 0Z\" fill=\"#8E2210\"><\/path>\n<\/svg>",
+            "color_content": ""
+          }
+        },
+        "text_iDKwMA": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Hair That Moves<\/p>",
+            "svg_icon": "",
+            "color_text": "",
+            "text_color_gradient": ""
+          }
+        },
+        "icon_RQnJaj": {
+          "type": "icon",
+          "settings": {
+            "icon_source": "custom_svg",
+            "options_icon": "subscription",
+            "html_code": "<svg width=\"12\" height=\"12\" viewbox=\"0 0 12 12\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M9.67619 0C7.33062 5.24354 7.52926 6.06803 12 9.6762C6.75648 7.33062 5.93199 7.52925 2.32382 12C4.6694 6.75646 4.47075 5.93197 0 2.3238C5.24354 4.66938 6.06803 4.47075 9.67619 0Z\" fill=\"#8E2210\"><\/path>\n<\/svg>",
+            "color_content": ""
+          }
+        },
+        "text_QGFdTT": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Styles That Stay<\/p>",
+            "svg_icon": "",
+            "color_text": "",
+            "text_color_gradient": ""
+          }
+        },
+        "icon_Tc36Uc": {
+          "type": "icon",
+          "settings": {
+            "icon_source": "custom_svg",
+            "options_icon": "subscription",
+            "html_code": "<svg width=\"12\" height=\"12\" viewbox=\"0 0 12 12\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M9.67619 0C7.33062 5.24354 7.52926 6.06803 12 9.6762C6.75648 7.33062 5.93199 7.52925 2.32382 12C4.6694 6.75646 4.47075 5.93197 0 2.3238C5.24354 4.66938 6.06803 4.47075 9.67619 0Z\" fill=\"#8E2210\"><\/path>\n<\/svg>",
+            "color_content": ""
+          }
+        },
+        "text_zTwJP8": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Pre-treated for  Scalp and Skin<\/p>",
+            "svg_icon": "",
+            "color_text": "",
+            "text_color_gradient": ""
+          }
+        },
+        "icon_GmihfP": {
+          "type": "icon",
+          "settings": {
+            "icon_source": "custom_svg",
+            "options_icon": "subscription",
+            "html_code": "<svg width=\"12\" height=\"12\" viewbox=\"0 0 12 12\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M9.67619 0C7.33062 5.24354 7.52926 6.06803 12 9.6762C6.75648 7.33062 5.93199 7.52925 2.32382 12C4.6694 6.75646 4.47075 5.93197 0 2.3238C5.24354 4.66938 6.06803 4.47075 9.67619 0Z\" fill=\"#8E2210\"><\/path>\n<\/svg>",
+            "color_content": ""
+          }
+        },
+        "text_cWMPEz": {
+          "type": "text",
+          "settings": {
+            "text": "<p>ReXI™ Hair<\/p>",
+            "svg_icon": "",
+            "color_text": "",
+            "text_color_gradient": ""
+          }
+        },
+        "icon_XT8G6L": {
+          "type": "icon",
+          "settings": {
+            "icon_source": "custom_svg",
+            "options_icon": "subscription",
+            "html_code": "<svg width=\"12\" height=\"12\" viewbox=\"0 0 12 12\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M9.67619 0C7.33062 5.24354 7.52926 6.06803 12 9.6762C6.75648 7.33062 5.93199 7.52925 2.32382 12C4.6694 6.75646 4.47075 5.93197 0 2.3238C5.24354 4.66938 6.06803 4.47075 9.67619 0Z\" fill=\"#8E2210\"><\/path>\n<\/svg>",
+            "color_content": ""
+          }
+        },
+        "text_fijDck": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Instant Glam<\/p>",
+            "svg_icon": "",
+            "color_text": "",
+            "text_color_gradient": ""
+          }
+        }
+      },
+      "block_order": [
+        "icon_NNRzwr",
+        "text_zeNPQD",
+        "icon_7Bwhqy",
+        "text_3xPWC9",
+        "icon_tQpH3R",
+        "text_iDKwMA",
+        "icon_RQnJaj",
+        "text_QGFdTT",
+        "icon_Tc36Uc",
+        "text_zTwJP8",
+        "icon_GmihfP",
+        "text_cWMPEz",
+        "icon_XT8G6L",
+        "text_fijDck"
+      ],
+      "settings": {
+        "color_scheme": "scheme-d13a885b-b43e-4a64-8c46-141e3e107de6",
+        "speed": "50",
+        "moving_direction": "animation-direction",
+        "pause_when_hover": true,
+        "heading_size": "h2",
+        "padding_top": 24,
+        "padding_bottom": 24,
+        "padding_top_mobile": 20,
+        "padding_bottom_mobile": 20
+      }
+    },
+    "custom_image_text_dbNAw7": {
+      "type": "custom-image-text",
+      "blocks": {
+        "custom_image_4ppjFc": {
+          "type": "custom_image",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/A3_photo.png"
+          }
+        },
+        "custom_image_gqzDeV": {
+          "type": "custom_image",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/A5_new_photo.png"
+          }
+        },
+        "custom_image_ChCei3": {
+          "type": "custom_image",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/A4_option_2.png"
+          }
+        },
+        "custom_image_E7ipTA": {
+          "type": "custom_image",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/A6_photo.png"
+          }
+        }
+      },
+      "block_order": [
+        "custom_image_4ppjFc",
+        "custom_image_gqzDeV",
+        "custom_image_ChCei3",
+        "custom_image_E7ipTA"
+      ],
+      "settings": {
+        "text": "Instant glam. Effortless beauty. Every day. Our wigs are crafted with innovative fibres that mimic real hair, hold styles longer, and made to truly wear-and-go!\"",
+        "button_label": "SHOP NOW",
+        "button_link": "shopify:\/\/collections",
+        "image": "shopify:\/\/shop_images\/A20_photo.png",
+        "image_ratio": "adapt",
+        "autoplay_enabled": false,
+        "autoplay_timeout": 5,
+        "loop_enabled": true,
+        "enable_pagination": false,
+        "enable_navigation": false,
+        "color_scheme": "scheme-9de40e92-c2a4-4eda-a451-36a5f0704118",
+        "padding_top": 68,
+        "padding_bottom": 200,
+        "padding_top_mobile": 28,
+        "padding_bottom_mobile": 60
+      }
+    },
+    "running_content_qnChag": {
+      "type": "running-content",
+      "blocks": {
+        "text_d37PDt": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Curlie<\/p>",
+            "svg_icon": "<svg width=\"37\" height=\"16\" viewbox=\"0 0 37 16\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M0 10.5426C0 5.94792 3.75415 1.06531 8.84164 1.06531C9.78516 1.06531 10.5858 1.27018 11.5083 1.27018C11.9391 1.27018 12.4319 1.18823 12.7796 1.06531H12.8826L12.3289 6.76852H12.144C11.4463 3.19931 10.5648 1.29122 9.23145 1.29122C6.01107 1.29122 3.42636 9.08635 3.42636 13.1273C3.42636 14.7275 3.81617 15.794 5.23145 15.794C6.56478 15.794 7.57032 14.8505 8.10299 12.9014L8.38981 11.8139C8.84053 10.1118 8.59468 8.83939 7.22037 8.55257L7.24141 8.42965H13.3953L13.3544 8.55257C12.6567 8.79842 12.2259 9.57804 11.5493 12.1019L10.5437 15.897H10.4618C9.99003 15.6301 9.47729 15.5481 8.94352 15.5481C7.75415 15.5481 6.50277 16 5.25138 16C1.94906 16 0 13.6821 0 10.5437V10.5426Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M17.2107 12.6146C16.9239 13.5172 17.0468 13.969 17.5186 13.969C18.0723 13.969 18.4211 13.3123 18.8929 11.938L19.0568 11.959C18.441 14.3588 17.6005 16 15.6725 16C13.9903 16 13.3137 14.7287 13.9494 12.7176L14.7489 10.1329C15.4665 7.81507 15.3436 6.87154 13.9693 6.64563L13.9903 6.52271C16.0413 6.54375 18.5031 6.37874 19.3857 5.16833L19.4887 5.23035L17.2118 12.6146H17.2107Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M19.7555 15.7121L21.2527 10.1329C21.8685 7.81507 21.8685 6.87154 20.4731 6.64563L20.4942 6.52271C22.4842 6.54375 24.802 6.35881 25.6835 5.16833L25.7655 5.23035L24.5351 9.82503C25.5816 6.95349 26.874 5.3123 28.3302 5.3123C29.2118 5.3123 29.7046 5.92802 29.7046 6.89148C29.7256 8.08085 28.9869 9.49613 27.7356 9.49613C26.874 9.49613 26.4233 8.92138 26.5661 8.05981C26.5661 7.77298 26.73 7.38317 26.9559 7.09524C25.8895 7.52603 25.0479 8.38761 23.8375 12.4086L22.9548 15.711H19.7544L19.7555 15.7121Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M32.6791 12.8405C32.4742 13.7021 32.6381 13.969 32.987 13.969C33.5817 13.969 33.9106 13.3123 34.3823 11.938L34.5263 11.959C33.9726 14.3588 33.09 16 31.183 16C29.3779 16 28.9471 14.6456 29.4598 12.7176L31.5518 4.98449C32.1675 2.64562 32.1464 1.7021 30.7721 1.47729L30.7932 1.35437C32.7832 1.37541 35.121 1.19048 36.0235 0L36.1055 0.0620152L32.6802 12.8416L32.6791 12.8405Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M18.7031 0.420898C17.7485 2.5549 17.8294 2.89044 19.6489 4.35888C17.5149 3.40429 17.1793 3.48513 15.7109 5.30462C16.6655 3.17062 16.5846 2.83507 14.7651 1.36663C16.8991 2.32123 17.2347 2.24039 18.7031 0.420898Z\" fill=\"#FDFDFC\"><\/path>\n<\/svg>",
+            "color_text": "",
+            "text_color_gradient": ""
+          }
+        },
+        "icon_Ny8XQa": {
+          "type": "icon",
+          "settings": {
+            "icon_source": "custom_svg",
+            "options_icon": "subscription",
+            "html_code": "<svg width=\"13\" height=\"12\" viewbox=\"0 0 13 12\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M9.88713 0C7.54155 5.24354 7.7402 6.06803 12.211 9.6762C6.96741 7.33062 6.14292 7.52925 2.53476 12C4.88034 6.75646 4.68169 5.93197 0.210938 2.3238C5.45448 4.66938 6.27897 4.47075 9.88713 0Z\" fill=\"#FDFDFC\"><\/path>\n<\/svg>",
+            "color_content": ""
+          }
+        },
+        "text_3p3pbf": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Glam<\/p>",
+            "svg_icon": "<svg width=\"37\" height=\"16\" viewbox=\"0 0 37 16\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M0 10.5426C0 5.94792 3.75415 1.06531 8.84164 1.06531C9.78516 1.06531 10.5858 1.27018 11.5083 1.27018C11.9391 1.27018 12.4319 1.18823 12.7796 1.06531H12.8826L12.3289 6.76852H12.144C11.4463 3.19931 10.5648 1.29122 9.23145 1.29122C6.01107 1.29122 3.42636 9.08635 3.42636 13.1273C3.42636 14.7275 3.81617 15.794 5.23145 15.794C6.56478 15.794 7.57032 14.8505 8.10299 12.9014L8.38981 11.8139C8.84053 10.1118 8.59468 8.83939 7.22037 8.55257L7.24141 8.42965H13.3953L13.3544 8.55257C12.6567 8.79842 12.2259 9.57804 11.5493 12.1019L10.5437 15.897H10.4618C9.99003 15.6301 9.47729 15.5481 8.94352 15.5481C7.75415 15.5481 6.50277 16 5.25138 16C1.94906 16 0 13.6821 0 10.5437V10.5426Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M17.2107 12.6146C16.9239 13.5172 17.0468 13.969 17.5186 13.969C18.0723 13.969 18.4211 13.3123 18.8929 11.938L19.0568 11.959C18.441 14.3588 17.6005 16 15.6725 16C13.9903 16 13.3137 14.7287 13.9494 12.7176L14.7489 10.1329C15.4665 7.81507 15.3436 6.87154 13.9693 6.64563L13.9903 6.52271C16.0413 6.54375 18.5031 6.37874 19.3857 5.16833L19.4887 5.23035L17.2118 12.6146H17.2107Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M19.7555 15.7121L21.2527 10.1329C21.8685 7.81507 21.8685 6.87154 20.4731 6.64563L20.4942 6.52271C22.4842 6.54375 24.802 6.35881 25.6835 5.16833L25.7655 5.23035L24.5351 9.82503C25.5816 6.95349 26.874 5.3123 28.3302 5.3123C29.2118 5.3123 29.7046 5.92802 29.7046 6.89148C29.7256 8.08085 28.9869 9.49613 27.7356 9.49613C26.874 9.49613 26.4233 8.92138 26.5661 8.05981C26.5661 7.77298 26.73 7.38317 26.9559 7.09524C25.8895 7.52603 25.0479 8.38761 23.8375 12.4086L22.9548 15.711H19.7544L19.7555 15.7121Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M32.6791 12.8405C32.4742 13.7021 32.6381 13.969 32.987 13.969C33.5817 13.969 33.9106 13.3123 34.3823 11.938L34.5263 11.959C33.9726 14.3588 33.09 16 31.183 16C29.3779 16 28.9471 14.6456 29.4598 12.7176L31.5518 4.98449C32.1675 2.64562 32.1464 1.7021 30.7721 1.47729L30.7932 1.35437C32.7832 1.37541 35.121 1.19048 36.0235 0L36.1055 0.0620152L32.6802 12.8416L32.6791 12.8405Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M18.7031 0.420898C17.7485 2.5549 17.8294 2.89044 19.6489 4.35888C17.5149 3.40429 17.1793 3.48513 15.7109 5.30462C16.6655 3.17062 16.5846 2.83507 14.7651 1.36663C16.8991 2.32123 17.2347 2.24039 18.7031 0.420898Z\" fill=\"#FDFDFC\"><\/path>\n<\/svg>",
+            "color_text": "",
+            "text_color_gradient": ""
+          }
+        },
+        "icon_eeVkxt": {
+          "type": "icon",
+          "settings": {
+            "icon_source": "custom_svg",
+            "options_icon": "subscription",
+            "html_code": "<svg width=\"13\" height=\"12\" viewbox=\"0 0 13 12\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M9.88713 0C7.54155 5.24354 7.7402 6.06803 12.211 9.6762C6.96741 7.33062 6.14292 7.52925 2.53476 12C4.88034 6.75646 4.68169 5.93197 0.210938 2.3238C5.45448 4.66938 6.27897 4.47075 9.88713 0Z\" fill=\"#FDFDFC\"><\/path>\n<\/svg>",
+            "color_content": ""
+          }
+        },
+        "text_gMYKPm": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Bob<\/p>",
+            "svg_icon": "<svg width=\"37\" height=\"16\" viewbox=\"0 0 37 16\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M0 10.5426C0 5.94792 3.75415 1.06531 8.84164 1.06531C9.78516 1.06531 10.5858 1.27018 11.5083 1.27018C11.9391 1.27018 12.4319 1.18823 12.7796 1.06531H12.8826L12.3289 6.76852H12.144C11.4463 3.19931 10.5648 1.29122 9.23145 1.29122C6.01107 1.29122 3.42636 9.08635 3.42636 13.1273C3.42636 14.7275 3.81617 15.794 5.23145 15.794C6.56478 15.794 7.57032 14.8505 8.10299 12.9014L8.38981 11.8139C8.84053 10.1118 8.59468 8.83939 7.22037 8.55257L7.24141 8.42965H13.3953L13.3544 8.55257C12.6567 8.79842 12.2259 9.57804 11.5493 12.1019L10.5437 15.897H10.4618C9.99003 15.6301 9.47729 15.5481 8.94352 15.5481C7.75415 15.5481 6.50277 16 5.25138 16C1.94906 16 0 13.6821 0 10.5437V10.5426Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M17.2107 12.6146C16.9239 13.5172 17.0468 13.969 17.5186 13.969C18.0723 13.969 18.4211 13.3123 18.8929 11.938L19.0568 11.959C18.441 14.3588 17.6005 16 15.6725 16C13.9903 16 13.3137 14.7287 13.9494 12.7176L14.7489 10.1329C15.4665 7.81507 15.3436 6.87154 13.9693 6.64563L13.9903 6.52271C16.0413 6.54375 18.5031 6.37874 19.3857 5.16833L19.4887 5.23035L17.2118 12.6146H17.2107Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M19.7555 15.7121L21.2527 10.1329C21.8685 7.81507 21.8685 6.87154 20.4731 6.64563L20.4942 6.52271C22.4842 6.54375 24.802 6.35881 25.6835 5.16833L25.7655 5.23035L24.5351 9.82503C25.5816 6.95349 26.874 5.3123 28.3302 5.3123C29.2118 5.3123 29.7046 5.92802 29.7046 6.89148C29.7256 8.08085 28.9869 9.49613 27.7356 9.49613C26.874 9.49613 26.4233 8.92138 26.5661 8.05981C26.5661 7.77298 26.73 7.38317 26.9559 7.09524C25.8895 7.52603 25.0479 8.38761 23.8375 12.4086L22.9548 15.711H19.7544L19.7555 15.7121Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M32.6791 12.8405C32.4742 13.7021 32.6381 13.969 32.987 13.969C33.5817 13.969 33.9106 13.3123 34.3823 11.938L34.5263 11.959C33.9726 14.3588 33.09 16 31.183 16C29.3779 16 28.9471 14.6456 29.4598 12.7176L31.5518 4.98449C32.1675 2.64562 32.1464 1.7021 30.7721 1.47729L30.7932 1.35437C32.7832 1.37541 35.121 1.19048 36.0235 0L36.1055 0.0620152L32.6802 12.8416L32.6791 12.8405Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M18.7031 0.420898C17.7485 2.5549 17.8294 2.89044 19.6489 4.35888C17.5149 3.40429 17.1793 3.48513 15.7109 5.30462C16.6655 3.17062 16.5846 2.83507 14.7651 1.36663C16.8991 2.32123 17.2347 2.24039 18.7031 0.420898Z\" fill=\"#FDFDFC\"><\/path>\n<\/svg>",
+            "color_text": "",
+            "text_color_gradient": ""
+          }
+        },
+        "icon_kBnfeh": {
+          "type": "icon",
+          "settings": {
+            "icon_source": "custom_svg",
+            "options_icon": "subscription",
+            "html_code": "<svg width=\"13\" height=\"12\" viewbox=\"0 0 13 12\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M9.88713 0C7.54155 5.24354 7.7402 6.06803 12.211 9.6762C6.96741 7.33062 6.14292 7.52925 2.53476 12C4.88034 6.75646 4.68169 5.93197 0.210938 2.3238C5.45448 4.66938 6.27897 4.47075 9.88713 0Z\" fill=\"#FDFDFC\"><\/path>\n<\/svg>",
+            "color_content": ""
+          }
+        },
+        "text_3bKTzb": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Pony<\/p>",
+            "svg_icon": "<svg width=\"37\" height=\"16\" viewbox=\"0 0 37 16\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M0 10.5426C0 5.94792 3.75415 1.06531 8.84164 1.06531C9.78516 1.06531 10.5858 1.27018 11.5083 1.27018C11.9391 1.27018 12.4319 1.18823 12.7796 1.06531H12.8826L12.3289 6.76852H12.144C11.4463 3.19931 10.5648 1.29122 9.23145 1.29122C6.01107 1.29122 3.42636 9.08635 3.42636 13.1273C3.42636 14.7275 3.81617 15.794 5.23145 15.794C6.56478 15.794 7.57032 14.8505 8.10299 12.9014L8.38981 11.8139C8.84053 10.1118 8.59468 8.83939 7.22037 8.55257L7.24141 8.42965H13.3953L13.3544 8.55257C12.6567 8.79842 12.2259 9.57804 11.5493 12.1019L10.5437 15.897H10.4618C9.99003 15.6301 9.47729 15.5481 8.94352 15.5481C7.75415 15.5481 6.50277 16 5.25138 16C1.94906 16 0 13.6821 0 10.5437V10.5426Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M17.2107 12.6146C16.9239 13.5172 17.0468 13.969 17.5186 13.969C18.0723 13.969 18.4211 13.3123 18.8929 11.938L19.0568 11.959C18.441 14.3588 17.6005 16 15.6725 16C13.9903 16 13.3137 14.7287 13.9494 12.7176L14.7489 10.1329C15.4665 7.81507 15.3436 6.87154 13.9693 6.64563L13.9903 6.52271C16.0413 6.54375 18.5031 6.37874 19.3857 5.16833L19.4887 5.23035L17.2118 12.6146H17.2107Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M19.7555 15.7121L21.2527 10.1329C21.8685 7.81507 21.8685 6.87154 20.4731 6.64563L20.4942 6.52271C22.4842 6.54375 24.802 6.35881 25.6835 5.16833L25.7655 5.23035L24.5351 9.82503C25.5816 6.95349 26.874 5.3123 28.3302 5.3123C29.2118 5.3123 29.7046 5.92802 29.7046 6.89148C29.7256 8.08085 28.9869 9.49613 27.7356 9.49613C26.874 9.49613 26.4233 8.92138 26.5661 8.05981C26.5661 7.77298 26.73 7.38317 26.9559 7.09524C25.8895 7.52603 25.0479 8.38761 23.8375 12.4086L22.9548 15.711H19.7544L19.7555 15.7121Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M32.6791 12.8405C32.4742 13.7021 32.6381 13.969 32.987 13.969C33.5817 13.969 33.9106 13.3123 34.3823 11.938L34.5263 11.959C33.9726 14.3588 33.09 16 31.183 16C29.3779 16 28.9471 14.6456 29.4598 12.7176L31.5518 4.98449C32.1675 2.64562 32.1464 1.7021 30.7721 1.47729L30.7932 1.35437C32.7832 1.37541 35.121 1.19048 36.0235 0L36.1055 0.0620152L32.6802 12.8416L32.6791 12.8405Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M18.7031 0.420898C17.7485 2.5549 17.8294 2.89044 19.6489 4.35888C17.5149 3.40429 17.1793 3.48513 15.7109 5.30462C16.6655 3.17062 16.5846 2.83507 14.7651 1.36663C16.8991 2.32123 17.2347 2.24039 18.7031 0.420898Z\" fill=\"#FDFDFC\"><\/path>\n<\/svg>",
+            "color_text": "",
+            "text_color_gradient": ""
+          }
+        },
+        "icon_RXE9Qt": {
+          "type": "icon",
+          "settings": {
+            "icon_source": "custom_svg",
+            "options_icon": "subscription",
+            "html_code": "<svg width=\"13\" height=\"12\" viewbox=\"0 0 13 12\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M9.88713 0C7.54155 5.24354 7.7402 6.06803 12.211 9.6762C6.96741 7.33062 6.14292 7.52925 2.53476 12C4.88034 6.75646 4.68169 5.93197 0.210938 2.3238C5.45448 4.66938 6.27897 4.47075 9.88713 0Z\" fill=\"#FDFDFC\"><\/path>\n<\/svg>",
+            "color_content": ""
+          }
+        },
+        "text_MGhhQ9": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Kinks<\/p>",
+            "svg_icon": "<svg width=\"37\" height=\"16\" viewbox=\"0 0 37 16\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M0 10.5426C0 5.94792 3.75415 1.06531 8.84164 1.06531C9.78516 1.06531 10.5858 1.27018 11.5083 1.27018C11.9391 1.27018 12.4319 1.18823 12.7796 1.06531H12.8826L12.3289 6.76852H12.144C11.4463 3.19931 10.5648 1.29122 9.23145 1.29122C6.01107 1.29122 3.42636 9.08635 3.42636 13.1273C3.42636 14.7275 3.81617 15.794 5.23145 15.794C6.56478 15.794 7.57032 14.8505 8.10299 12.9014L8.38981 11.8139C8.84053 10.1118 8.59468 8.83939 7.22037 8.55257L7.24141 8.42965H13.3953L13.3544 8.55257C12.6567 8.79842 12.2259 9.57804 11.5493 12.1019L10.5437 15.897H10.4618C9.99003 15.6301 9.47729 15.5481 8.94352 15.5481C7.75415 15.5481 6.50277 16 5.25138 16C1.94906 16 0 13.6821 0 10.5437V10.5426Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M17.2107 12.6146C16.9239 13.5172 17.0468 13.969 17.5186 13.969C18.0723 13.969 18.4211 13.3123 18.8929 11.938L19.0568 11.959C18.441 14.3588 17.6005 16 15.6725 16C13.9903 16 13.3137 14.7287 13.9494 12.7176L14.7489 10.1329C15.4665 7.81507 15.3436 6.87154 13.9693 6.64563L13.9903 6.52271C16.0413 6.54375 18.5031 6.37874 19.3857 5.16833L19.4887 5.23035L17.2118 12.6146H17.2107Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M19.7555 15.7121L21.2527 10.1329C21.8685 7.81507 21.8685 6.87154 20.4731 6.64563L20.4942 6.52271C22.4842 6.54375 24.802 6.35881 25.6835 5.16833L25.7655 5.23035L24.5351 9.82503C25.5816 6.95349 26.874 5.3123 28.3302 5.3123C29.2118 5.3123 29.7046 5.92802 29.7046 6.89148C29.7256 8.08085 28.9869 9.49613 27.7356 9.49613C26.874 9.49613 26.4233 8.92138 26.5661 8.05981C26.5661 7.77298 26.73 7.38317 26.9559 7.09524C25.8895 7.52603 25.0479 8.38761 23.8375 12.4086L22.9548 15.711H19.7544L19.7555 15.7121Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M32.6791 12.8405C32.4742 13.7021 32.6381 13.969 32.987 13.969C33.5817 13.969 33.9106 13.3123 34.3823 11.938L34.5263 11.959C33.9726 14.3588 33.09 16 31.183 16C29.3779 16 28.9471 14.6456 29.4598 12.7176L31.5518 4.98449C32.1675 2.64562 32.1464 1.7021 30.7721 1.47729L30.7932 1.35437C32.7832 1.37541 35.121 1.19048 36.0235 0L36.1055 0.0620152L32.6802 12.8416L32.6791 12.8405Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M18.7031 0.420898C17.7485 2.5549 17.8294 2.89044 19.6489 4.35888C17.5149 3.40429 17.1793 3.48513 15.7109 5.30462C16.6655 3.17062 16.5846 2.83507 14.7651 1.36663C16.8991 2.32123 17.2347 2.24039 18.7031 0.420898Z\" fill=\"#FDFDFC\"><\/path>\n<\/svg>",
+            "color_text": "",
+            "text_color_gradient": ""
+          }
+        },
+        "icon_fqFBj4": {
+          "type": "icon",
+          "settings": {
+            "icon_source": "custom_svg",
+            "options_icon": "subscription",
+            "html_code": "<svg width=\"13\" height=\"12\" viewbox=\"0 0 13 12\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M9.88713 0C7.54155 5.24354 7.7402 6.06803 12.211 9.6762C6.96741 7.33062 6.14292 7.52925 2.53476 12C4.88034 6.75646 4.68169 5.93197 0.210938 2.3238C5.45448 4.66938 6.27897 4.47075 9.88713 0Z\" fill=\"#FDFDFC\"><\/path>\n<\/svg>",
+            "color_content": ""
+          }
+        }
+      },
+      "block_order": [
+        "text_d37PDt",
+        "icon_Ny8XQa",
+        "text_3p3pbf",
+        "icon_eeVkxt",
+        "text_gMYKPm",
+        "icon_kBnfeh",
+        "text_3bKTzb",
+        "icon_RXE9Qt",
+        "text_MGhhQ9",
+        "icon_fqFBj4"
+      ],
+      "settings": {
+        "color_scheme": "scheme-3",
+        "speed": "50",
+        "moving_direction": "animation-direction",
+        "pause_when_hover": true,
+        "heading_size": "h2",
+        "padding_top": 24,
+        "padding_bottom": 24,
+        "padding_top_mobile": 24,
+        "padding_bottom_mobile": 24
+      }
+    },
+    "instant_collections_hR3DdM": {
+      "type": "instant-collections",
+      "settings": {
+        "heading": "Instant Glam",
+        "text": "Because you deserve effortless beauty",
+        "collection": "instant-glam",
+        "show_vendor": false,
+        "show_color_swatch": false,
+        "quick_shop_action": "none",
+        "items_to_show": 8,
+        "desktop_column": "3",
+        "tab_column": "3",
+        "mobile_column": "1",
+        "autoplay_enabled": false,
+        "autoplay_timeout": 1,
+        "loop_enabled": false,
+        "enable_pagination": false,
+        "pagination_type": "bullets",
+        "enable_navigation": true,
+        "enable_scroll": false,
+        "color_scheme": "schema-2",
+        "padding_top": 54,
+        "padding_bottom": 64,
+        "padding_top_mobile": 54,
+        "padding_bottom_mobile": 36
+      }
+    },
+    "category_list_CKfzAz": {
+      "type": "category-list",
+      "blocks": {
+        "item_qfDU84": {
+          "type": "item",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Pop_Princess_third_picture_2_1.jpg",
+            "title": "Glam Girl",
+            "link": "shopify:\/\/collections\/glam-girl"
+          }
+        },
+        "item_4HA9zW": {
+          "type": "item",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Spicy_Icon_third_picture_2.jpg",
+            "title": "Bob Girl",
+            "link": "shopify:\/\/collections\/bob-girl"
+          }
+        },
+        "item_MKeEGK": {
+          "type": "item",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/City_Charmer_second_picture_2.jpg",
+            "title": "Curlie Girl",
+            "link": "shopify:\/\/collections\/curlie-girl"
+          }
+        },
+        "item_7ytCWJ": {
+          "type": "item",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Sleek_Charmer_second_picture_1.jpg",
+            "title": "Pony Girl",
+            "link": "shopify:\/\/collections\/pony-girl"
+          }
+        }
+      },
+      "block_order": [
+        "item_qfDU84",
+        "item_4HA9zW",
+        "item_MKeEGK",
+        "item_7ytCWJ"
+      ],
+      "settings": {
+        "heading": "What kinda girl are you?",
+        "sub_heading": "Discover styles",
+        "image_ratio": "portrait",
+        "desktop_column": "3",
+        "tab_column": "3",
+        "mobile_column": "1",
+        "autoplay_enabled": false,
+        "autoplay_timeout": 5,
+        "loop_enabled": false,
+        "enable_pagination": false,
+        "pagination_type": "bullets",
+        "enable_navigation": true,
+        "enable_scroll": false,
+        "color_scheme": "scheme-5",
+        "color_scheme_secondary": "",
+        "padding_top": 62,
+        "padding_bottom": 62,
+        "padding_top_mobile": 48,
+        "padding_bottom_mobile": 42
+      }
+    },
+    "after_before_column_UTpFYB": {
+      "type": "after-before-column",
+      "blocks": {
+        "column_ANDqLM": {
+          "type": "column",
+          "settings": {
+            "heading": "Real Hair Sheen",
+            "before_text": "US",
+            "after_text": "Them"
+          }
+        },
+        "column_EdAxpT": {
+          "type": "column",
+          "settings": {
+            "heading": "Preteated for Scalp & Skin",
+            "before_text": "US",
+            "after_text": "Them"
+          }
+        },
+        "column_7eapy9": {
+          "type": "column",
+          "settings": {
+            "heading": "10x Style memory",
+            "before_text": "US",
+            "after_text": "Them"
+          }
+        }
+      },
+      "block_order": [
+        "column_ANDqLM",
+        "column_EdAxpT",
+        "column_7eapy9"
+      ],
+      "disabled": true,
+      "settings": {
+        "heading": "The ReXI difference",
+        "desktop_column": "3",
+        "mobile_column": "1",
+        "color_scheme": "schema-2",
+        "padding_top": 68,
+        "padding_bottom": 64,
+        "padding_top_mobile": 50,
+        "padding_bottom_mobile": 54
+      }
+    },
+    "video_gallery_cUVLNJ": {
+      "type": "video-gallery",
+      "blocks": {
+        "video_item_GUm7cg": {
+          "type": "video_item",
+          "settings": {
+            "video_source": "video_hosted",
+            "video": "",
+            "video_hosted": "shopify:\/\/files\/videos\/NG DNA ReXI.MP4",
+            "video_ratio": "4\/5",
+            "video_thumbnail": "shopify:\/\/shop_images\/NG_DNA_1_ReXI_5822b45d-8c2a-45ac-84c8-4e691945ca05.jpg",
+            "enable_autoplay": false,
+            "enable_video_loop": true,
+            "enable_video_mute": true,
+            "caption": "ReXI™ lab-made Technology",
+            "text": "Our innovative ReXI™ Hair combines the best fibers with our protein infusion system to deliver real hair sheen and performance"
+          }
+        },
+        "video_item_pkGTpt": {
+          "type": "video_item",
+          "settings": {
+            "video_source": "video_hosted",
+            "video": "",
+            "video_hosted": "shopify:\/\/files\/videos\/NG DNA Custom base materials.MP4",
+            "video_ratio": "4\/5",
+            "video_thumbnail": "shopify:\/\/shop_images\/NG_DNA_custom_Base_materials_1c35c76c-16a8-4e89-bfee-947cc74663e2.jpg",
+            "enable_autoplay": false,
+            "enable_video_loop": true,
+            "enable_video_mute": true,
+            "caption": "Custom Base Materials",
+            "text": "We take all the feedback on comfort to our product rooms where we design custom caps, lace attachments and all base materials to help you truly wear and go"
+          }
+        },
+        "video_item_TPep7P": {
+          "type": "video_item",
+          "settings": {
+            "video_source": "video_hosted",
+            "video": "",
+            "video_hosted": "shopify:\/\/files\/videos\/NG DNA Factory.MP4",
+            "video_ratio": "4\/5",
+            "video_thumbnail": "shopify:\/\/shop_images\/NG_DNA_Factory.jpg",
+            "enable_autoplay": false,
+            "enable_video_loop": true,
+            "enable_video_mute": true,
+            "caption": "Factory to Finish Ethical Production",
+            "text": "All textures and wigs are made ethically in our factory by our techs and artisans who craft and shape what will soon become your favourite styles"
+          }
+        }
+      },
+      "block_order": [
+        "video_item_GUm7cg",
+        "video_item_pkGTpt",
+        "video_item_TPep7P"
+      ],
+      "settings": {
+        "svg_heading": "shopify:\/\/shop_images\/image_17_1.png",
+        "svg_heading_mobile": "shopify:\/\/shop_images\/image_17_2.png",
+        "heading": "The Natural Girl DNA",
+        "image_ratio": "adapt",
+        "desktop_column": "3",
+        "tab_column": "2",
+        "mobile_column": "1",
+        "autoplay_enabled": false,
+        "autoplay_timeout": 5,
+        "loop_enabled": false,
+        "enable_pagination": false,
+        "pagination_type": "bullets",
+        "enable_navigation": false,
+        "enable_scroll": false,
+        "color_scheme": "scheme-5",
+        "padding_top": 116,
+        "padding_bottom": 116,
+        "padding_top_mobile": 58,
+        "padding_bottom_mobile": 58
+      }
+    },
+    "quatation_text_KtHidY": {
+      "type": "quatation-text",
+      "blocks": {
+        "quotation_xbhq6B": {
+          "type": "quotation",
+          "settings": {
+            "svg_icon": "<svg width=\"44\" height=\"44\" viewBox=\"0 0 44 44\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M15.7141 31.4286C24.3929 31.4286 31.4284 24.393 31.4284 15.7143C31.4284 14.7307 31.3381 13.7682 31.1652 12.8347C30.2316 12.6618 29.2692 12.5714 28.2856 12.5714C19.6068 12.5714 12.5713 19.6069 12.5713 28.2857C12.5713 29.2693 12.6617 30.2318 12.8345 31.1653C13.7681 31.3382 14.7306 31.4286 15.7141 31.4286Z\" fill=\"currentColor\"\/>\n<path opacity=\"0.8\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M12.8347 31.1653C5.53118 29.8127 0 23.4095 0 15.7143C0 7.03553 7.03553 0 15.7143 0C23.4095 0 29.8128 5.53118 31.1653 12.8347C30.2318 12.6618 29.2693 12.5714 28.2857 12.5714C19.607 12.5714 12.5714 19.607 12.5714 28.2857C12.5714 29.2693 12.6618 30.2318 12.8347 31.1653Z\" fill=\"white\"\/>\n<path opacity=\"0.6\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M15.7141 31.4285C24.3928 31.4285 31.4284 24.393 31.4284 15.7142C31.4284 14.7306 31.338 13.7681 31.1651 12.8346C38.4686 14.1872 43.9998 20.5905 43.9998 28.2856C43.9998 36.9644 36.9643 43.9999 28.2855 43.9999C20.5903 43.9999 14.187 38.4687 12.8345 31.1652C13.768 31.3381 14.7305 31.4285 15.7141 31.4285Z\" fill=\"currentColor\"\/>\n<\/svg>",
+            "heading": "Circooles",
+            "text": "“Mighty Patch is hailed a blemish hero with good reason.”"
+          }
+        },
+        "quotation_WffFjz": {
+          "type": "quotation",
+          "settings": {
+            "svg_icon": "<svg width=\"29\" height=\"48\" viewBox=\"0 0 29 48\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<rect y=\"19.2\" width=\"9.59998\" height=\"9.59999\" fill=\"white\"\/>\n<rect x=\"28.7998\" y=\"28.8\" width=\"9.6\" height=\"9.59999\" transform=\"rotate(180 28.7998 28.8)\" fill=\"white\"\/>\n<path opacity=\"0.4\" d=\"M9.6001 19.2L19.2001 9.59998V19.2L9.6001 28.7999V19.2Z\" fill=\"currentColor\"\/>\n<path opacity=\"0.6\" d=\"M19.2002 28.7999L9.60021 38.3999L9.60021 28.7999L19.2002 19.1999L19.2002 28.7999Z\" fill=\"currentColor\"\/>\n<path opacity=\"0.8\" d=\"M0 19.2L19.2 0V9.59999L9.59998 19.2H0Z\" fill=\"white\"\/>\n<path opacity=\"0.8\" d=\"M28.7998 28.8L9.59983 48L9.59983 38.4L19.1998 28.8L28.7998 28.8Z\" fill=\"currentColor\"\/>\n<\/svg>",
+            "heading": "Sysyphus",
+            "text": "“Mighty Patch is hailed a blemish hero with good reason.”"
+          }
+        },
+        "quotation_mPtTEx": {
+          "type": "quotation",
+          "settings": {
+            "svg_icon": "<svg width=\"44\" height=\"44\" viewBox=\"0 0 44 44\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path opacity=\"0.8\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M22 34.4667C28.8851 34.4667 34.4667 28.8851 34.4667 22C34.4667 15.1149 28.8851 9.53333 22 9.53333C15.1148 9.53333 9.53333 15.1149 9.53333 22C9.53333 28.8851 15.1148 34.4667 22 34.4667ZM22 44C34.1503 44 44 34.1503 44 22C44 9.84974 34.1503 0 22 0C9.84973 0 0 9.84974 0 22C0 34.1503 9.84973 44 22 44Z\" fill=\"white\"\/>\n<path opacity=\"0.6\" d=\"M22.2515 22.4817C24.5426 20.1907 28.2572 20.1907 30.5483 22.4817L41.9562 33.8897C44.2473 36.1808 44.2473 39.8954 41.9562 42.1864C39.6652 44.4775 35.9506 44.4775 33.6595 42.1864L22.2515 30.7785C19.9605 28.4874 19.9605 24.7728 22.2515 22.4817Z\" fill=\"white\"\/>\n<path d=\"M25.4551 33.9817L32.7004 41.227C36.1756 39.2889 39.0709 36.4358 41.0605 32.9937L33.8746 25.8077C32.6124 29.7471 29.4441 32.8335 25.4551 33.9817Z\" fill=\"white\"\/>\n<\/svg>",
+            "heading": "Quotient",
+            "text": "“Mighty Patch is hailed a blemish hero with good reason.”"
+          }
+        },
+        "quotation_K8X99r": {
+          "type": "quotation",
+          "settings": {
+            "svg_icon": "<svg width=\"29\" height=\"48\" viewBox=\"0 0 29 48\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<rect y=\"19.2\" width=\"9.59998\" height=\"9.59999\" fill=\"white\"\/>\n<rect x=\"28.7998\" y=\"28.8\" width=\"9.6\" height=\"9.59999\" transform=\"rotate(180 28.7998 28.8)\" fill=\"white\"\/>\n<path opacity=\"0.4\" d=\"M9.6001 19.2L19.2001 9.59998V19.2L9.6001 28.7999V19.2Z\" fill=\"currentColor\"\/>\n<path opacity=\"0.6\" d=\"M19.2002 28.7999L9.60021 38.3999L9.60021 28.7999L19.2002 19.1999L19.2002 28.7999Z\" fill=\"currentColor\"\/>\n<path opacity=\"0.8\" d=\"M0 19.2L19.2 0V9.59999L9.59998 19.2H0Z\" fill=\"white\"\/>\n<path opacity=\"0.8\" d=\"M28.7998 28.8L9.59983 48L9.59983 38.4L19.1998 28.8L28.7998 28.8Z\" fill=\"currentColor\"\/>\n<\/svg>",
+            "heading": "Sysyphus",
+            "text": "“Mighty Patch is hailed a blemish hero with good reason.”"
+          }
+        }
+      },
+      "block_order": [
+        "quotation_xbhq6B",
+        "quotation_WffFjz",
+        "quotation_mPtTEx",
+        "quotation_K8X99r"
+      ],
+      "disabled": true,
+      "settings": {
+        "autoplay_enabled": false,
+        "loop_enabled": true,
+        "autoplay_timeout": 5,
+        "color_scheme": "schema-2",
+        "color_scheme_secondary": "scheme-3",
+        "padding_top": 72,
+        "padding_bottom": 0,
+        "padding_top_mobile": 27,
+        "padding_bottom_mobile": 0
+      }
+    },
+    "multicolumn_text_CrFaQe": {
+      "type": "multicolumn-text",
+      "blocks": {
+        "column_Phzr3Y": {
+          "type": "column",
+          "settings": {
+            "heading": "Join the Glam club",
+            "text": "Sign up for our rewards program and start earning points on every purchase. Enjoy exclusive perks and discounts when you join the #Glamclub",
+            "button_label": "Learn more",
+            "button_link": ""
+          }
+        },
+        "column_tFPQby": {
+          "type": "column",
+          "settings": {
+            "heading": "Find the look for you",
+            "text": "Are you a Bob girl, Glam Girl or Pony Girl? Tell us your vibe and we’ll find your match #GlamQuiz",
+            "button_label": "Take the quiz",
+            "button_link": ""
+          }
+        }
+      },
+      "block_order": [
+        "column_Phzr3Y",
+        "column_tFPQby"
+      ],
+      "disabled": true,
+      "settings": {
+        "desktop_column": "2",
+        "mobile_column": "1",
+        "color_scheme": "schema-2",
+        "color_scheme_secondary": "scheme-5",
+        "padding_top": 64,
+        "padding_bottom": 64,
+        "padding_top_mobile": 48,
+        "padding_bottom_mobile": 48
+      }
+    },
+    "instagram_gallery_MXVh7T": {
+      "type": "instagram-gallery",
+      "blocks": {
+        "media_item_J7Rm9R": {
+          "type": "media_item",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Styled_by_YOU_01-min.jpg",
+            "image_link": ""
+          }
+        },
+        "media_item_kwBP6h": {
+          "type": "media_item",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Styled_by_You_02_1.jpg",
+            "image_link": ""
+          }
+        },
+        "media_item_YNTXed": {
+          "type": "media_item",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Styled_by_YOU_03_736edac7-224f-4efc-9c1a-c4e29a7534c2.jpg",
+            "image_link": ""
+          }
+        },
+        "media_item_eVmPbH": {
+          "type": "media_item",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Styled_by_You_04.heic",
+            "image_link": ""
+          }
+        },
+        "video_item_aAeeYC": {
+          "type": "video_item",
+          "settings": {
+            "video_source": "video_hosted",
+            "video_url": "",
+            "video_hosted": "shopify:\/\/files\/videos\/styled by You 05.mp4"
+          }
+        },
+        "media_item_PdrHKn": {
+          "type": "media_item",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Styled_by_YOU_06.jpg",
+            "image_link": ""
+          }
+        },
+        "video_item_cp6pcx": {
+          "type": "video_item",
+          "settings": {
+            "video_source": "video_hosted",
+            "video_url": "",
+            "video_hosted": "shopify:\/\/files\/videos\/Styled by YOU 07.mp4"
+          }
+        },
+        "media_item_mXJhTK": {
+          "type": "media_item",
+          "settings": {
+            "image": "shopify:\/\/shop_images\/Styled_by_YOU_08_1ca37b07-4230-48c4-80e4-ef9d5175e859.jpg",
+            "image_link": ""
+          }
+        }
+      },
+      "block_order": [
+        "media_item_J7Rm9R",
+        "media_item_kwBP6h",
+        "media_item_YNTXed",
+        "media_item_eVmPbH",
+        "video_item_aAeeYC",
+        "media_item_PdrHKn",
+        "video_item_cp6pcx",
+        "media_item_mXJhTK"
+      ],
+      "settings": {
+        "layout": "layout-1",
+        "heading": "Styled by you",
+        "button_label": "See more",
+        "button_link": "https:\/\/www.instagram.com\/benaturalgirl\/",
+        "image_ratio": "ratio-7",
+        "desktop_column": "4",
+        "tab_column": "3",
+        "mobile_column": "1",
+        "autoplay_enabled": false,
+        "autoplay_timeout": 8,
+        "loop_enabled": false,
+        "enable_pagination": false,
+        "pagination_type": "progressbar",
+        "enable_navigation": false,
+        "enable_scroll": true,
+        "color_scheme": "schema-2",
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "padding_top_mobile": 33,
+        "padding_bottom_mobile": 33
+      }
+    },
+    "instagram_gallery_cQqWPN": {
+      "type": "instagram-gallery",
+      "blocks": {
+        "video_item_YtFUMd": {
+          "type": "video_item",
+          "settings": {
+            "video_source": "video_hosted",
+            "video_url": "https:\/\/www.youtube.com\/watch?v=_9VUPq3SxOc"
+          }
+        },
+        "media_item_x7xEhT": {
+          "type": "media_item",
+          "settings": {
+            "image_link": ""
+          }
+        },
+        "video_item_hqWrid": {
+          "type": "video_item",
+          "settings": {
+            "video_source": "video_hosted",
+            "video_url": "https:\/\/www.youtube.com\/watch?v=_9VUPq3SxOc"
+          }
+        },
+        "media_item_MUcaUK": {
+          "type": "media_item",
+          "settings": {
+            "image_link": ""
+          }
+        },
+        "video_item_AxxkAj": {
+          "type": "video_item",
+          "settings": {
+            "video_source": "video_hosted",
+            "video_url": "https:\/\/www.youtube.com\/watch?v=_9VUPq3SxOc"
+          }
+        },
+        "media_item_ttAhNP": {
+          "type": "media_item",
+          "settings": {
+            "image_link": ""
+          }
+        },
+        "video_item_ztJ9Tz": {
+          "type": "video_item",
+          "settings": {
+            "video_source": "video_hosted",
+            "video_url": "https:\/\/www.youtube.com\/watch?v=_9VUPq3SxOc"
+          }
+        },
+        "media_item_iaKBKf": {
+          "type": "media_item",
+          "settings": {
+            "image_link": ""
+          }
+        },
+        "video_item_Hbhw8D": {
+          "type": "video_item",
+          "settings": {
+            "video_source": "video_hosted",
+            "video_url": "https:\/\/www.youtube.com\/watch?v=_9VUPq3SxOc"
+          }
+        },
+        "media_item_zrkgWJ": {
+          "type": "media_item",
+          "settings": {
+            "image_link": ""
+          }
+        },
+        "video_item_EyAmkc": {
+          "type": "video_item",
+          "settings": {
+            "video_source": "video_external",
+            "video_url": "https:\/\/www.youtube.com\/watch?v=_9VUPq3SxOc"
+          }
+        },
+        "media_item_WMV7Ld": {
+          "type": "media_item",
+          "settings": {
+            "image_link": ""
+          }
+        },
+        "video_item_hQpiVE": {
+          "type": "video_item",
+          "settings": {
+            "video_source": "video_hosted",
+            "video_url": "https:\/\/www.youtube.com\/watch?v=_9VUPq3SxOc"
+          }
+        },
+        "media_item_pDnyiE": {
+          "type": "media_item",
+          "settings": {
+            "image_link": ""
+          }
+        },
+        "video_item_8eFMg6": {
+          "type": "video_item",
+          "settings": {
+            "video_source": "video_hosted",
+            "video_url": "https:\/\/www.youtube.com\/watch?v=_9VUPq3SxOc"
+          }
+        },
+        "media_item_B8NaWJ": {
+          "type": "media_item",
+          "settings": {
+            "image_link": ""
+          }
+        }
+      },
+      "block_order": [
+        "video_item_YtFUMd",
+        "media_item_x7xEhT",
+        "video_item_hqWrid",
+        "media_item_MUcaUK",
+        "video_item_AxxkAj",
+        "media_item_ttAhNP",
+        "video_item_ztJ9Tz",
+        "media_item_iaKBKf",
+        "video_item_Hbhw8D",
+        "media_item_zrkgWJ",
+        "video_item_EyAmkc",
+        "media_item_WMV7Ld",
+        "video_item_hQpiVE",
+        "media_item_pDnyiE",
+        "video_item_8eFMg6",
+        "media_item_B8NaWJ"
+      ],
+      "disabled": true,
+      "settings": {
+        "layout": "layout-2",
+        "heading": "Instagram gallery || @benaturalgirl",
+        "button_label": "Follow us",
+        "button_link": "",
+        "image_ratio": "square",
+        "desktop_column": "3",
+        "tab_column": "3",
+        "mobile_column": "1",
+        "autoplay_enabled": false,
+        "autoplay_timeout": 8,
+        "loop_enabled": true,
+        "enable_pagination": false,
+        "pagination_type": "progressbar",
+        "enable_navigation": false,
+        "enable_scroll": false,
+        "color_scheme": "scheme-4",
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "padding_top_mobile": 33,
+        "padding_bottom_mobile": 56
+      }
+    },
+    "running_content_2": {
+      "type": "running-content",
+      "blocks": {
+        "text_d37PDt": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Curlie<\/p>",
+            "svg_icon": "<svg width=\"37\" height=\"16\" viewbox=\"0 0 37 16\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M0 10.5426C0 5.94792 3.75415 1.06531 8.84164 1.06531C9.78516 1.06531 10.5858 1.27018 11.5083 1.27018C11.9391 1.27018 12.4319 1.18823 12.7796 1.06531H12.8826L12.3289 6.76852H12.144C11.4463 3.19931 10.5648 1.29122 9.23145 1.29122C6.01107 1.29122 3.42636 9.08635 3.42636 13.1273C3.42636 14.7275 3.81617 15.794 5.23145 15.794C6.56478 15.794 7.57032 14.8505 8.10299 12.9014L8.38981 11.8139C8.84053 10.1118 8.59468 8.83939 7.22037 8.55257L7.24141 8.42965H13.3953L13.3544 8.55257C12.6567 8.79842 12.2259 9.57804 11.5493 12.1019L10.5437 15.897H10.4618C9.99003 15.6301 9.47729 15.5481 8.94352 15.5481C7.75415 15.5481 6.50277 16 5.25138 16C1.94906 16 0 13.6821 0 10.5437V10.5426Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M17.2107 12.6146C16.9239 13.5172 17.0468 13.969 17.5186 13.969C18.0723 13.969 18.4211 13.3123 18.8929 11.938L19.0568 11.959C18.441 14.3588 17.6005 16 15.6725 16C13.9903 16 13.3137 14.7287 13.9494 12.7176L14.7489 10.1329C15.4665 7.81507 15.3436 6.87154 13.9693 6.64563L13.9903 6.52271C16.0413 6.54375 18.5031 6.37874 19.3857 5.16833L19.4887 5.23035L17.2118 12.6146H17.2107Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M19.7555 15.7121L21.2527 10.1329C21.8685 7.81507 21.8685 6.87154 20.4731 6.64563L20.4942 6.52271C22.4842 6.54375 24.802 6.35881 25.6835 5.16833L25.7655 5.23035L24.5351 9.82503C25.5816 6.95349 26.874 5.3123 28.3302 5.3123C29.2118 5.3123 29.7046 5.92802 29.7046 6.89148C29.7256 8.08085 28.9869 9.49613 27.7356 9.49613C26.874 9.49613 26.4233 8.92138 26.5661 8.05981C26.5661 7.77298 26.73 7.38317 26.9559 7.09524C25.8895 7.52603 25.0479 8.38761 23.8375 12.4086L22.9548 15.711H19.7544L19.7555 15.7121Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M32.6791 12.8405C32.4742 13.7021 32.6381 13.969 32.987 13.969C33.5817 13.969 33.9106 13.3123 34.3823 11.938L34.5263 11.959C33.9726 14.3588 33.09 16 31.183 16C29.3779 16 28.9471 14.6456 29.4598 12.7176L31.5518 4.98449C32.1675 2.64562 32.1464 1.7021 30.7721 1.47729L30.7932 1.35437C32.7832 1.37541 35.121 1.19048 36.0235 0L36.1055 0.0620152L32.6802 12.8416L32.6791 12.8405Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M18.7031 0.420898C17.7485 2.5549 17.8294 2.89044 19.6489 4.35888C17.5149 3.40429 17.1793 3.48513 15.7109 5.30462C16.6655 3.17062 16.5846 2.83507 14.7651 1.36663C16.8991 2.32123 17.2347 2.24039 18.7031 0.420898Z\" fill=\"#FDFDFC\"><\/path>\n<\/svg>",
+            "color_text": "",
+            "text_color_gradient": ""
+          }
+        },
+        "icon_Ny8XQa": {
+          "type": "icon",
+          "settings": {
+            "icon_source": "custom_svg",
+            "options_icon": "subscription",
+            "html_code": "<svg width=\"13\" height=\"12\" viewbox=\"0 0 13 12\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M9.88713 0C7.54155 5.24354 7.7402 6.06803 12.211 9.6762C6.96741 7.33062 6.14292 7.52925 2.53476 12C4.88034 6.75646 4.68169 5.93197 0.210938 2.3238C5.45448 4.66938 6.27897 4.47075 9.88713 0Z\" fill=\"#FDFDFC\"><\/path>\n<\/svg>",
+            "color_content": ""
+          }
+        },
+        "text_3p3pbf": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Glam<\/p>",
+            "svg_icon": "<svg width=\"37\" height=\"16\" viewbox=\"0 0 37 16\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M0 10.5426C0 5.94792 3.75415 1.06531 8.84164 1.06531C9.78516 1.06531 10.5858 1.27018 11.5083 1.27018C11.9391 1.27018 12.4319 1.18823 12.7796 1.06531H12.8826L12.3289 6.76852H12.144C11.4463 3.19931 10.5648 1.29122 9.23145 1.29122C6.01107 1.29122 3.42636 9.08635 3.42636 13.1273C3.42636 14.7275 3.81617 15.794 5.23145 15.794C6.56478 15.794 7.57032 14.8505 8.10299 12.9014L8.38981 11.8139C8.84053 10.1118 8.59468 8.83939 7.22037 8.55257L7.24141 8.42965H13.3953L13.3544 8.55257C12.6567 8.79842 12.2259 9.57804 11.5493 12.1019L10.5437 15.897H10.4618C9.99003 15.6301 9.47729 15.5481 8.94352 15.5481C7.75415 15.5481 6.50277 16 5.25138 16C1.94906 16 0 13.6821 0 10.5437V10.5426Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M17.2107 12.6146C16.9239 13.5172 17.0468 13.969 17.5186 13.969C18.0723 13.969 18.4211 13.3123 18.8929 11.938L19.0568 11.959C18.441 14.3588 17.6005 16 15.6725 16C13.9903 16 13.3137 14.7287 13.9494 12.7176L14.7489 10.1329C15.4665 7.81507 15.3436 6.87154 13.9693 6.64563L13.9903 6.52271C16.0413 6.54375 18.5031 6.37874 19.3857 5.16833L19.4887 5.23035L17.2118 12.6146H17.2107Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M19.7555 15.7121L21.2527 10.1329C21.8685 7.81507 21.8685 6.87154 20.4731 6.64563L20.4942 6.52271C22.4842 6.54375 24.802 6.35881 25.6835 5.16833L25.7655 5.23035L24.5351 9.82503C25.5816 6.95349 26.874 5.3123 28.3302 5.3123C29.2118 5.3123 29.7046 5.92802 29.7046 6.89148C29.7256 8.08085 28.9869 9.49613 27.7356 9.49613C26.874 9.49613 26.4233 8.92138 26.5661 8.05981C26.5661 7.77298 26.73 7.38317 26.9559 7.09524C25.8895 7.52603 25.0479 8.38761 23.8375 12.4086L22.9548 15.711H19.7544L19.7555 15.7121Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M32.6791 12.8405C32.4742 13.7021 32.6381 13.969 32.987 13.969C33.5817 13.969 33.9106 13.3123 34.3823 11.938L34.5263 11.959C33.9726 14.3588 33.09 16 31.183 16C29.3779 16 28.9471 14.6456 29.4598 12.7176L31.5518 4.98449C32.1675 2.64562 32.1464 1.7021 30.7721 1.47729L30.7932 1.35437C32.7832 1.37541 35.121 1.19048 36.0235 0L36.1055 0.0620152L32.6802 12.8416L32.6791 12.8405Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M18.7031 0.420898C17.7485 2.5549 17.8294 2.89044 19.6489 4.35888C17.5149 3.40429 17.1793 3.48513 15.7109 5.30462C16.6655 3.17062 16.5846 2.83507 14.7651 1.36663C16.8991 2.32123 17.2347 2.24039 18.7031 0.420898Z\" fill=\"#FDFDFC\"><\/path>\n<\/svg>",
+            "color_text": "",
+            "text_color_gradient": ""
+          }
+        },
+        "icon_eeVkxt": {
+          "type": "icon",
+          "settings": {
+            "icon_source": "custom_svg",
+            "options_icon": "subscription",
+            "html_code": "<svg width=\"13\" height=\"12\" viewbox=\"0 0 13 12\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M9.88713 0C7.54155 5.24354 7.7402 6.06803 12.211 9.6762C6.96741 7.33062 6.14292 7.52925 2.53476 12C4.88034 6.75646 4.68169 5.93197 0.210938 2.3238C5.45448 4.66938 6.27897 4.47075 9.88713 0Z\" fill=\"#FDFDFC\"><\/path>\n<\/svg>",
+            "color_content": ""
+          }
+        },
+        "text_gMYKPm": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Bob<\/p>",
+            "svg_icon": "<svg width=\"37\" height=\"16\" viewbox=\"0 0 37 16\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M0 10.5426C0 5.94792 3.75415 1.06531 8.84164 1.06531C9.78516 1.06531 10.5858 1.27018 11.5083 1.27018C11.9391 1.27018 12.4319 1.18823 12.7796 1.06531H12.8826L12.3289 6.76852H12.144C11.4463 3.19931 10.5648 1.29122 9.23145 1.29122C6.01107 1.29122 3.42636 9.08635 3.42636 13.1273C3.42636 14.7275 3.81617 15.794 5.23145 15.794C6.56478 15.794 7.57032 14.8505 8.10299 12.9014L8.38981 11.8139C8.84053 10.1118 8.59468 8.83939 7.22037 8.55257L7.24141 8.42965H13.3953L13.3544 8.55257C12.6567 8.79842 12.2259 9.57804 11.5493 12.1019L10.5437 15.897H10.4618C9.99003 15.6301 9.47729 15.5481 8.94352 15.5481C7.75415 15.5481 6.50277 16 5.25138 16C1.94906 16 0 13.6821 0 10.5437V10.5426Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M17.2107 12.6146C16.9239 13.5172 17.0468 13.969 17.5186 13.969C18.0723 13.969 18.4211 13.3123 18.8929 11.938L19.0568 11.959C18.441 14.3588 17.6005 16 15.6725 16C13.9903 16 13.3137 14.7287 13.9494 12.7176L14.7489 10.1329C15.4665 7.81507 15.3436 6.87154 13.9693 6.64563L13.9903 6.52271C16.0413 6.54375 18.5031 6.37874 19.3857 5.16833L19.4887 5.23035L17.2118 12.6146H17.2107Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M19.7555 15.7121L21.2527 10.1329C21.8685 7.81507 21.8685 6.87154 20.4731 6.64563L20.4942 6.52271C22.4842 6.54375 24.802 6.35881 25.6835 5.16833L25.7655 5.23035L24.5351 9.82503C25.5816 6.95349 26.874 5.3123 28.3302 5.3123C29.2118 5.3123 29.7046 5.92802 29.7046 6.89148C29.7256 8.08085 28.9869 9.49613 27.7356 9.49613C26.874 9.49613 26.4233 8.92138 26.5661 8.05981C26.5661 7.77298 26.73 7.38317 26.9559 7.09524C25.8895 7.52603 25.0479 8.38761 23.8375 12.4086L22.9548 15.711H19.7544L19.7555 15.7121Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M32.6791 12.8405C32.4742 13.7021 32.6381 13.969 32.987 13.969C33.5817 13.969 33.9106 13.3123 34.3823 11.938L34.5263 11.959C33.9726 14.3588 33.09 16 31.183 16C29.3779 16 28.9471 14.6456 29.4598 12.7176L31.5518 4.98449C32.1675 2.64562 32.1464 1.7021 30.7721 1.47729L30.7932 1.35437C32.7832 1.37541 35.121 1.19048 36.0235 0L36.1055 0.0620152L32.6802 12.8416L32.6791 12.8405Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M18.7031 0.420898C17.7485 2.5549 17.8294 2.89044 19.6489 4.35888C17.5149 3.40429 17.1793 3.48513 15.7109 5.30462C16.6655 3.17062 16.5846 2.83507 14.7651 1.36663C16.8991 2.32123 17.2347 2.24039 18.7031 0.420898Z\" fill=\"#FDFDFC\"><\/path>\n<\/svg>",
+            "color_text": "",
+            "text_color_gradient": ""
+          }
+        },
+        "icon_kBnfeh": {
+          "type": "icon",
+          "settings": {
+            "icon_source": "custom_svg",
+            "options_icon": "subscription",
+            "html_code": "<svg width=\"13\" height=\"12\" viewbox=\"0 0 13 12\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M9.88713 0C7.54155 5.24354 7.7402 6.06803 12.211 9.6762C6.96741 7.33062 6.14292 7.52925 2.53476 12C4.88034 6.75646 4.68169 5.93197 0.210938 2.3238C5.45448 4.66938 6.27897 4.47075 9.88713 0Z\" fill=\"#FDFDFC\"><\/path>\n<\/svg>",
+            "color_content": ""
+          }
+        },
+        "text_3bKTzb": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Pony<\/p>",
+            "svg_icon": "<svg width=\"37\" height=\"16\" viewbox=\"0 0 37 16\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M0 10.5426C0 5.94792 3.75415 1.06531 8.84164 1.06531C9.78516 1.06531 10.5858 1.27018 11.5083 1.27018C11.9391 1.27018 12.4319 1.18823 12.7796 1.06531H12.8826L12.3289 6.76852H12.144C11.4463 3.19931 10.5648 1.29122 9.23145 1.29122C6.01107 1.29122 3.42636 9.08635 3.42636 13.1273C3.42636 14.7275 3.81617 15.794 5.23145 15.794C6.56478 15.794 7.57032 14.8505 8.10299 12.9014L8.38981 11.8139C8.84053 10.1118 8.59468 8.83939 7.22037 8.55257L7.24141 8.42965H13.3953L13.3544 8.55257C12.6567 8.79842 12.2259 9.57804 11.5493 12.1019L10.5437 15.897H10.4618C9.99003 15.6301 9.47729 15.5481 8.94352 15.5481C7.75415 15.5481 6.50277 16 5.25138 16C1.94906 16 0 13.6821 0 10.5437V10.5426Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M17.2107 12.6146C16.9239 13.5172 17.0468 13.969 17.5186 13.969C18.0723 13.969 18.4211 13.3123 18.8929 11.938L19.0568 11.959C18.441 14.3588 17.6005 16 15.6725 16C13.9903 16 13.3137 14.7287 13.9494 12.7176L14.7489 10.1329C15.4665 7.81507 15.3436 6.87154 13.9693 6.64563L13.9903 6.52271C16.0413 6.54375 18.5031 6.37874 19.3857 5.16833L19.4887 5.23035L17.2118 12.6146H17.2107Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M19.7555 15.7121L21.2527 10.1329C21.8685 7.81507 21.8685 6.87154 20.4731 6.64563L20.4942 6.52271C22.4842 6.54375 24.802 6.35881 25.6835 5.16833L25.7655 5.23035L24.5351 9.82503C25.5816 6.95349 26.874 5.3123 28.3302 5.3123C29.2118 5.3123 29.7046 5.92802 29.7046 6.89148C29.7256 8.08085 28.9869 9.49613 27.7356 9.49613C26.874 9.49613 26.4233 8.92138 26.5661 8.05981C26.5661 7.77298 26.73 7.38317 26.9559 7.09524C25.8895 7.52603 25.0479 8.38761 23.8375 12.4086L22.9548 15.711H19.7544L19.7555 15.7121Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M32.6791 12.8405C32.4742 13.7021 32.6381 13.969 32.987 13.969C33.5817 13.969 33.9106 13.3123 34.3823 11.938L34.5263 11.959C33.9726 14.3588 33.09 16 31.183 16C29.3779 16 28.9471 14.6456 29.4598 12.7176L31.5518 4.98449C32.1675 2.64562 32.1464 1.7021 30.7721 1.47729L30.7932 1.35437C32.7832 1.37541 35.121 1.19048 36.0235 0L36.1055 0.0620152L32.6802 12.8416L32.6791 12.8405Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M18.7031 0.420898C17.7485 2.5549 17.8294 2.89044 19.6489 4.35888C17.5149 3.40429 17.1793 3.48513 15.7109 5.30462C16.6655 3.17062 16.5846 2.83507 14.7651 1.36663C16.8991 2.32123 17.2347 2.24039 18.7031 0.420898Z\" fill=\"#FDFDFC\"><\/path>\n<\/svg>",
+            "color_text": "",
+            "text_color_gradient": ""
+          }
+        },
+        "icon_RXE9Qt": {
+          "type": "icon",
+          "settings": {
+            "icon_source": "custom_svg",
+            "options_icon": "subscription",
+            "html_code": "<svg width=\"13\" height=\"12\" viewbox=\"0 0 13 12\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M9.88713 0C7.54155 5.24354 7.7402 6.06803 12.211 9.6762C6.96741 7.33062 6.14292 7.52925 2.53476 12C4.88034 6.75646 4.68169 5.93197 0.210938 2.3238C5.45448 4.66938 6.27897 4.47075 9.88713 0Z\" fill=\"#FDFDFC\"><\/path>\n<\/svg>",
+            "color_content": ""
+          }
+        },
+        "text_MGhhQ9": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Kinks<\/p>",
+            "svg_icon": "<svg width=\"37\" height=\"16\" viewbox=\"0 0 37 16\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M0 10.5426C0 5.94792 3.75415 1.06531 8.84164 1.06531C9.78516 1.06531 10.5858 1.27018 11.5083 1.27018C11.9391 1.27018 12.4319 1.18823 12.7796 1.06531H12.8826L12.3289 6.76852H12.144C11.4463 3.19931 10.5648 1.29122 9.23145 1.29122C6.01107 1.29122 3.42636 9.08635 3.42636 13.1273C3.42636 14.7275 3.81617 15.794 5.23145 15.794C6.56478 15.794 7.57032 14.8505 8.10299 12.9014L8.38981 11.8139C8.84053 10.1118 8.59468 8.83939 7.22037 8.55257L7.24141 8.42965H13.3953L13.3544 8.55257C12.6567 8.79842 12.2259 9.57804 11.5493 12.1019L10.5437 15.897H10.4618C9.99003 15.6301 9.47729 15.5481 8.94352 15.5481C7.75415 15.5481 6.50277 16 5.25138 16C1.94906 16 0 13.6821 0 10.5437V10.5426Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M17.2107 12.6146C16.9239 13.5172 17.0468 13.969 17.5186 13.969C18.0723 13.969 18.4211 13.3123 18.8929 11.938L19.0568 11.959C18.441 14.3588 17.6005 16 15.6725 16C13.9903 16 13.3137 14.7287 13.9494 12.7176L14.7489 10.1329C15.4665 7.81507 15.3436 6.87154 13.9693 6.64563L13.9903 6.52271C16.0413 6.54375 18.5031 6.37874 19.3857 5.16833L19.4887 5.23035L17.2118 12.6146H17.2107Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M19.7555 15.7121L21.2527 10.1329C21.8685 7.81507 21.8685 6.87154 20.4731 6.64563L20.4942 6.52271C22.4842 6.54375 24.802 6.35881 25.6835 5.16833L25.7655 5.23035L24.5351 9.82503C25.5816 6.95349 26.874 5.3123 28.3302 5.3123C29.2118 5.3123 29.7046 5.92802 29.7046 6.89148C29.7256 8.08085 28.9869 9.49613 27.7356 9.49613C26.874 9.49613 26.4233 8.92138 26.5661 8.05981C26.5661 7.77298 26.73 7.38317 26.9559 7.09524C25.8895 7.52603 25.0479 8.38761 23.8375 12.4086L22.9548 15.711H19.7544L19.7555 15.7121Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M32.6791 12.8405C32.4742 13.7021 32.6381 13.969 32.987 13.969C33.5817 13.969 33.9106 13.3123 34.3823 11.938L34.5263 11.959C33.9726 14.3588 33.09 16 31.183 16C29.3779 16 28.9471 14.6456 29.4598 12.7176L31.5518 4.98449C32.1675 2.64562 32.1464 1.7021 30.7721 1.47729L30.7932 1.35437C32.7832 1.37541 35.121 1.19048 36.0235 0L36.1055 0.0620152L32.6802 12.8416L32.6791 12.8405Z\" fill=\"#FDFDFC\"><\/path>\n<path d=\"M18.7031 0.420898C17.7485 2.5549 17.8294 2.89044 19.6489 4.35888C17.5149 3.40429 17.1793 3.48513 15.7109 5.30462C16.6655 3.17062 16.5846 2.83507 14.7651 1.36663C16.8991 2.32123 17.2347 2.24039 18.7031 0.420898Z\" fill=\"#FDFDFC\"><\/path>\n<\/svg>",
+            "color_text": "",
+            "text_color_gradient": ""
+          }
+        },
+        "icon_fqFBj4": {
+          "type": "icon",
+          "settings": {
+            "icon_source": "custom_svg",
+            "options_icon": "subscription",
+            "html_code": "<svg width=\"13\" height=\"12\" viewbox=\"0 0 13 12\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M9.88713 0C7.54155 5.24354 7.7402 6.06803 12.211 9.6762C6.96741 7.33062 6.14292 7.52925 2.53476 12C4.88034 6.75646 4.68169 5.93197 0.210938 2.3238C5.45448 4.66938 6.27897 4.47075 9.88713 0Z\" fill=\"#FDFDFC\"><\/path>\n<\/svg>",
+            "color_content": ""
+          }
+        }
+      },
+      "block_order": [
+        "text_d37PDt",
+        "icon_Ny8XQa",
+        "text_3p3pbf",
+        "icon_eeVkxt",
+        "text_gMYKPm",
+        "icon_kBnfeh",
+        "text_3bKTzb",
+        "icon_RXE9Qt",
+        "text_MGhhQ9",
+        "icon_fqFBj4"
+      ],
+      "settings": {
+        "color_scheme": "scheme-3",
+        "speed": "50",
+        "moving_direction": "animation-direction",
+        "pause_when_hover": true,
+        "heading_size": "h2",
+        "padding_top": 24,
+        "padding_bottom": 24,
+        "padding_top_mobile": 24,
+        "padding_bottom_mobile": 24
+      }
+    }
+  },
+  "order": [
+    "hero_banner_PTEULR",
+    "running_content_RdgtdV",
+    "custom_image_text_dbNAw7",
+    "running_content_qnChag",
+    "instant_collections_hR3DdM",
+    "category_list_CKfzAz",
+    "after_before_column_UTpFYB",
+    "video_gallery_cUVLNJ",
+    "quatation_text_KtHidY",
+    "multicolumn_text_CrFaQe",
+    "instagram_gallery_MXVh7T",
+    "instagram_gallery_cQqWPN",
+    "running_content_2"
+  ]
+}

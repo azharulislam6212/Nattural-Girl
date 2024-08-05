@@ -1,0 +1,758 @@
+{{ 'section-hero-banner.css' | asset_url | stylesheet_tag }}
+
+
+
+{%- liquid
+  assign loading = 'lazy'
+  assign decoding = 'async'
+  assign fetchpriority = 'auto'
+-%}
+<div
+  class="s--margin hero-banner color-{{- section.settings.color_scheme }} s-container-radius no-transparent"
+  data-ui-component="Image Banner Section"
+  role="region"
+  aria-labelledby="sectionHeading-{{ section.id | md5 | truncate: 12, "" }}"
+>
+  <div class="container-fluid g-0 p-0">
+    <div class="row g-0 p-0">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'banner_text' -%}
+            <div class="col-12 col-lg-6">
+              {% liquid
+                if section.index <= 2
+                  assign loading = 'eager'
+                  assign fetchpriority = 'high'
+                endif
+
+                if section.settings.mobile_image
+                  assign mobile_image_alt = block.settings.mobile_image.alt | default: block.settings.mobile_image.image | split: '/' | last
+                  assign mobile_image = block.settings.mobile_image | image_url: width: block.settings.mobile_image.width | image_tag: widths: '320, 450, 550, 750, 950, 1024, 1200', sizes: '100vw', alt: mobile_image_alt, class: 'js-image-lazy-mobile d-none-md d-block w-100 h-100 of-cover p-absolute top-0 zi-1', loading: loading, fetchpriority: fetchpriority, decoding: decoding
+                endif
+
+                assign desktop_image = 'hero-apparel-1' | placeholder_svg_tag: 'js-image-lazy placeholder w-100 h-100 of-cover'
+
+                assign desktop_image_alt = block.settings.desktop_image.alt | default: block.settings.desktop_image.image | split: '/' | last
+                assign desktop_image = block.settings.desktop_image | image_url: width: block.settings.desktop_image.width | image_tag: widths: '320, 450, 550, 750, 950, 1024, 1200, 1400, 1600, 1800, 2000, 2200, 2400, 2600, 2800, 3000', sizes: '100vw', alt: desktop_image_alt, class: 'js-image-lazy w-100 h-100 of-cover', loading: loading, fetchpriority: fetchpriority, decoding: decoding
+
+                assign min_height_mobile = section.settings.height_mobile
+                assign min_height_desktop = section.settings.height_desktop
+
+                if min_height_desktop == 'adapt_img'
+                  assign min_height_desktop = ''
+                  if block.settings.desktop_image == blank
+                    assign height_desktop = '500px'
+                  endif
+                  assign height_desktop = 100 | divided_by: block.settings.desktop_image.aspect_ratio | append: 'vw'
+                endif
+
+                if min_height_mobile == 'adapt_img'
+                  assign min_height_mobile = ''
+                  assign height_mobile = 100 | divided_by: block.settings.mobile_image.aspect_ratio | append: 'vw'
+                  if block.settings.mobile_image == blank
+                    assign height_mobile = 100 | divided_by: block.settings.desktop_image.aspect_ratio | append: 'vw'
+                  endif
+                  if block.settings.mobile_image == blank and block.settings.desktop_image == blank
+                    assign height_mobile = '500px'
+                  endif
+                endif
+
+                unless block.settings.section_mask_overlay_color.alpha == 0.0 or block.settings.section_mask_overlay_color == blank
+                  assign overlay_color = '--mask-overlay-color:' | append: block.settings.section_mask_overlay_color
+                endunless
+                unless block.settings.section_content_overlay_color.alpha == 0.0 or block.settings.section_content_overlay_color == blank
+                  assign content_color = 'color:' | append: block.settings.section_content_overlay_color
+                endunless
+
+
+                assign video_type = block.settings.video_url.type
+                if block.settings.video_hosted != blank and block.settings.video_source == 'video_hosted'
+                  assign video_type = 'local_video'
+                endif
+              %}
+
+              <div class="p-relative  s-container-radius o-hidden">
+                <div
+                  class="media-wrapper sht-mask p-absolute w-100 h-100 js-animate anm anm-zoomOut zi-1"
+                  style="--overlay: {{ block.settings.section_overlay_opacity }}; {{ overlay_color }}"
+                >
+
+                {% if block.settings.enable_video %}
+
+                  <sht-load-video class="p-absolute w-100 h-100 js-animate anm anm-zoomOut" data-video-type="{{ video_type }}" data-video-id="{{ block.settings.video_url.id }}">
+                    {%- if block.settings.video_source == 'video_hosted' -%}
+                      {% capture local_video %}
+                        {{- block.settings.video_hosted | video_tag: autoplay: true, controls: false, loop: true, preload: 'none', class: 'video-local w-100v h-100 of-cover center-middle p-absolute mih' -}}
+                      {% endcapture %}
+                      {{ local_video | replace: '<source src="', '<source data-src="' }}
+                    {%- else %}
+                      <iframe tabindex="-1" title="{{ block.settings.video_url.type }}" class="video-ifram js-local-video w-100v center-middle p-absolute mih miw" allow="autoplay; encrypted-media"
+                        data-src="
+                        {%- if block.settings.video_url.type == 'youtube' -%}
+                          https://www.youtube.com/embed/{{ block.settings.video_url.id }}?version=3&enablejsapi=1&mute=1&loop=1&controls=0&rel=0&showinfo=0&autoplay=1&playlist={{ block.settings.video_url.id }}
+                        {%- elsif block.settings.video_url.type == 'vimeo' -%}
+                          https://player.vimeo.com/video/{{ block.settings.video_url.id }}?api=1&background=1&autoplay=1&loop=1&title=0&byline=0&portrait=0&controls=0&muted=1
+                        {%- endif -%}" style="--miw:177.77vh;--h-xs:56.25vw;">
+                      </iframe>
+                    {% endif %}
+                  </sht-load-video>
+
+                  {% else %}
+
+                  {{ desktop_image }}
+                  {{ mobile_image }}
+
+                {% endif %}
+               
+                </div>
+                <div
+                  class="ctnr s-banner zi-3 w-100 h-100 p-relative d-flex {{ block.settings.content_position_mobile }} {{ block.settings.content_position_desktop }}"
+                  style="--mh-xs: {{- min_height_mobile -}};--mh-md: {{- min_height_desktop -}};--h-xs: {{- height_mobile -}};--h-md: {{- height_desktop -}};"
+                >
+                  <div class="w-100" style="{{ content_color }}">
+
+                  {% liquid
+
+                  
+                  assign content_align_class_desktop = 'top-md ta-left-md start-md'
+                  if block.settings.content_position_desktop contains 'ta-center'
+                    assign content_align_class_desktop = 'middle-md ta-center-md center-md'
+                  endif
+                
+                  assign content_align_class_mobile = 'top-xs ta-left start-xs'
+                  if block.settings.content_position_mobile contains 'ta-center'
+                    assign content_align_class_mobile = 'middle-xs ta-center center-xs'
+                  endif
+                %}
+                
+                <div class="s-header">
+                  <div class="s-header__content s-header__banner d-flex fd-column {{ content_align_class_mobile }} {{ content_align_class_desktop }} wb-break-word" >
+                 
+                          <h2 id="sectionHeading-{{ section.id | md5 | truncate: 12, "" }}" class="s-header__title {{ block.settings.heading_size }} wb-break-word hide-empty d-block" style="--duration: .6s; --delay: .3s" {{ block.shopify_attributes }}>{{- block.settings.heading | replace: '[', '<span class="prominent-heading">' | replace: ']', '</span>' -}}</h2>
+             
+                          <div class="s-header__desc s-header__item rte hide-empty" {{ block.shopify_attributes }}>{{- block.settings.description -}}</div>
+                    
+                        <div class="s-header__buttons s-header__item d-flex gap-12 fw-wrap hide-empty {{ content_align_class_mobile }} {{ content_align_class_desktop }}" {{ block.shopify_attributes }}>
+                          {%- if block.settings.button_main_text != blank -%}
+
+
+                            <a class="btn btn-primary btn-custom  btn-custom--medium{{ block.settings.button_main_style }}" href="{{- block.settings.button_main_link | default: '#' -}}" {% if block.settings.button_main_link == blank %} tabindex="-1" {% endif %}>
+                              {{- block.settings.button_main_text -}}
+                              <span class="spakle-btn">
+                                <img src="{{ 'twinkles.gif' | asset_url }}" alt="twinkles">
+                            </span>
+                              </a>
+                          {%- endif -%}
+                  
+                        </div>
+        
+    
+                  </div>
+                </div>
+
+                
+
+  
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          {%- when 'banner_gift' -%}
+            <div class="col-12 col-lg-6">
+              {% liquid
+                if section.index <= 2
+                  assign loading = 'eager'
+                  assign fetchpriority = 'high'
+                endif
+
+                if section.settings.mobile_image
+                  assign mobile_image_alt = block.settings.mobile_image.alt | default: block.settings.mobile_image.image | split: '/' | last
+                  assign mobile_image = block.settings.mobile_image | image_url: width: block.settings.mobile_image.width | image_tag: widths: '320, 450, 550, 750, 950, 1024, 1200', sizes: '100vw', alt: mobile_image_alt, class: 'js-image-lazy-mobile d-none-md d-block w-100 h-100 of-cover p-absolute top-0 zi-1', loading: loading, fetchpriority: fetchpriority, decoding: decoding
+                endif
+
+                assign desktop_image = 'hero-apparel-1' | placeholder_svg_tag: 'js-image-lazy placeholder w-100 h-100 of-cover'
+
+                assign desktop_image_alt = block.settings.desktop_image.alt | default: block.settings.desktop_image.image | split: '/' | last
+                assign desktop_image = block.settings.desktop_image | image_url: width: block.settings.desktop_image.width | image_tag: widths: '320, 450, 550, 750, 950, 1024, 1200, 1400, 1600, 1800, 2000, 2200, 2400, 2600, 2800, 3000', sizes: '100vw', alt: desktop_image_alt, class: 'js-image-lazy w-100 h-100 of-cover', loading: loading, fetchpriority: fetchpriority, decoding: decoding
+
+                assign min_height_mobile = section.settings.height_mobile
+                assign min_height_desktop = section.settings.height_desktop
+
+                if min_height_desktop == 'adapt_img'
+                  assign min_height_desktop = ''
+                  if block.settings.desktop_image == blank
+                    assign height_desktop = '500px'
+                  endif
+                  assign height_desktop = 100 | divided_by: block.settings.desktop_image.aspect_ratio | append: 'vw'
+                endif
+
+                if min_height_mobile == 'adapt_img'
+                  assign min_height_mobile = ''
+                  assign height_mobile = 100 | divided_by: block.settings.mobile_image.aspect_ratio | append: 'vw'
+                  if block.settings.mobile_image == blank
+                    assign height_mobile = 100 | divided_by: block.settings.desktop_image.aspect_ratio | append: 'vw'
+                  endif
+                  if block.settings.mobile_image == blank and block.settings.desktop_image == blank
+                    assign height_mobile = '500px'
+                  endif
+                endif
+
+                unless block.settings.section_mask_overlay_color.alpha == 0.0 or block.settings.section_mask_overlay_color == blank
+                  assign overlay_color = '--mask-overlay-color:' | append: block.settings.section_mask_overlay_color
+                endunless
+                unless block.settings.section_content_overlay_color.alpha == 0.0 or block.settings.section_content_overlay_color == blank
+                  assign content_color = 'color:' | append: block.settings.section_content_overlay_color
+                endunless
+
+
+                assign video_type = block.settings.video_url.type
+                if block.settings.video_hosted != blank and block.settings.video_source == 'video_hosted'
+                  assign video_type = 'local_video'
+                endif
+              %}
+
+              <div class="p-relative  s-container-radius o-hidden">
+                <div
+                  class="media-wrapper sht-mask p-absolute w-100 h-100 js-animate anm anm-zoomOut zi-1"
+                  style="--overlay: {{ block.settings.section_overlay_opacity }}; {{ overlay_color }}"
+                >
+
+                {% if block.settings.enable_video %}
+
+                  <sht-load-video class="p-absolute w-100 h-100 js-animate anm anm-zoomOut" data-video-type="{{ video_type }}" data-video-id="{{ block.settings.video_url.id }}">
+                    {%- if block.settings.video_source == 'video_hosted' -%}
+                      {% capture local_video %}
+                        {{- block.settings.video_hosted | video_tag: autoplay: true, controls: false, loop: true, preload: 'none', class: 'video-local w-100 h-100 of-cover center-middle p-absolute mih' -}}
+                      {% endcapture %}
+                      {{ local_video | replace: '<source src="', '<source data-src="' }}
+                    {%- else %}
+                      <iframe tabindex="-1" title="{{ block.settings.video_url.type }}" class="video-ifram js-local-video w-100 center-middle p-absolute mih miw" allow="autoplay; encrypted-media"
+                        data-src="
+                        {%- if block.settings.video_url.type == 'youtube' -%}
+                          https://www.youtube.com/embed/{{ block.settings.video_url.id }}?version=3&enablejsapi=1&mute=1&loop=1&controls=0&rel=0&showinfo=0&autoplay=1&playlist={{ block.settings.video_url.id }}
+                        {%- elsif block.settings.video_url.type == 'vimeo' -%}
+                          https://player.vimeo.com/video/{{ block.settings.video_url.id }}?api=1&background=1&autoplay=1&loop=1&title=0&byline=0&portrait=0&controls=0&muted=1
+                        {%- endif -%}" style="--miw:177.77vh;--h-xs:56.25vw;">
+                      </iframe>
+                    {% endif %}
+                  </sht-load-video>
+
+                  {% else %}
+
+                  {{ desktop_image }}
+                  {{ mobile_image }}
+
+                {% endif %}
+               
+                </div>
+                <div
+                  class="ctnr banner_gift s-banner zi-3 w-100 h-100 p-relative d-flex {{ block.settings.content_position_mobile }} {{ block.settings.content_position_desktop }}"
+                  style="--mh-xs: {{- min_height_mobile -}};--mh-md: {{- min_height_desktop -}};--h-xs: {{- height_mobile -}};--h-md: {{- height_desktop -}};"
+                >
+                  <div class="w-100" style="{{ content_color }}">
+
+                  {% liquid
+
+                  
+                  assign content_align_class_desktop = 'top-md ta-left-md start-md'
+                  if block.settings.content_position_desktop contains 'ta-center'
+                    assign content_align_class_desktop = 'middle-md ta-center-md center-md'
+                  endif
+                
+                  assign content_align_class_mobile = 'top-xs ta-left start-xs'
+                  if block.settings.content_position_mobile contains 'ta-center'
+                    assign content_align_class_mobile = 'middle-xs ta-center center-xs'
+                  endif
+                %}
+                
+                <div class="s-header">
+                  <div class="s-header__content s-header__banner d-flex fd-column {{ content_align_class_mobile }} {{ content_align_class_desktop }} wb-break-word" >
+                
+                 {% if block.settings.gift_image %}
+
+                  {% if block.settings.image_link != blank %} <a href="{{ block.settings.image_link }}">{% endif %}
+               
+                          <div class="s-header__gift-image s-header__item rte hide-empty" {{ block.shopify_attributes }}>
+                            {% render 'resposive-img' with image: block.settings.gift_image %}
+
+                          </div>
+
+                        {% if block.settings.image_link != blank %}   </a> {% endif %}
+                         
+                 {% endif %}
+                        <div class="s-header__buttons s-header__item d-flex gap-12 fw-wrap hide-empty {{ content_align_class_mobile }} {{ content_align_class_desktop }}" {{ block.shopify_attributes }}>
+                          {%- if block.settings.button_main_text != blank -%}
+
+                            <a class="btn-custom-link  {{ block.settings.button_main_style }}" href="{{- block.settings.button_main_link | default: '#' -}}" {% if block.settings.button_main_link == blank %} tabindex="-1" {% endif %}>
+                              {{- block.settings.button_main_text -}}
+                              </a>
+                          {%- endif -%}
+                  
+                        </div>
+        
+    
+                  </div>
+                </div>
+
+                
+
+  
+                  </div>
+                </div>
+              </div>
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Hero Banner",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.general.content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_schemes.label",
+      "default": "scheme-1"
+    },
+
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_large_screen.content"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.section_height.label",
+      "info": "t:general.settings.section_height.info",
+      "id": "height_desktop",
+      "options": [
+        {
+          "value": "auto",
+          "label": "t:general.settings.height.options.adapt_to_content.label"
+        },
+        {
+          "value": "50vh",
+          "label": "t:general.settings.height.options.option_50.label"
+        },
+        {
+          "value": "70vh",
+          "label": "t:general.settings.height.options.option_70.label"
+        },
+        {
+          "value": "100vh",
+          "label": "t:general.settings.height.options.fill_screen_height.label"
+        },
+        {
+          "value": "adapt_img",
+          "label": "t:general.settings.image_ratio.options.adapt.label"
+        }
+      ],
+      "default": "70vh"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_mobile_screen.content"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.section_height.label",
+      "info": "t:general.settings.section_height.info",
+      "id": "height_mobile",
+      "options": [
+        {
+          "value": "auto",
+          "label": "t:general.settings.height.options.adapt_to_content.label"
+        },
+        {
+          "value": "50vh",
+          "label": "t:general.settings.height.options.option_50.label"
+        },
+        {
+          "value": "70vh",
+          "label": "t:general.settings.height.options.option_70.label"
+        },
+        {
+          "value": "100vh",
+          "label": "t:general.settings.height.options.fill_screen_height.label"
+        },
+        {
+          "value": "adapt_img",
+          "label": "t:general.settings.image_ratio.options.adapt.label"
+        }
+      ],
+      "default": "70vh"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "banner_text",
+      "name": "Banner With Text",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "enable_video",
+          "label": "Enable Video",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "video_source",
+          "label": "t:sections.video_banner.settings.video_source.label",
+          "default": "video_external",
+          "options": [
+            {
+              "value": "video_external",
+              "label": "t:general.settings.external.label"
+            },
+            {
+              "value": "video_hosted",
+              "label": "t:general.settings.shopify_hosted.label"
+            }
+          ]
+        },
+        {
+          "type": "video_url",
+          "id": "video_url",
+          "accept": ["youtube", "vimeo"],
+          "default": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+          "label": "t:general.settings.external_video.label",
+          "info": "t:general.settings.video_link.info"
+        },
+        {
+          "type": "video",
+          "id": "video_hosted",
+          "label": "t:general.settings.header_hosted_video.content"
+        },
+
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.image.content"
+        },
+        {
+          "type": "image_picker",
+          "label": "t:general.settings.desktop_background_image.label",
+          "id": "desktop_image",
+          "info": "t:general.settings.image_recommend.info"
+        },
+        {
+          "type": "image_picker",
+          "label": "t:general.settings.mobile_background_image.label",
+          "id": "mobile_image",
+          "info": "t:general.settings.image_recommend_mobile.info"
+        },
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.custom_color.content"
+        },
+        {
+          "type": "color",
+          "id": "section_mask_overlay_color",
+          "label": "t:general.settings.mask_overlay.label"
+        },
+        {
+          "type": "range",
+          "unit": "%",
+          "max": 90,
+          "min": 0,
+          "step": 1,
+          "default": 30,
+          "id": "section_overlay_opacity",
+          "label": "t:general.settings.overlay_opacity.label"
+        },
+        {
+          "type": "color",
+          "id": "section_content_overlay_color",
+          "label": "t:general.settings.text_overlay.label"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "heading",
+          "label": "Heading",
+          "default": "[Welcome] to our store"
+        },
+        {
+          "type": "richtext",
+          "label": "t:general.settings.text.label",
+          "id": "description",
+          "default": "<p>Highlight your new collection or share content related to this image</p>"
+        },
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.button_1.content"
+        },
+        {
+          "type": "text",
+          "label": "t:general.settings.button.label",
+          "id": "button_main_text",
+          "info": "t:general.settings.hide_if_empty.info",
+          "default": "Check now"
+        },
+        {
+          "type": "url",
+          "id": "button_main_link",
+          "label": "t:general.settings.link.label"
+        },
+        {
+      "type": "select",
+      "label": "t:general.settings.content_position.label",
+      "id": "content_position_desktop",
+      "options": [
+        {
+          "value": "start-md top-md ta-left-md",
+          "label": "t:general.settings.content_position.options.top_left.label"
+        },
+        {
+          "value": "center-md top-md ta-center-md",
+          "label": "t:general.settings.content_position.options.top_center.label"
+        },
+        {
+          "value": "start-md middle-md ta-left-md",
+          "label": "t:general.settings.content_position.options.middle_left.label"
+        },
+        {
+          "value": "center-md middle-md ta-center-md",
+          "label": "t:general.settings.content_position.options.middle_center.label"
+        },
+        {
+          "value": "start-md bottom-md ta-left-md",
+          "label": "t:general.settings.content_position.options.bottom_left.label"
+        },
+        {
+          "value": "center-md bottom-md ta-center-md",
+          "label": "t:general.settings.content_position.options.bottom_center.label"
+        }
+      ],
+      "default": "center-md middle-md ta-center-md"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.content_position.label",
+      "id": "content_position_mobile",
+      "options": [
+        {
+          "value": "start-xs top-xs ta-left",
+          "label": "t:general.settings.content_position.options.top_left.label"
+        },
+        {
+          "value": "center-xs top-xs ta-center",
+          "label": "t:general.settings.content_position.options.top_center.label"
+        },
+        {
+          "value": "start-xs middle-xs ta-left",
+          "label": "t:general.settings.content_position.options.middle_left.label"
+        },
+        {
+          "value": "center-xs middle-xs ta-center",
+          "label": "t:general.settings.content_position.options.middle_center.label"
+        },
+        {
+          "value": "start-xs bottom-xs ta-left",
+          "label": "t:general.settings.content_position.options.bottom_left.label"
+        },
+        {
+          "value": "center-xs bottom-xs ta-center",
+          "label": "t:general.settings.content_position.options.bottom_center.label"
+        }
+      ],
+      "default": "center-xs middle-xs ta-center"
+    }
+      ]
+    },
+    {
+      "type": "banner_gift",
+      "name": "Banner With Gift",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "enable_video",
+          "label": "Enable Video",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "video_source",
+          "label": "t:sections.video_banner.settings.video_source.label",
+          "default": "video_external",
+          "options": [
+            {
+              "value": "video_external",
+              "label": "t:general.settings.external.label"
+            },
+            {
+              "value": "video_hosted",
+              "label": "t:general.settings.shopify_hosted.label"
+            }
+          ]
+        },
+        {
+          "type": "video_url",
+          "id": "video_url",
+          "accept": ["youtube", "vimeo"],
+          "default": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+          "label": "t:general.settings.external_video.label",
+          "info": "t:general.settings.video_link.info"
+        },
+        {
+          "type": "video",
+          "id": "video_hosted",
+          "label": "t:general.settings.header_hosted_video.content"
+        },
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.image.content"
+        },
+        {
+          "type": "image_picker",
+          "label": "t:general.settings.desktop_background_image.label",
+          "id": "desktop_image",
+          "info": "t:general.settings.image_recommend.info"
+        },
+        {
+          "type": "image_picker",
+          "label": "t:general.settings.mobile_background_image.label",
+          "id": "mobile_image",
+          "info": "t:general.settings.image_recommend_mobile.info"
+        },
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.custom_color.content"
+        },
+        {
+          "type": "color",
+          "id": "section_mask_overlay_color",
+          "label": "t:general.settings.mask_overlay.label"
+        },
+        {
+          "type": "range",
+          "unit": "%",
+          "max": 90,
+          "min": 0,
+          "step": 1,
+          "default": 30,
+          "id": "section_overlay_opacity",
+          "label": "t:general.settings.overlay_opacity.label"
+        },
+        {
+          "type": "color",
+          "id": "section_content_overlay_color",
+          "label": "t:general.settings.text_overlay.label"
+        },
+        {
+          "type": "image_picker",
+          "label": "Gift Image",
+          "id": "gift_image"
+        },
+        {
+          "type": "url",
+          "id": "image_link",
+          "label": "Image Link"
+        },
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.button_1.content"
+        },
+        {
+          "type": "text",
+          "label": "t:general.settings.button.label",
+          "id": "button_main_text",
+          "info": "t:general.settings.hide_if_empty.info",
+          "default": "Shop now"
+        },
+        {
+          "type": "url",
+          "id": "button_main_link",
+          "label": "t:general.settings.link.label"
+        },
+        {
+      "type": "select",
+      "label": "t:general.settings.content_position.label",
+      "id": "content_position_desktop",
+      "options": [
+        {
+          "value": "start-md top-md ta-left-md",
+          "label": "t:general.settings.content_position.options.top_left.label"
+        },
+        {
+          "value": "center-md top-md ta-center-md",
+          "label": "t:general.settings.content_position.options.top_center.label"
+        },
+        {
+          "value": "start-md middle-md ta-left-md",
+          "label": "t:general.settings.content_position.options.middle_left.label"
+        },
+        {
+          "value": "center-md middle-md ta-center-md",
+          "label": "t:general.settings.content_position.options.middle_center.label"
+        },
+        {
+          "value": "start-md bottom-md ta-left-md",
+          "label": "t:general.settings.content_position.options.bottom_left.label"
+        },
+        {
+          "value": "center-md bottom-md ta-center-md",
+          "label": "t:general.settings.content_position.options.bottom_center.label"
+        }
+      ],
+      "default": "center-md middle-md ta-center-md"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.content_position.label",
+      "id": "content_position_mobile",
+      "options": [
+        {
+          "value": "start-xs top-xs ta-left",
+          "label": "t:general.settings.content_position.options.top_left.label"
+        },
+        {
+          "value": "center-xs top-xs ta-center",
+          "label": "t:general.settings.content_position.options.top_center.label"
+        },
+        {
+          "value": "start-xs middle-xs ta-left",
+          "label": "t:general.settings.content_position.options.middle_left.label"
+        },
+        {
+          "value": "center-xs middle-xs ta-center",
+          "label": "t:general.settings.content_position.options.middle_center.label"
+        },
+        {
+          "value": "start-xs bottom-xs ta-left",
+          "label": "t:general.settings.content_position.options.bottom_left.label"
+        },
+        {
+          "value": "center-xs bottom-xs ta-center",
+          "label": "t:general.settings.content_position.options.bottom_center.label"
+        }
+      ],
+      "default": "center-xs middle-xs ta-center"
+    }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Banner",
+      "blocks": [
+        {
+          "type": "banner_text"
+        },
+        {
+          "type": "banner_gift"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,74 @@
+.cart-item {
+  grid-template-columns: 48px 1fr auto;
+  grid-template-areas:
+    "product product ."
+    " . price . "
+    " . quantity . ";
+  column-gap: calc(var(--gutter-base) * 1.5);
+}
+.cart-item__product {
+  grid-template-columns: 48px 1fr;
+  grid-area: product;
+}
+.cart-item__quantity {
+  grid-area: quantity;
+}
+.cart-item__price {
+  grid-area: price;
+}
+.cart-item__image {
+  height: 80px;
+}
+.cart-item__product {
+  gap: calc(var(--gutter-base) * 1.5);
+}
+.cart-amount {
+  margin: auto;
+  margin-top: calc(var(--gutter-base) * 2.5);
+}
+.cart-item__quantity button {
+  --button-size: 32px;
+}
+/* Tablet Portrait */
+@media (min-width: 459px) {
+  .cart-item {
+    grid-template-columns: 48px 1fr auto;
+    grid-template-areas:
+      "product product price"
+      " . quantity . ";
+    column-gap: calc(var(--gutter-base) * 1.5);
+  }
+  
+  .cart-item {
+    grid-template-columns: 80px 1fr auto;
+  }
+  .cart-item__product {
+    grid-template-columns: 80px 1fr;
+  }
+  .cart-amount {
+    max-width: 600px;
+    margin-top: calc(var(--gutter-base) * 3);
+  }
+  .cart__note {
+    width: 62.5%;
+  }
+}
+/* Tablet Lanspcape */
+@media (min-width: 1025px) {
+  .cart-item {
+    grid-template-areas: "product product quantity price";
+    grid-template-columns: repeat(4, 1fr);
+    column-gap: var(--gap-width);
+  }
+}
+/* Desktop regular */
+@media (min-width: 1195px) {
+  .cart-amount {
+    width: 480px;
+    margin-top: 0;
+  }
+}
+
+/* Desktop xlarge */
+@media (min-width: 1681px) {
+}

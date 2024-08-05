@@ -1,0 +1,170 @@
+{{ 'account.css' | asset_url | stylesheet_tag: preload: true }}
+
+{% liquid
+  assign detect_background = 1
+  if section.settings.color_scheme.settings.color_background.alpha != 0.0
+    assign no_transparent = 'no-transparent'
+    assign detect_background = section.settings.color_scheme.settings.color_background | color_brightness | times: 9999
+  endif
+%}
+<style>
+  #shopify-section-{{ section.id }} {
+    --section-background-hash: {{ detect_background }};
+  }
+  #shopify-section-{{ section.id }} + * {
+    --previous-section-background-hash: {{ detect_background }};
+  }
+</style>
+
+<div class="s--margin color-{{- section.settings.color_scheme }} s-container-radius {{ no_transparent }}">
+  <div class="section ctnr  ">
+    <div class="d-flex fd-column gap-content mw-content">
+      <div class="s-header ta-center">
+        <h2 class="m-zero" tabindex="-1">{{ 'customer.register.title' | t }}</h2>
+      </div>
+      <div class="s-content">
+        {% form 'create_customer', class: ' ' %}
+          {%- if form.errors -%}
+            <div class="d-flex middle-xs account-noti message--error center-xs m-auto" tabindex="-1" autofocus>
+              <div class="icon icon--small icon--error mr-8" focusable="false" role="presentation">
+                {% render 'icon-close', size: 16 %}
+              </div>
+              <div class="ml-8 flex-1">
+                <h6>
+                  {{ 'templates.contact.form.error_heading' | t }}
+                </h6>
+                <ul class="mt-8 pl-36 ls-none">
+                  {%- for field in form.errors -%}
+                    <li>
+                      {%- if field == 'form' -%}
+                        {{ form.errors.messages[field] }}
+                      {%- else -%}
+                        <a href="#RegisterForm-{{ field }}">
+                          {{ form.errors.translated_fields[field] | capitalize }}
+                          {{ form.errors.messages[field] }}
+                        </a>
+                      {%- endif -%}
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              </div>
+            </div>
+          {%- endif -%}
+          <div class="mb-24">
+            <label for="RegisterForm-FirstName" class="field__label d-block mb-1x">
+              {{ 'customer.register.first_name' | t }}
+            </label>
+            <input
+              type="text"
+              name="customer[first_name]"
+              id="RegisterForm-FirstName"
+              class="field__text field--large field--large field--hover{% if form.errors contains 'first_name' %} field--error{% endif %} w-100"
+              {% if form.first_name %}
+                value="{{ form.first_name }}"
+              {% endif %}
+              autocomplete="given-name"
+              placeholder="{{ 'customer.placeholder.first_name' | t }}"
+            >
+          </div>
+          <div class="mb-24">
+            <label for="RegisterForm-LastName" class="field__label d-block mb-1x">
+              {{ 'customer.register.last_name' | t }}
+            </label>
+            <input
+              type="text"
+              name="customer[last_name]"
+              id="RegisterForm-LastName"
+              class="field__text field--large field--large field--hover{% if form.errors contains 'last_name' %} field--error{% endif %} w-100"
+              {% if form.last_name %}
+                value="{{ form.last_name }}"
+              {% endif %}
+              autocomplete="family-name"
+              placeholder="{{ 'customer.placeholder.last_name' | t }}"
+            >
+          </div>
+          <div class="mb-24">
+            <label for="RegisterForm-email" class="field__label d-block mb-1x">
+              {{ 'customer.register.email' | t -}}
+              <sup class="ml-4 color-danger">*</sup>
+            </label>
+            <input
+              type="email"
+              name="customer[email]"
+              id="RegisterForm-email"
+              class="field__text field--large field--large field--hover{% if form.errors contains 'email' %} field--error{% endif %} w-100"
+              {% if form.email %}
+                value="{{ form.email }}"
+              {% endif %}
+              spellcheck="false"
+              autocapitalize="off"
+              autocomplete="email"
+              aria-required="true"
+              required="required"
+              {% if form.errors contains 'email' %}
+                aria-invalid="true"
+                aria-describedby="RegisterForm-email-error"
+              {% endif %}
+              placeholder="{{ 'customer.placeholder.email' | t }}"
+            >
+            {% if form.errors contains 'email' -%}
+              <span class="d-block mt-8 color-danger subtext">
+                {{ form.errors.translated_fields.email | capitalize }}
+                {{ form.errors.messages.email }}.
+              </span>
+            {%- endif -%}
+          </div>
+          <div class="mb-24">
+            <label for="RegisterForm-password" class="field__label d-block mb-1x">
+              {{ 'customer.register.password' | t -}}
+              <sup class="ml-4 color-danger">*</sup>
+            </label>
+            <input
+              type="password"
+              name="customer[password]"
+              id="RegisterForm-password"
+              class="field__text field--large field--large field--hover{% if form.errors contains 'password' %} field--error{% endif %} w-100"
+              aria-required="true"
+              required="required"
+              {% if form.errors contains 'password' %}
+                aria-invalid="true"
+                aria-describedby="RegisterForm-password-error"
+              {% endif %}
+              placeholder="{{ 'customer.placeholder.password' | t }}"
+            >
+            {% if form.errors contains 'password' -%}
+              <span class="d-block mt-8 color-danger subtext">
+                {{ form.errors.translated_fields.password | capitalize }}
+                {{ form.errors.messages.password }}.
+              </span>
+            {%- endif -%}
+          </div>
+          <div class="d-flex middle-md between-md fd-column fd-row-md mt-32 gap-12">
+            <button class="btn btn--large btn-primary  w-100">
+              {{ 'customer.register.button' | t }}
+            </button>
+            <a href="{{ routes.account_login_url }}" class="btn btn-outline  btn--large w-100 lh-initial">
+              {{ 'customer.log_in_instead' | t }}
+            </a>
+          </div>
+        {%- endform -%}
+      </div>
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "t:sections.account_register.name",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.general.content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_scheme.label",
+      "default": "scheme-1"
+    }
+  ]
+}
+{% endschema %}

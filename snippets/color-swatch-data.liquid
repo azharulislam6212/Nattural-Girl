@@ -1,0 +1,36 @@
+{%-liquid
+  assign legal_image_extensions = 'bmp,gif,jpg,png,svg,jpeg,webp' | split: ','
+
+  assign has_variant_swatch_rules = false
+  if settings.variant_swatches_rules != blank
+    assign variant_swatches_rules = settings.variant_swatches_rules | downcase | strip | newline_to_br | strip_newlines | split: "<br />"
+    assign key_arr = ''
+    assign val_arr = ''
+    for variant_swatch in variant_swatches_rules
+      if variant_swatch != blank
+        assign key = variant_swatch | split: ':' | first
+        assign value = variant_swatch | split: ':' | last
+        assign file_type = value | split: '.' | last
+
+        if legal_image_extensions contains file_type
+          assign value = value | strip | file_img_url
+        endif
+
+        assign key_arr = key_arr | append: ',' | append: key | strip | replace: " ", ""
+        assign val_arr = val_arr | append: ',' | append: value | strip | replace: " ", ""
+        assign has_variant_swatch_rules = true
+      endif
+    endfor
+
+    assign key_arr = key_arr | remove_first: ',' | split: ','
+    assign val_arr = val_arr | remove_first: ',' | split: ','
+  endif
+-%}
+
+<script id="colorSwatchData" type="application/json">
+  {%- if has_variant_swatch_rules == true -%}
+    {"color_swatch_name": {{ key_arr | json }}, "color_swatch_value": {{ val_arr | json }}}
+  {%- else -%}
+    {"color_swatch_name": [""], "color_swatch_value": [""]}
+  {%- endif -%}
+</script>

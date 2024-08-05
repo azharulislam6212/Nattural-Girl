@@ -1,0 +1,256 @@
+{%- liquid
+  assign md = 12.0 | divided_by: section.settings.items_per_row_desktop
+  assign size_placeholder = '--size: 120px' | replace: '12', section.settings.items_per_row_mobile | replace: '6', '8'
+  assign placeholder = 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder media w-100 h-100 of-cover'
+-%}
+
+{% liquid
+  assign detect_background = 1
+  if section.settings.color_scheme.settings.color_background.alpha != 0.0
+    assign no_transparent = 'no-transparent'
+    assign detect_background = section.settings.color_scheme.settings.color_background | color_brightness | times: 9999
+  endif
+%}
+<style>
+  #shopify-section-{{ section.id }} {
+    --section-background-hash: {{ detect_background }};
+  }
+  #shopify-section-{{ section.id }} + * {
+    --previous-section-background-hash: {{ detect_background }};
+  }
+</style>
+
+<div class="s--margin color-{{- section.settings.color_scheme }} s-container-radius {{ no_transparent }}" data-ui-component="Logo List Section" role="region" aria-labelledby="sectionHeading-{{ section.id | md5 | truncate: 12, "" }}">
+  <div class="section ctnr d-grid  ">
+    {% render 'section-header',
+      content_align_mobile: section.settings.content_align_mobile,
+      content_align_desktop: section.settings.content_align_desktop,
+      subheading: section.settings.subheading,
+      heading: section.settings.heading,
+      description: section.settings.description,
+      heading_size: section.settings.heading_size,
+      section: section
+    %}
+    <div class="s-content logo-list">
+      <div class="rw r-gap-equal middle-xs ta-center">
+        {% for block in section.blocks %}
+          {%- liquid
+            assign loading = "lazy"
+            assign decoding ="async"
+            assign fetchpriority = "auto"
+
+            if section.index <= 2 and forloop.first
+              assign loading = "eager"
+              assign fetchpriority = "high"
+            endif
+
+            assign media = placeholder
+            assign media_alt  = block.settings.logo.alt | default: block.settings.logo.image | split: '/' | last
+            assign media = block.settings.logo | image_url: width: block.settings.logo.width | image_tag: widths: '320', sizes: '(min-width: 361px) calc(100vw/2), calc(100vw/3)', alt: media_alt, class: 'of-contain media w-100 h-100', loading: loading, fetchpriority: fetchpriority, decoding: decoding
+            assign ratio = 'auto'
+            if block.settings.logo == blank
+              assign ratio = 1
+            endif
+          -%}
+          <div class="clm d-flex center-xs" {{ block.shopify_attributes }} style="--w-xs:{{ section.settings.items_per_row_mobile }};--w-md: {{- md -}};">
+            <div class="p-relative d-inline-block" style="{{ size_placeholder }}">
+              <a target="_blank" href="{{ block.settings.logo_link | default: '#' }}" {% if block.settings.logo_link == blank %} tabindex="-1" {% endif %} class="d-block p-absolute w-100 h-100 zi-1 hide-no-link" aria-label="{{ media_alt }}"></a>
+                {% render 'image',
+                  ratio: ratio,
+                  image_item: media,
+                  image_wrap_classes: 'w-100',
+                  image_classes: 'm-auto'
+                %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "t:sections.logo_list.name",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "max_blocks": 12,
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.general.content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_scheme.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "t:general.settings.section_subheading.label",
+      "default": "Add a tagline"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:general.settings.section_heading.label",
+      "info": "t:general.settings.prominent_font.info",
+      "default": "Our beloved partners"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.heading_size.label",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "t:general.settings.heading_size.options.h2.label"
+        },
+        {
+          "value": "h3",
+          "label": "t:general.settings.heading_size.options.h3.label"
+        },
+        {
+          "value": "h4",
+          "label": "t:general.settings.heading_size.options.h4.label"
+        },
+        {
+          "value": "h5",
+          "label": "t:general.settings.heading_size.options.h5.label"
+        }
+      ],
+      "default": "h2"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "t:general.settings.section_description.label"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_large_screen.content"
+    },
+    {
+      "type": "select",
+      "id": "content_align_desktop",
+      "label": "t:general.settings.section_heading_alignment.label",
+      "default": "ta-center-md",
+      "options": [
+        {
+          "value": "ta-left-md",
+          "label": "t:general.settings.option_left.label"
+        },
+        {
+          "value": "ta-center-md",
+          "label": "t:general.settings.option_center.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "items_per_row_desktop",
+      "label": "t:general.settings.columns_per_row.label",
+      "default": "3",
+      "options": [
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        },
+        {
+          "value": "5",
+          "label": "5"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_mobile_screen.content"
+    },
+    {
+      "type": "select",
+      "id": "content_align_mobile",
+      "label": "t:general.settings.section_heading_alignment.label",
+      "default": "ta-center",
+      "options": [
+        {
+          "value": "ta-left",
+          "label": "t:general.settings.option_left.label"
+        },
+        {
+          "value": "ta-center",
+          "label": "t:general.settings.option_center.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "items_per_row_mobile",
+      "label": "t:general.settings.columns_per_row.label",
+      "default": "12",
+      "options": [
+        {
+          "value": "12",
+          "label": "1"
+        },
+        {
+          "value": "6",
+          "label": "2"
+        }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "t:sections.logo_list.blocks.logo.name",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "t:general.settings.logo_image.label",
+          "info": "t:general.settings.logo_image.info"
+        },
+        {
+          "type": "url",
+          "id": "logo_link",
+          "label": "t:general.settings.link.label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.logo_list.name",
+      "blocks": [
+        {
+          "type": "item"
+        },
+        {
+          "type": "item"
+        },
+        {
+          "type": "item"
+        },
+        {
+          "type": "item"
+        },
+        {
+          "type": "item"
+        },
+        {
+          "type": "item"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

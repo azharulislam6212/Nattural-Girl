@@ -1,0 +1,43 @@
+{%- liquid
+  assign product_form_id = 'productQuickViewForm-' | append: section.id | append: '-' | append: product.id
+-%}
+<sht-atc-frm class="product__form dialog--animate w-100">
+  {%- form 'product', product, id: product_form_id, class: 'form form__fields', novalidate: 'novalidate' -%}
+    <div class="form__field">
+      <input type="hidden" class="form__control" name="id" value="{{ product.selected_or_first_available_variant.id }}" disabled>
+    </div>
+    <div class="d-flex fd-column">
+      <div class="js-product-form-error-wrapper" data-type="error-wrapper" role="alert" hidden>
+        <span class="d-flex middle-xs mb-12">
+          <span class="icon--error icon icon--small mr-8 fs-0">
+            {%- render 'icon-functional-info', size: 16 -%}
+          </span>
+          <span class="js-product-form-error-message" data-type="error-message"></span>
+        </span>
+      </div>
+      <div class="quickview-form__buttons d-flex {{ content_align | default: settings.product_card_position }}">
+        <button
+          type="submit"
+          name="add"
+          class="js-product-form-submit-btn btn w-100 btn-link maw-fit-content"
+          {% if product.selected_or_first_available_variant.available == false %}
+            disabled
+          {% endif %}
+        >
+          <span class="p-relative d-flex middle-xs center-xs ta-center">
+            {%- if product.selected_or_first_available_variant.available -%}
+              <span class="js-product-form-submit-btn-text {{ content_align | default: settings.product_card_position }}">
+                {{ 'products.product.quick_add' | t }}
+              </span>
+            {%- endif -%}
+            <span class="hidden js-product-form-spinner product-form-spinner">
+              {% render 'icon-spinner', class: 'sht-spinner ml-8' %}
+            </span>
+          </span>
+        </button>
+      </div>
+    </div>
+  {%- endform -%}
+</sht-atc-frm>
+
+ {% render 'js-loader', files: "component-quickadd.js" | split: ', ' %}

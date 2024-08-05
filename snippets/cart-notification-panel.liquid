@@ -1,0 +1,33 @@
+<sht-cart-noti id="cartNotificationPanel" class="cart-notification zi-8 no-focus-visible d-block" tabindex="-1" hidden="true">
+    <div data-type="cart-notification-panel-wrapper" class="dialog disable-scrollbars cart-notification__wapper scrollbars js-cart-notification-panel-wrapper p-relative color-{{- settings.color_scheme_drawer_popover }}" >
+      <div class="cart-notification-panel-container focus-inset js-cart-notification-panel-container" aria-modal="true" aria-label="{{ 'general.cart.item_added' | t }}" role="dialog" tabindex="-1">
+        <div class="dialog__header d-flex middle-xs between-xs">
+          <p class="m-zero d-flex middle-xs color-success subtext">
+            <span class="icon icon--small icon--success fs-0 mr-8">
+              {% render 'icon-check', size: 16 %}
+            </span>
+            {{ "general.cart.success_message" | t }}
+          </p>
+          <button type="button" class="cart-notification-btn-close btn btn-icon  btn--medium btn-plain js-cart-notification-panel-close-btn" aria-label="{{ 'accessibility.close' | t }}" >
+            {% render 'icon-close' %}
+          </button>
+        </div>
+        <div class="dialog__body disable-scrollbars">
+          {% if settings.cart_show_free_shipping_notification and settings.cart_minimum_order_price_for_free_shipping != blank %}
+            <div class="cart-notification-free-shipping js-cart-notification-free-shipping top-xs pb-24"></div>
+          {% endif %}
+          <div class="js-cart-notification-panel-content cart-notification-panel-content d-grid top-xs gap-12"></div>
+        </div>
+        <div class="dialog__footer d-flex fd-column gap-8">
+          <a href="{{ routes.cart_url }}" {% if settings.cart_type == 'drawer' %} role="button" onclick="event.preventDefault();try { window.cartNotificationPanel.close(); window.shtCartDrawer.openDrawer(SHTHelper.qs('.js-header-cart-status-btn')); } catch(err) { window.location.assign('{{ routes.cart_url }}');}" {% endif %} aria-haspopup="true" aria-expanded="false" aria-controls="shtCartDrawer" class="btn btn--large btn-outline  w-100">
+            {{ "general.cart.view" | t }} (<span class="js-cart-notification-panel-item-count-content"></span>)
+          </a>
+          <form action="{{ routes.cart_url }}" method="post" id="cart-notification-form">
+            <button class="btn btn--large btn-primary  w-100 js-cart-notification-panel-btn" name="checkout">
+              {{ "sections.cart.checkout" | t }}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </sht-cart-noti>

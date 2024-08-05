@@ -1,0 +1,273 @@
+{{ 'section-quotation-text.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top_mobile | append: 'px' }};
+    padding-bottom: {{ section.settings.padding_bottom_mobile | append: 'px' }};
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top | append: 'px'}};
+      padding-bottom: {{ section.settings.padding_bottom | append: 'px'}};
+    }
+  }
+{%- endstyle -%}
+
+{% liquid
+  assign quotations = section.blocks | where: 'type', 'quotation'
+
+
+  assign autoPlay = section.settings.autoplay_enabled
+  assign loop = section.settings.loop_enabled
+  assign delay = section.settings.autoplay_timeout | times: 1000
+%}
+
+<div class="quotation-wrapper  solate section-{{ section.id }}-padding color-{{ section.settings.color_scheme }} gradient">
+  <div class="container">
+    <div class="quotation-box color-{{ section.settings.color_scheme_secondary }} gradient">
+        <span class="top-left-sparkle">
+            <svg class="sparkle" width="30" height="23" viewBox="0 0 30 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M25.9333 0C21.8286 9.1762 22.1762 10.6191 30 16.9333C20.8238 12.8286 19.381 13.1762 13.0667 21C17.1715 11.8238 16.8238 10.3809 9 4.06666C18.1762 8.17142 19.6191 7.82381 25.9333 0Z" fill="white"/>
+    <path d="M7.25715 14C5.49796 17.9327 5.64695 18.551 9.00001 21.2571C5.06736 19.498 4.44899 19.6469 1.74287 23C3.50205 19.0673 3.35306 18.449 0 15.7429C3.93266 17.502 4.55102 17.3531 7.25715 14Z" fill="white"/>
+    </svg>
+    
+          </span>
+    
+        <span class="top__quote">
+        
+            <svg width="231" height="169" viewBox="0 0 231 169" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path opacity="0.2" d="M230.407 0.638722C226.286 18.0372 221.937 36.8092 217.358 56.9547C212.78 77.1003 208.659 96.788 204.996 116.018C201.333 135.248 198.357 152.875 196.068 168.9H130.824L126.016 161.345C130.137 145.32 135.402 128.151 141.812 109.837C148.222 91.0648 155.319 72.2928 163.102 53.5208C170.886 34.7488 178.441 17.1215 185.766 0.638722H230.407ZM103.353 0.638722C99.2319 18.0372 94.8823 36.8092 90.3037 56.9547C85.7252 77.1003 81.6045 96.788 77.9417 116.018C74.2789 135.248 71.3028 152.875 69.0136 168.9H4.45619L0.335505 161.345C4.45619 145.32 9.7215 128.151 16.1315 109.837C22.5414 91.0648 29.4092 72.2928 36.7349 53.5208C44.5184 34.7488 52.073 17.1215 59.3986 0.638722H103.353Z" fill="white"/>
+            </svg>
+
+        </span>
+
+        
+        <span class="middle-mobile-sparkle">
+            <svg class="sparkle" width="30" height="23" viewBox="0 0 30 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M25.9333 0C21.8286 9.1762 22.1762 10.6191 30 16.9333C20.8238 12.8286 19.381 13.1762 13.0667 21C17.1715 11.8238 16.8238 10.3809 9 4.06666C18.1762 8.17142 19.6191 7.82381 25.9333 0Z" fill="white"/>
+    <path d="M7.25715 14C5.49796 17.9327 5.64695 18.551 9.00001 21.2571C5.06736 19.498 4.44899 19.6469 1.74287 23C3.50205 19.0673 3.35306 18.449 0 15.7429C3.93266 17.502 4.55102 17.3531 7.25715 14Z" fill="white"/>
+    </svg>
+    
+          </span>
+
+
+        <span class="top-right-sparkle">
+            <svg class="sparkle" width="30" height="23" viewBox="0 0 30 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M25.9333 0C21.8286 9.1762 22.1762 10.6191 30 16.9333C20.8238 12.8286 19.381 13.1762 13.0667 21C17.1715 11.8238 16.8238 10.3809 9 4.06666C18.1762 8.17142 19.6191 7.82381 25.9333 0Z" fill="white"/>
+    <path d="M7.25715 14C5.49796 17.9327 5.64695 18.551 9.00001 21.2571C5.06736 19.498 4.44899 19.6469 1.74287 23C3.50205 19.0673 3.35306 18.449 0 15.7429C3.93266 17.502 4.55102 17.3531 7.25715 14Z" fill="white"/>
+    </svg>
+    
+          </span>
+
+          <navslider-component>
+      <div class="quotation-box__inner">
+        <div class="logo-navigation swiper-container  slideshow__nav"    data-autoPlay="{{ autoPlay }}"
+        data-delay="{{ delay }}"
+        data-loop="{{ loop }}">
+            <div class="swiper-wrapper">
+
+            {% for block in quotations %}
+                
+           
+          <div class="logo-text__item swiper-slide">
+
+          {% if block.settings.svg_icon != blank %}
+            <span>
+                {{ block.settings.svg_icon}}
+               </span>
+          {% endif %}
+          {% if block.settings.heading != blank %}
+          
+                {{ block.settings.heading}}
+         
+          {% endif %}
+       
+          </div>
+        {% endfor %}
+
+          </div>
+        </div>
+        <div class="quotation-nav swiper-container  slideshow__for">
+            <div class="swiper-wrapper">
+
+            {% for block in quotations %}
+          <div class="quatation--item swiper-slide">
+            <div class="quatation__text">{{ block.settings.text}}</div>
+          </div>
+        {% endfor %}
+     
+          </div>
+        </div>
+      </div>
+      </navslider-component>
+
+      <span class="bottom-left-sparkle">
+        <svg class="sparkle" width="30" height="23" viewBox="0 0 30 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M25.9333 0C21.8286 9.1762 22.1762 10.6191 30 16.9333C20.8238 12.8286 19.381 13.1762 13.0667 21C17.1715 11.8238 16.8238 10.3809 9 4.06666C18.1762 8.17142 19.6191 7.82381 25.9333 0Z" fill="white"/>
+<path d="M7.25715 14C5.49796 17.9327 5.64695 18.551 9.00001 21.2571C5.06736 19.498 4.44899 19.6469 1.74287 23C3.50205 19.0673 3.35306 18.449 0 15.7429C3.93266 17.502 4.55102 17.3531 7.25715 14Z" fill="white"/>
+</svg>
+
+      </span>
+
+      <span class="bottom__quote">
+        
+<svg width="231" height="169" viewBox="0 0 231 169" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.2" d="M230.407 0.638722C226.286 18.0372 221.937 36.8092 217.358 56.9547C212.78 77.1003 208.659 96.788 204.996 116.018C201.333 135.248 198.357 152.875 196.068 168.9H130.824L126.016 161.345C130.137 145.32 135.402 128.151 141.812 109.837C148.222 91.0648 155.319 72.2928 163.102 53.5208C170.886 34.7488 178.441 17.1215 185.766 0.638722H230.407ZM103.353 0.638722C99.2319 18.0372 94.8823 36.8092 90.3037 56.9547C85.7252 77.1003 81.6045 96.788 77.9417 116.018C74.2789 135.248 71.3028 152.875 69.0136 168.9H4.45619L0.335505 161.345C4.45619 145.32 9.7215 128.151 16.1315 109.837C22.5414 91.0648 29.4092 72.2928 36.7349 53.5208C44.5184 34.7488 52.073 17.1215 59.3986 0.638722H103.353Z" fill="white"/>
+</svg>
+
+      </span>
+
+      <span class="bottom-right-sparkle">
+        <svg class="sparkle" width="30" height="23" viewBox="0 0 30 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M25.9333 0C21.8286 9.1762 22.1762 10.6191 30 16.9333C20.8238 12.8286 19.381 13.1762 13.0667 21C17.1715 11.8238 16.8238 10.3809 9 4.06666C18.1762 8.17142 19.6191 7.82381 25.9333 0Z" fill="white"/>
+<path d="M7.25715 14C5.49796 17.9327 5.64695 18.551 9.00001 21.2571C5.06736 19.498 4.44899 19.6469 1.74287 23C3.50205 19.0673 3.35306 18.449 0 15.7429C3.93266 17.502 4.55102 17.3531 7.25715 14Z" fill="white"/>
+</svg>
+
+      </span>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Quotation Text",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Slider Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay_enabled",
+      "label": "Auto Play",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "loop_enabled",
+      "label": "Loop",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "autoplay_timeout",
+      "label": "Change slide",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "default": 5,
+      "unit": "s"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color",
+      "default": "background-1"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme_secondary",
+      "label": "Secondary Color",
+      "default": "background-2"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "paragraph",
+      "content": "Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 116
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 116
+    },
+    {
+      "type": "paragraph",
+      "content": " Mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 58
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 58
+    }
+  ],
+  "blocks": [
+    {
+      "type": "quotation",
+      "name": "Quotation",
+      "settings": [
+        {
+          "type": "liquid",
+          "id": "svg_icon",
+          "label": "Svg Icon"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "heading",
+          "default": "Quotation",
+          "label": "Title"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "text",
+          "default": "“Mighty Patch is hailed a blemish hero with good reason.”",
+          "label": "text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Quotation Text",
+      "blocks": [
+        {
+          "type": "quotation"
+        },
+        {
+          "type": "quotation"
+        },
+        {
+          "type": "quotation"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

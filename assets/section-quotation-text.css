@@ -1,0 +1,160 @@
+.quotation-box__inner{
+    max-width: 650px;
+    margin: 0 auto;
+
+}
+
+.quotation-box{
+    padding: 140px 0 127px;
+    border-radius: 20px;
+    position: relative;
+}
+
+
+.bottom__quote{
+    position: absolute;
+    right: 10%;
+    bottom: 30px;
+}
+
+.quotation-box .top__quote{
+    position: absolute;
+    left: 2%;
+    top: 31px;
+}
+
+
+.quotation-box .top-left-sparkle{
+    position: absolute;
+    left: 10%;
+    top: 71px;
+}
+
+.quotation-box .top-right-sparkle{
+    position: absolute;
+    right: 10%;
+    top: 60px;
+}
+
+
+.quotation-box .bottom-left-sparkle{
+    position: absolute;
+    left: 20px;
+    bottom: 50px;
+}
+
+.quotation-box .bottom-right-sparkle{
+    position: absolute;
+    right: 8%;
+    bottom: 40px;
+}
+
+.logo-navigation {
+    margin-bottom: 40px;
+}
+
+.quatation__text{
+    max-width: 430px;
+    margin: 0 auto;
+    font-family: var(--body-font);
+    font-style: normal;
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 140%;
+    text-align: center;
+}
+
+.logo-text__item {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    font-size: 20px;
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+.logo-text__item.swiper-slide-active{
+    opacity: 1;
+}
+
+.logo-text__item span{
+    line-height: 0;
+}
+
+
+@media screen and (max-width: 991px) {
+
+    .quotation-wrapper .container{
+        padding: 0;
+    }
+
+    .quotation-box__inner {
+        padding: 0 20px;
+    }
+
+
+    .quatation__text{
+        font-size: 24px;
+        line-height: 140%;
+    }
+
+    
+    .quotation-box .top__quote svg{
+        width: 73px;
+        height: 73px;
+    }
+    .quotation-box .top__quote {
+        position: absolute;
+        left: 5%;
+        top: 5px;
+    }
+    .quotation-box .bottom__quote {
+        position: absolute;
+        right: 5%;
+        bottom: 5px;
+    }
+
+    .quotation-box .bottom__quote svg{
+        width: 73px;
+        height: 73px;
+    }
+
+    .quotation-box {
+        padding: 75px 0 75px;
+        border-radius: 0;
+    }
+
+
+}
+
+.middle-mobile-sparkle{
+    display: none;
+}
+
+@media screen and (max-width: 768px) {
+
+    .quotation-box .top-left-sparkle {
+        left: 45%;
+        top: 25px;
+    }
+    .quotation-box .bottom-left-sparkle {
+        bottom: 16px;
+    }
+
+    .logo-text__item {
+        font-size: 16px;
+    }
+
+    .logo-text__item span svg {
+        width: 24px;
+        
+    }
+
+    .middle-mobile-sparkle{
+        position: absolute;
+        left: 5%;
+        top: 43%;
+        display: block;
+    }
+
+}

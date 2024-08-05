@@ -1,0 +1,140 @@
+
+.category-list-sub-title{
+font-family: var(--body-font);
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 20px;
+/* identical to box height, or 143% */
+letter-spacing: 0.2px;
+margin-bottom: 12px;
+
+}
+
+.category-list-title{
+    margin: 0;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 40px;
+    line-height: 48px;
+    color: rgb(var(--color-heading-rgb));
+    position: relative;
+}
+
+.category-list-header{
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: calc(var(--gutter-base)* var(--times-padding-inline));
+}
+
+.category--name{
+    padding: 10px;
+    font-family: var(--body-font);
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12.7681px;
+    line-height: 22px;
+    text-align: center;
+}
+@media screen and (max-width: 767px) {
+
+    .category-list-title{
+       font-size:32px;
+       line-height: 35px;
+   }
+
+   .category-list-header{
+    margin-bottom: 50px;
+}
+}
+
+
+
+.category-list  {
+    position: relative;
+    overflow: hidden;
+    padding-left: calc(var(--gutter-base) * var(--times-padding-inline));
+}
+
+.category-list  .container{
+    position: relative;
+}
+
+.top-left-csparkle{
+    position: absolute;
+    left: 4%;
+    top: 0%;
+}
+
+
+.category-list-text-wrap{
+    position: relative;
+    display: inline-block;
+}
+
+.bottom-left-csparkle{
+    position: absolute;
+    left: 11px;
+    bottom: 9px;
+}
+
+.heading-right-csparkle{
+    display: none;
+}
+
+.category-slider {
+    padding-right: 80px;
+}
+
+.category-slider.swiper-container-horizontal>.swiper-scrollbar{
+    width: calc(100% - var(--gutter-base)* var(--times-padding-inline));
+}
+
+@media screen and (max-width: 767px) {
+
+    .heading-right-csparkle{
+        display: block;
+        position: absolute;
+        right: -28px;
+        top: -7px;
+    }
+    .category-list .container {
+        --bs-gutter-x: 0;
+        padding-left: calc(var(--gutter-base)* var(--times-padding-inline));
+    }
+
+
+    .category-list-header{
+        padding-right: calc(var(--gutter-base)* var(--times-padding-inline));
+    }
+
+    .category-slider {
+        padding-right: 67px;
+    }
+
+    .bottom-right-csparkle{
+        display: none;
+    }
+
+
+    .top-left-csparkle {
+        left: 5%;
+        top: -7%;
+    }
+
+    .top-left-csparkle  svg{
+        width: 20px;
+    }
+
+    .heading-left-csparkle{
+        position: absolute;
+        top: -38px;
+    }
+
+    .navigation--wrapper {
+        display: none;
+    }
+
+}

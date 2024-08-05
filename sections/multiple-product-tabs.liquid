@@ -1,0 +1,377 @@
+{%- liquid
+  assign content_align_mobile = section.settings.content_align_mobile
+  assign content_align_desktop = section.settings.content_align_desktop
+  assign xs = 12.0 | divided_by: section.settings.columns_per_row_mobile
+  assign md = 12.0 | divided_by: section.settings.columns_per_row_desktop
+
+  assign section_id = section.id | md5 | truncate: 12, ""
+  assign tab_aria_controls_prefix = "products-tabs-tabs-" | append: section_id
+  assign tab_id = "products-tabs-tab-" | append: section_id
+
+  assign tab_panel = ''
+  assign carousel_style = 'js-carousel-items ox-auto p-relative scrollable scrollable-x disable-scrollbars'
+  assign carousel_item = 'js-carousel-item p-relative scrollable-aln-start'
+-%}
+
+{% liquid
+  assign detect_background = 1
+  if section.settings.color_scheme.settings.color_background.alpha != 0.0
+    assign no_transparent = 'no-transparent'
+    assign detect_background = section.settings.color_scheme.settings.color_background | color_brightness | times: 9999
+  endif
+%}
+<style>
+  #shopify-section-{{ section.id }} {
+    --section-background-hash: {{ detect_background }};
+  }
+  #shopify-section-{{ section.id }} + * {
+    --previous-section-background-hash: {{ detect_background }};
+  }
+</style>
+
+<div class="s--margin color-{{- section.settings.color_scheme }} s-container-radius o-hidden {{ no_transparent }}" data-ui-component="Multiple Product Tabs Section" role="region" aria-labelledby="sectionHeading-{{ section_id }}">
+  <div class="section ctnr d-flex fd-column  ">
+    {% render 'section-header',
+      content_align_mobile: content_align_mobile,
+      content_align_desktop: content_align_desktop,
+      subheading: section.settings.subheading,
+      heading: section.settings.heading,
+      description: section.settings.description,
+      heading_size: section.settings.heading_size,
+      section: section
+    %}
+    <div class="s-content">
+      <sht-tabs>
+        <div class="tab__header product__tabs d-flex {{ content_align_desktop }}">
+          <ul class=" pb-2x p-relative ox-auto disable-scrollbars ls-none ws-nowrap d-flex hide-empty " role="tablist">
+            {%- for collection in section.settings.collection_list -%}
+              {%- liquid
+                assign products = collection.products
+                assign tab_link_class = ''
+                assign tab_panel_class = ' d-none'
+                if forloop.first
+                  assign tab_link_class = ' tab__link--active'
+                  assign tab_panel_class = ' tab__panel--active d-block'
+                endif
+              -%}
+              <li class="tab__item d-inline-block {% if forloop.length == 1 %} d-none-important {% endif %}" role="presentation">
+                <a class="tab__link h6 mb-0 d-block p-relative color-light {{ tab_link_class }} js-tab-link" role="tab" id="{{ tab_id }}-{{ collection.id }}" href="#{{ tab_aria_controls_prefix }}-{{ collection.id }}" aria-controls="{{ tab_aria_controls_prefix }}-{{ collection.id }}">
+                  {{ collection.title }}
+                </a>
+              </li>
+              {% capture tab_panel %}
+                {{ tab_panel }}
+                <div class="tab__panel {{ tab_panel_class }} js-tab-panel {{ tab_aria_controls_prefix }}-{{ collection.id }}" data-tab-content-id="{{ tab_aria_controls_prefix }}-{{ collection.id }}" aria-labelledby="{{ tab_id }}-{{ collection.id }}" id="{{ tab_aria_controls_prefix }}-{{ collection.id }}" role="tabpanel">
+                  <div class="d-flex fd-column gap-content">
+                    <sht-carousel class="sht-carousel p-relative d-block" data-enable="{{ section.settings.carousel_desktop }}">
+                      <div aria-atomic="true" class="rw r-gap-equal {{ carousel_style }} {{ section.settings.carousel_mobile | replace: 'false', '' | replace: 'true', 'carousel-xs' }} {{ section.settings.carousel_desktop | replace: 'false', '' | replace: 'true', 'carousel-md' }}">
+                        {% for product in products limit: section.settings.items_to_show %}
+                          <sht-carousel-itm class="clm {{ carousel_item }} {{ section.settings.carousel_mobile | replace: 'false', '' | replace: 'true', 'carousel__item-xs' }} {{ section.settings.carousel_desktop | replace: 'false', '' | replace: 'true', 'carousel__item-md' }}" style="--w-xs:{{- xs -}};--w-md:{{- md -}};" role="group" aria-roledescription="Slide" aria-label="{{ 'accessibility.slide' | t }} {{ forloop.index }} {{ 'accessibility.of' | t }} {{ forloop.length }}" data-item-index="{{ forloop.index }}">
+                            {% render 'card-product',
+                                product: product,
+                                show_vendor: section.settings.show_vendor,
+                                show_color_swatch: section.settings.show_color_swatch,
+                                ratio: settings.product_card_image_ratio,
+                                show_second_image: settings.show_second_image_on_hover,
+                                add_to_cart: section.settings.quick_shop_action,
+                                image_width: '320, 450, 550, 750',
+                                section: section
+                            %}
+                          </sht-carousel-itm>
+                        {% endfor %}
+                      </div>
+                      <div class="carousel-pagination middle-y w-100 p-absolute no-js-hidden">
+                        <div class="p-absolute left-0">
+                          <button type="button" data-step="1" class="js-carousel-prev-btn btn btn-outline btn-icon icon middle-y btn--medium" aria-label="{{ 'accessibility.previous_slide' | t }}" name="previous" disabled>{% render 'icon-chevron-left' %}</button>
+                        </div>
+                        <div class="p-absolute right-0">
+                          <button type="button" data-step="1" class="js-carousel-next-btn btn btn-outline btn-icon icon middle-y btn--medium" aria-label="{{ 'accessibility.next_slide' | t }}" name="next" disabled>{% render 'icon-chevron-right' %}</button>
+                        </div>
+                      </div>
+                    </sht-carousel>
+                    <div class="s-footer {{ content_align_mobile }} {{ content_align_desktop }} {{ section.settings.enable_button | default: 'd-none' | replace: 'true', '' }}">
+                      <a href="{{- collection.url | default: "#" -}}" class="btn btn-primary  btn--large hide-empty">
+                        {{ 'sections.multiple_product_tabs.button_view_all' | t }} '{{- collection.title -}}'
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              {% endcapture %}
+            {%- endfor -%}
+          </ul>
+        </div>
+        <div class="tab__content">
+          {{ tab_panel }}
+          {% if section.settings.collection_list == blank %}
+            <sht-carousel class="sht-carousel p-relative d-block" data-enable="{{ section.settings.carousel_desktop }}">
+              <div aria-atomic="true" class="rw r-gap-equal {{ carousel_style }} {{ section.settings.carousel_mobile | replace: 'false', '' | replace: 'true', 'carousel-xs' }} {{ section.settings.carousel_desktop | replace: 'false', '' | replace: 'true', 'carousel-md' }}">
+              {% for i in (1..section.settings.items_to_show) %}
+                <sht-carousel-itm data-attribute-placeholder="1" aria-hidden="true" aria-disabled="true" class="clm {{ carousel_item }} {{ section.settings.carousel_mobile | replace: 'false', '' | replace: 'true', 'carousel__item-xs' }} {{ section.settings.carousel_desktop | replace: 'false', '' | replace: 'true', 'carousel__item-md' }}" style="--w-xs:{{- xs -}};--w-md:{{- md -}};" role="group" aria-roledescription="Slide" aria-label="{{ 'accessibility.slide' | t }} {{ forloop.index }} {{ 'accessibility.of' | t }} {{ forloop.length }}" data-item-index="{{ forloop.index }}">
+                  {% render 'card-product-placeholder',
+                    ratio: settings.product_card_image_ratio,
+                    show_vendor: section.settings.show_vendor
+                  %}
+                </sht-carousel-itm>
+              {% endfor %}
+              </div>
+              <div class="carousel-pagination middle-y w-100 p-absolute no-js-hidden">
+                <div class="p-absolute left-0">
+                  <button type="button" data-step="1" class="js-carousel-prev-btn btn btn-outline btn-icon icon middle-y btn--medium" aria-label="{{ 'accessibility.previous_slide' | t }}" name="previous" disabled>{% render 'icon-chevron-left' %}</button>
+                </div>
+                <div class="p-absolute right-0">
+                  <button type="button" data-step="1" class="js-carousel-next-btn btn btn-outline btn-icon icon middle-y btn--medium" aria-label="{{ 'accessibility.next_slide' | t }}" name="next" disabled>{% render 'icon-chevron-right' %}</button>
+                </div>
+              </div>
+            </sht-carousel>
+          {% endif %}
+        </div>
+      </sht-tabs>
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "t:sections.multiple_product_tabs.name",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.general.content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_scheme.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "text",
+      "label": "t:general.settings.section_subheading.label",
+      "id": "subheading",
+      "default": "Add a tagline"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:general.settings.section_heading.label",
+      "info": "t:general.settings.prominent_font.info",
+      "default": "Products with tabs"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.heading_size.label",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "t:general.settings.heading_size.options.h2.label"
+        },
+        {
+          "value": "h3",
+          "label": "t:general.settings.heading_size.options.h3.label"
+        },
+        {
+          "value": "h4",
+          "label": "t:general.settings.heading_size.options.h4.label"
+        },
+        {
+          "value": "h5",
+          "label": "t:general.settings.heading_size.options.h5.label"
+        }
+      ],
+      "default": "h2"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "t:general.settings.section_description.label"
+    },
+    {
+      "type": "collection_list",
+      "id": "collection_list",
+      "label": "t:sections.multiple_product_tabs.settings.product_tabs.label",
+      "info": "t:sections.multiple_product_tabs.settings.product_tabs.info"
+    },
+    {
+      "type": "range",
+      "id": "items_to_show",
+      "label": "t:general.settings.max_items_to_show.label",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.product_card.label",
+      "info": "t:general.settings.headers.product_card.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "t:general.settings.show_vendor.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_color_swatch",
+      "label": "t:general.settings.show_variant_swatches.label",
+      "info": "t:general.settings.show_variant_swatches.info",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "quick_shop_action",
+      "label": "t:general.settings.quick_shop_action.label",
+      "info": "t:general.settings.quick_shop_action.info",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:general.settings.quick_shop_action.options.not_use.label"
+        },
+        {
+          "value": "quick_add",
+          "label": "t:general.settings.quick_shop_action.options.quick_add.label"
+        },
+        {
+          "value": "quick_view",
+          "label": "t:general.settings.quick_shop_action.options.quick_view.label"
+        }
+      ],
+      "default": "quick_add"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_large_screen.content"
+    },
+    {
+      "type": "select",
+      "id": "content_align_desktop",
+      "label": "t:general.settings.section_heading_alignment.label",
+      "default": "ta-center-md center-md",
+      "options": [
+        {
+          "value": "ta-left-md",
+          "label": "t:general.settings.option_left.label"
+        },
+        {
+          "value": "ta-center-md center-md",
+          "label": "t:general.settings.option_center.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "carousel_desktop",
+      "label": "t:general.settings.list_style.label",
+      "default": "true",
+      "options": [
+        {
+          "value": "false",
+          "label": "t:general.settings.option_grid.label"
+        },
+        {
+          "value": "true",
+          "label": "t:general.settings.option_carousel.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "columns_per_row_desktop",
+      "label": "t:general.settings.columns_per_row.label",
+      "default": "3",
+      "options": [
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        },
+        {
+          "value": "5",
+          "label": "5"
+        },
+        {
+          "value": "6",
+          "label": "6"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_mobile_screen.content"
+    },
+    {
+      "type": "select",
+      "id": "content_align_mobile",
+      "label": "t:general.settings.section_heading_alignment.label",
+      "default": "ta-center",
+      "options": [
+        {
+          "value": "ta-left",
+          "label": "t:general.settings.option_left.label"
+        },
+        {
+          "value": "ta-center",
+          "label": "t:general.settings.option_center.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "carousel_mobile",
+      "label": "t:general.settings.list_style.label",
+      "default": "true",
+      "options": [
+        {
+          "value": "false",
+          "label": "t:general.settings.option_grid.label"
+        },
+        {
+          "value": "true",
+          "label": "t:general.settings.option_carousel.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "columns_per_row_mobile",
+      "label": "t:general.settings.columns_per_row.label",
+      "default": "1",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.button.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_button",
+      "label": "t:sections.multiple_product_tabs.settings.enable_view_collection_label",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.multiple_product_tabs.name"
+    }
+  ]
+}
+{% endschema %}

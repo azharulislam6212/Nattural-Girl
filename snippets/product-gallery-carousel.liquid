@@ -1,0 +1,54 @@
+<sht-carousel-wrapper class="d-block w-100 h-100" data-on-mobile-only="{{- carousel_desktop -}}" data-css-class-on-container="p-zero m-zero ox-auto p-relative disable-scrollbars fw-nowrap scrollable scrollable-x{{ carousel_class | default: '' }}" data-css-class-on-item="w-100 p-relative scrollable-aln-start ta-center d-flex aln-itm-ctr fg-1 fs-0{{ carousel_item_class | default: '' }}">
+  <sht-carousel class="sht-carousel h-100 p-relative d-block" id="productGalleryCarousel-{{ section.id }}" data-section-id="{{ section.id }}">
+    <div class="product-slideshow__items js-product-slideshow js-carousel-items d-flex disable-scrollbars" role="list" aria-label="{{ 'accessibility.slider' | t }}">
+
+      {%-liquid
+        assign product_media_index = 1
+        if product.selected_or_first_available_variant.featured_media != null
+          assign featured_media = product.selected_or_first_available_variant.featured_media
+          assign is_first_image = true
+          render 'product-slideshow-image', xr_button: true, section: section, media: featured_media, is_first_image: is_first_image, product: product, place_holder: place_holder, product_media_index: product_media_index, is_first_item: true, rand: rand, hide_variant_image: hide_variant_image, open_zoom_modal: open_zoom_modal, ratio: ratio, force_eager: force_eager, media_background: media_background
+        endif
+
+        for media in product.media
+          unless media.id == product.selected_or_first_available_variant.featured_media.id
+            if forloop.first and is_first_image == false
+              assign is_first_image = true
+            else
+              assign is_first_image = false
+            endif
+
+            assign product_media_index = product_media_index | plus: 1
+            render 'product-slideshow-image', xr_button: true, section: section, media: media, is_first_image: is_first_image, product: product, place_holder: place_holder, product_media_index: product_media_index, is_first_item: forloop.first, rand: rand, hide_variant_image: hide_variant_image, open_zoom_modal: open_zoom_modal, ratio: ratio, force_eager: force_eager, media_background: media_background
+          endunless
+        endfor
+      -%}
+    </div>
+    <div class="product-slideshow-pagination carousel-pagination js-carousel-pagination center-xs d-none-md no-js-hidden">
+      <div class="p-absolute middle-y zi-1  carousel__btn-left">
+        <button type="button" data-step="1" class="carousel__btn js-carousel-prev-btn btn btn-primary btn--medium btn-icon" aria-label="{{ 'accessibility.previous_slide' | t }}" name="previous" disabled>
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17 9H1" stroke="currentColor" stroke-width="1.25926" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M9 17L1 9L9 1" stroke="currentColor" stroke-width="1.25926" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          
+        </button>
+      </div>
+      <div class="carousel__counter zi-1 p-absolute pe-none {{ pg_mobile }}">
+        <span class="js-carousel-counter-current">1</span>
+        <span aria-hidden="true">/</span>
+        <span class="visually-hidden">{{ "accessibility.of" | t }}</span>
+        <span class="js-carousel-counter-total">{{ product.media.size }}</span>
+      </div>
+      <div class="p-absolute middle-y zi-1 right-0  carousel__btn-right">
+        <button type="button" data-step="1" class="carousel__btn js-carousel-next-btn btn btn-primary  btn--medium btn-icon" aria-label="{{ 'accessibility.next_slide' | t }}" name="next">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0.999999 9L17 9" stroke="currentColor" stroke-width="1.25926" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M9 0.999999L17 9L9 17" stroke="currentColor" stroke-width="1.25926" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          
+        </button>
+      </div>
+    </div>
+  </sht-carousel>
+</sht-carousel-wrapper>

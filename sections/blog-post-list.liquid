@@ -1,0 +1,373 @@
+{%- liquid
+  assign placeholder = 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder media of-cover h-100 w-100'
+  assign show_image = section.settings.show_featured_image
+  assign show_blog_tag = section.settings.show_blog_tags
+  assign show_excerpt = section.settings.show_excerpt
+  assign show_published_date = section.settings.show_published_date
+  assign show_author = section.settings.show_author
+  assign content_align_mobile = section.settings.content_align_mobile
+  assign content_align_desktop = section.settings.content_align_desktop
+  assign view_all = 'blogs.article.view_all' | t
+  assign carousel_style = 'js-carousel-items ox-auto p-relative scrollable scrollable-x disable-scrollbars'
+  assign carousel_item = 'js-carousel-item p-relative scrollable-aln-start'
+
+  assign block_per_row = section.settings.columns_per_row | minus: 1
+  assign md = 12.0 | divided_by: section.settings.columns_per_row
+  if content_align_desktop == 'inline'
+    assign section_layout = ''
+    if section.settings.show_view_all_button
+      assign s_button = section.settings.button_text
+    endif
+    unless section.settings.subheading == blank and section.settings.heading == blank and section.settings.description == blank
+      assign section_layout = 's-layout--vertical d-grid-md'
+      assign md = 12.0 | divided_by: block_per_row
+      assign item_per_row = section.settings.columns_per_row
+    endunless
+  endif
+-%}
+
+{% liquid
+  assign detect_background = 1
+  if section.settings.color_scheme.settings.color_background.alpha != 0.0
+    assign no_transparent = 'no-transparent'
+    assign detect_background = section.settings.color_scheme.settings.color_background | color_brightness | times: 9999
+  endif
+%}
+<style>
+  #shopify-section-{{ section.id }} {
+    --section-background-hash: {{ detect_background }};
+  }
+  #shopify-section-{{ section.id }} + * {
+    --previous-section-background-hash: {{ detect_background }};
+  }
+</style>
+
+<div class="s--margin color-{{- section.settings.color_scheme }} s-container-radius o-hidden {{ no_transparent }}" data-ui-component="Blog Post List Section" role="region" aria-labelledby="sectionHeading-{{ section.id | md5 | truncate: 12, "" }}">
+  <div class="section ctnr d-flex fd-column {{ section_layout }}  " style="--item-per-row: {{ item_per_row }}">
+    {% render 'section-header',
+     content_align_mobile: content_align_mobile,
+     content_align_desktop: content_align_desktop,
+     subheading: section.settings.subheading,
+     heading: section.settings.heading,
+     description: section.settings.description,
+     heading_size: section.settings.heading_size,
+     button_main_text: s_button,
+     button_main_link: section.settings.blog.url,
+     button_main_style: section.settings.style_button,
+     section: section
+    %}
+    <div class="s-content">
+      <sht-carousel class="sht-carousel p-relative d-block" data-enable="{{ section.settings.carousel_desktop }}">
+        <div aria-atomic="true" class="o-hidden rw r-gap-equal {{ carousel_style }} {{ section.settings.carousel_mobile | replace: 'false', '' | replace: 'true', 'carousel-xs' }} {{ section.settings.carousel_desktop | replace: 'false', '' | replace: 'true', 'carousel-md' }}">
+          {%- for article in blogs[section.settings.blog].articles limit: section.settings.items_to_show -%}
+            <sht-carousel-itm class="clm {{ carousel_item }} {{ section.settings.carousel_mobile | replace: 'false', '' | replace: 'true', 'carousel__item-xs' }} {{ section.settings.carousel_desktop | replace: 'false', '' | replace: 'true', 'carousel__item-md' }}" style="--w-xs:12;--w-sm: 6;--w-md: {{- md -}};" role="group" aria-roledescription="Slide" aria-label="{{ 'accessibility.slide' | t }} {{ forloop.index }} {{ 'accessibility.of' | t }} {{ forloop.length }}" data-item-index="{{ forloop.index }}">
+              {% render 'card-article'
+                article: article,
+                blog: section.settings.blog,
+                show_image: show_image,
+                image_ratio: settings.blog_card_image_ratio,
+                show_blog_tag: show_blog_tag,
+                show_excerpt: show_excerpt,
+                show_published_date: show_published_date,
+                show_author: show_author,
+                is_first: forloop.first,
+                force_eager: false
+                section: section,
+              %}
+            </sht-carousel-itm>
+            {% else %}
+              {% for i in (1..section.settings.items_to_show) %}
+                <sht-carousel-itm data-attribute-placeholder="1" aria-hidden="true" aria-disabled="true" class="clm {{ carousel_item }} {{ section.settings.carousel_mobile | replace: 'false', '' | replace: 'true', 'carousel__item-xs' }} {{ section.settings.carousel_desktop | replace: 'false', '' | replace: 'true', 'carousel__item-md' }}" style="--w-xs:12;--w-sm: 6;--w-md: {{- md -}};" role="group" aria-roledescription="Slide" aria-label="{{ 'accessibility.slide' | t }} {{ forloop.index }} {{ 'accessibility.of' | t }} {{ forloop.length }}" data-item-index="{{ forloop.index }}">
+                  <div class="sht-card card w-100 {% if settings.blog_card_style == 'card' %} color-{{ settings.blog_card_color_scheme }} {% else %} card--standard {% endif %}">
+                    <div class="p-relative card__media focus-state rounded-2x {{ show_image | default: 'd-none' | replace: true, 'd-block' }}">
+                      <a aria-label="{{ 'sections.featured_blog.article.title' | t }}" href="#" class="p-absolute card__media-link pe-no-link w-100 h-100"></a>
+                      {% render 'image', image_item: placeholder, ratio: settings.blog_card_image_ratio %}
+                    </div>
+                    <div class="card__content">
+                      <span class="pe-no-link td-none mb-8 tag {{ show_blog_tag | default: 'd-none-important' | replace: 'true', '' }}" >{{ 'sections.featured_blog.article.lorem_tag' | t }}</span>
+                      <h3 class="mb-8 card__heading">
+                        <a href="#" class="pe-no-link td-none d-inline-block link--hover">{{ 'sections.featured_blog.article.title' | t }}</a>
+                      </h3>
+                      <div class="hide-empty mb-12 subtext color-light">
+                        <span class="{{ show_published_date | default: 'd-none' | replace: 'true', 'd-inline-block' }}">
+                          {{ 'sections.featured_blog.article.lorem_date' | t }}
+                        </span>
+                      </div>
+                      <p class="card__excerpt mb-12 o-hidden {{ show_excerpt | default: 'd-none-important' | replace: 'true', '' }}">
+                        {{ 'sections.featured_blog.article.excerpt' | t | strip_html | truncatewords: 30 }}
+                      </p>
+                    </div>
+                  </div>
+                </sht-carousel-itm>
+              {% endfor %}
+          {% endfor %}
+        </div>
+        <div class="carousel-pagination middle-y w-100 p-absolute no-js-hidden zi-2">
+          <div class="p-absolute left-0">
+            <button type="button" data-step="1" class="js-carousel-prev-btn btn btn-outline btn-icon icon middle-y btn--medium" aria-label="{{ 'accessibility.previous_slide' | t }}" name="previous" disabled>{% render 'icon-chevron-left' %}</button>
+          </div>
+          <div class="p-absolute right-0">
+            <button type="button" data-step="1" class="js-carousel-next-btn btn btn-outline btn-icon icon middle-y btn--medium" aria-label="{{ 'accessibility.next_slide' | t }}" name="next" disabled>{% render 'icon-chevron-right' %}</button>
+          </div>
+        </div>
+      </sht-carousel>
+    </div>
+    <div class="s-footer {{ section.settings.show_view_all_button | default: 'd-none-important' | replace: 'true', '' }} {{ content_align_mobile }} {{ content_align_desktop }} {% if section.settings.subheading == blank and section.settings.heading == blank and section.settings.description == blank %} d-none {% endif %}">
+      <a class="btn hide-empty {{ section.settings.style_button }}" href="{{- section.settings.blog.url | default: '#' -}}" {% if section.settings.blog.url == blank %} tabindex="-1" {% endif %}>
+        {{- section.settings.button_text | default: view_all -}}
+      </a>
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "t:sections.blog_post_list.name",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.general.content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_schemes.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "t:general.settings.section_subheading.label",
+      "default": "Add a tagline"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:general.settings.section_heading.label",
+      "info": "t:general.settings.prominent_font.info",
+      "default": "Blog post list"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.heading_size.label",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "t:general.settings.heading_size.options.h2.label"
+        },
+        {
+          "value": "h3",
+          "label": "t:general.settings.heading_size.options.h3.label"
+        },
+        {
+          "value": "h4",
+          "label": "t:general.settings.heading_size.options.h4.label"
+        },
+        {
+          "value": "h5",
+          "label": "t:general.settings.heading_size.options.h5.label"
+        }
+      ],
+      "default": "h2"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "t:general.settings.section_description.label"
+    },
+    {
+      "type": "blog",
+      "id": "blog",
+      "label": "t:sections.blog_post_list.settings.blog.label"
+    },
+    {
+      "type": "range",
+      "id": "items_to_show",
+      "label": "t:general.settings.max_items_to_show.label",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.header_blog_post_list.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_featured_image",
+      "label": "t:general.settings.blog_post.show_featured_image.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_blog_tags",
+      "label": "t:general.settings.blog_post.show_blog_tags.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_published_date",
+      "label": "t:general.settings.blog_post.show_published_date.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "t:general.settings.blog_post.show_author.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_excerpt",
+      "label": "t:general.settings.blog_post.show_excerpt.label",
+      "info": "t:general.settings.blog_post.show_excerpt.info",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_large_screen.content"
+    },
+    {
+      "type": "select",
+      "id": "content_align_desktop",
+      "label": "t:general.settings.section_heading_position.label",
+      "default": "ta-center-md",
+      "options": [
+        {
+          "value": "ta-left-md",
+          "label": "t:general.settings.option_top_left.label"
+        },
+        {
+          "value": "ta-center-md",
+          "label": "t:general.settings.option_top_center.label"
+        },
+        {
+          "value": "inline",
+          "label": "t:general.settings.option_inline.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "carousel_desktop",
+      "label": "t:general.settings.list_style.label",
+      "default": "true",
+      "options": [
+        {
+          "value": "false",
+          "label": "t:general.settings.option_grid.label"
+        },
+        {
+          "value": "true",
+          "label": "t:general.settings.option_carousel.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "columns_per_row",
+      "label": "t:general.settings.columns_per_row.label",
+      "default": "3",
+      "options": [
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        },
+        {
+          "value": "5",
+          "label": "5"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_mobile_screen.content"
+    },
+    {
+      "type": "select",
+      "id": "content_align_mobile",
+      "label": "t:general.settings.section_heading_position.label",
+      "default": "ta-center",
+      "options": [
+        {
+          "value": "ta-left",
+          "label": "t:general.settings.option_top_left.label"
+        },
+        {
+          "value": "ta-center",
+          "label": "t:general.settings.option_top_center.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "carousel_mobile",
+      "label": "t:general.settings.list_style.label",
+      "default": "true",
+      "options": [
+        {
+          "value": "false",
+          "label": "t:general.settings.option_grid.label"
+        },
+        {
+          "value": "true",
+          "label": "t:general.settings.option_carousel.label"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.button.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all_button",
+      "label": "t:sections.blog_post_list.settings.show_view_all.label",
+      "info": "t:sections.blog_post_list.settings.show_view_all.info",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "t:general.settings.label.label",
+      "default": "Explore more"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.style.label",
+      "id": "style_button",
+      "options": [
+        {
+          "value": "btn-primary",
+          "label": "t:general.settings.filled.label"
+        },
+        {
+          "value": "btn-outline",
+          "label": "t:general.settings.oulined.label"
+        },
+        {
+          "value": "btn-link",
+          "label": "t:general.settings.text_link.label"
+        }
+      ],
+      "default": "btn-primary"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.blog_post_list.name"
+    }
+  ]
+}
+{% endschema %}

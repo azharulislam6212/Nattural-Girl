@@ -1,0 +1,530 @@
+
+{%- liquid
+  assign loading = "lazy"
+  assign decoding ="async"
+  assign fetchpriority = "auto"
+
+  if section.index <= 2 and forloop.first
+    assign loading = "eager"
+    assign fetchpriority = "high"
+  endif
+
+  assign subheading = section.settings.subheading
+  assign heading = section.settings.heading
+  assign description = section.settings.description
+
+  assign content_align_mobile = section.settings.content_align_mobile
+  assign content_align_desktop = section.settings.content_align_desktop
+  assign image_ratio = section.settings.image_ratio
+
+  assign block_per_row = section.settings.columns_per_row | minus: 1
+  assign md = 12.0 | divided_by: section.settings.columns_per_row
+  if content_align_desktop == 'inline'
+    assign section_layout = 's-layout--vertical'
+    assign s_button = section.settings.button_text
+    unless subheading == blank and heading == blank and description == blank
+      assign md = 12.0 | divided_by: block_per_row
+      assign item_per_row = section.settings.columns_per_row
+    endunless
+  endif
+
+  if section.settings.enable_item_background
+    unless section.settings.color_content.alpha == 0.0 or section.settings.color_content == blank
+      assign color_content = 'color: ' | append: section.settings.color_content | append: '; --color-normal-text-rgb:' | append: section.settings.color_content.red | append: ',' | append: section.settings.color_content.green | append: ',' | append: section.settings.color_content.blue
+    endunless
+    unless section.settings.background_content.alpha == 0.0 or section.settings.background_content == blank
+      assign background_content = '; background: ' | append: section.settings.background_content
+    endunless
+  endif
+-%}
+
+{% liquid
+  assign detect_background = 1
+  if section.settings.color_scheme.settings.color_background.alpha != 0.0
+    assign no_transparent = 'no-transparent'
+    assign detect_background = section.settings.color_scheme.settings.color_background | color_brightness | times: 9999
+  endif
+%}
+<style>
+  #shopify-section-{{ section.id }} {
+    --section-background-hash: {{ detect_background }};
+  }
+  #shopify-section-{{ section.id }} + * {
+    --previous-section-background-hash: {{ detect_background }};
+  }
+</style>
+
+<div class="s--margin color-{{- section.settings.color_scheme }} s-container-radius o-hidden {{ no_transparent }}" data-ui-component="Media With Text Columns Section" role="region" aria-labelledby="sectionHeading-{{ section.id | md5 | truncate: 12, "" }}">
+  <div class="section ctnr d-grid-md d-flex fd-column {{ section_layout }}  " style="--item-per-row: {{ item_per_row }}">
+    {% render 'section-header',
+     content_align_mobile: content_align_mobile,
+     content_align_desktop: content_align_desktop,
+     subheading: subheading,
+     heading: heading,
+     description: description,
+     heading_size: section.settings.heading_size,
+     button_main_text: s_button,
+     button_main_link: section.settings.button_link,
+     button_main_style: section.settings.style_button,
+     section: section
+    %}
+    <div class="s-content">
+      <sht-carousel-wrapper class="sht-carousel" data-on-mobile-only="{{ section.settings.list_style }}" data-css-class-on-container="carousel-xs m-zero ox-auto p-relative fw-nowrap scrollable scrollable-x disable-scrollbars" data-css-class-on-item="carousel__item-xs p-relative scrollable-aln-start d-flex fd-column fg-1 fs-0">
+        <sht-media-with-text class="p-relative d-block">
+          <div class="rw r-gap-equal js-carousel-items" role="list" aria-label="{{ 'accessibility.slider' | t }}">
+            {%- for block in section.blocks limit: section.blocks.size -%}
+              {%- case block.type -%}
+                {%- when 'image' -%}
+                  {%- liquid
+                    assign image_item = 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder media of-cover w-100 h-100'
+                    assign media_alt = block.settings.image.alt | default: block.settings.image.image | split: '/' | last
+                    assign image_item = block.settings.image | image_url: width: block.settings.image.width | image_tag: widths: '350, 450, 750, 950', sizes: '(min-width: 459px) calc(100vw/2), (min-width: 1025px) calc(100vw/3), 100vw', alt: media_alt, class: 'rounded-2x media of-cover w-100 h-100', loading: loading, fetchpriority: fetchpriority, decoding: decoding
+                  -%}
+                  <sht-carousel-itm role="listitem" tabindex="-1" class="clm js-carousel-item gap-2x media--hover-effect " style="--w-xs:12;--w-sm: 6;--w-md:{{- md -}};" {{ block.shopify_attributes }}>
+                    <div class="sht-card h-100 {{ section.settings.enable_item_background | default: 'card--standard' | replace: 'true', '' }}" style="{{ color_content }} {{ background_content }}">
+                      {% render 'image',
+                        image_item: image_item,
+                        ratio: image_ratio,
+                        image_wrap_classes: 'w-100 rounded-2x'
+                      %}
+                      <div class="card__content d-grid gap-12 wb-break-word w-100 {{ section.settings.item_alignment }}">
+                        <h3 class="{{ section.settings.column_heading_size }} hide-empty mb-0">{{- block.settings.heading | escape -}}</h3>
+                        <div class="hide-empty rte">{{- block.settings.description -}}</div>
+                      </div>
+                    </div>
+                  </sht-carousel-itm>
+                {%- when 'video' -%}
+                  {%- liquid
+                  assign video_thumbnail = 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder rounded-2x of-cover w-100 h-100 media'
+                  assign alt_video_thumbnail = 'sections.video_with_text.load_video' | t: description: block.settings.heading | escape
+                  assign video_thumbnail = block.settings.video_thumbnail | image_url: width: block.settings.video_thumbnail.width | image_tag: widths: '320, 450, 550, 750, 950, 1024, 1200, 1400, 1600, 1800, 2000', sizes: "(min-width: 769px) calc(100vw/2), 100vw", alt: alt_video_thumbnail, class: 'rounded-2x of-cover media w-100 h-100', loading: loading, fetchpriority: fetchpriority, decoding: decoding
+                  assign video_type = block.settings.video.type
+                  if block.settings.video_source == 'video_hosted'
+                    assign video_type = 'video_hosted'
+                  endif
+                  -%}
+                  <sht-carousel-itm role="listitem" tabindex="-1" class="clm js-carousel-item gap-2x media--hover-effect" style="--w-xs:12;--w-sm: 6;--w-md:{{- md -}};" {{ block.shopify_attributes }}>
+                    <div class="sht-card h-100 {{ section.settings.enable_item_background | default: 'card--standard' | replace: 'true', '' }}" style="{% if section.settings.enable_item_background == true %} {{ color_content }} {{ background_content }} {% endif %}">
+                        <sht-load-media data-section-id="{{ section.id }}-{{ forloop.index }}" data-id-video="{{ block.settings.video.id }}" data-type="{{ video_type }}" class="d-block p-relative rounded-2x background-video js-product-media-deferred-video" style="--ratio: {{ image_ratio }}">
+                          <button class="w-100 h-100 b-zero p-zero c-pointer js-load-media-trigger media--hover-effect" type="button" aria-label="{{ 'accessibility.load_video' | t: video: block.settings.heading }}">
+                            {% render 'image', image_item: video_thumbnail, ratio: section.settings.image_ratio %}
+                            <div class="p-absolute center-middle">
+                              <span class="btn btn--large btn-outline btn-icon">
+                                {%- render 'icon-play' -%}
+                              </span>
+                            </div>
+                          </button>
+                          {%- if block.settings.video_source == 'video_hosted' and block.settings.video_hosted != blank -%}
+                            <template>
+                              {{ block.settings.video_hosted | video_tag: autoplay: true, muted: false, controls: true, preload: 'none', class: 'ratio-media w-100 h-100 d-block js-media-item-video' }}
+                            </template>
+                          {%- else if -%}
+                            <div class="js-media-item external-video ratio-media h-100 w-100 d-none middle-xs center-xs" data-type="{{ block.settings.video.type }}" id="shtVideo-{{ section.id }}-{{ forloop.index }}-{{ block.settings.video.id }}" style="aspect-ratio: {{ image_ratio }};"></div>
+                          {%- endif -%}
+                        </sht-load-media>
+                      <div class="card__content d-grid gap-12 wb-break-word w-100 {{ section.settings.item_alignment }}">
+                        <h3 class="{{ section.settings.column_heading_size }} hide-empty mb-0">{{- block.settings.heading | escape -}}</h3>
+                        <div class="hide-empty rte">{{- block.settings.description -}}</div>
+                      </div>
+                    </div>
+                  </sht-carousel-itm>
+              {%- endcase -%}
+            {%- endfor -%}
+          </div>
+          <div class="carousel-pagination middle-y w-100 p-absolute d-none d-none-important-md no-js-hidden zi-1">
+            <div class="p-absolute left-0">
+              <button type="button" data-step="1" class="js-carousel-prev-btn btn btn-outline btn-icon icon middle-y btn--medium" aria-label="{{ 'accessibility.previous_slide' | t }}" name="previous" disabled>{% render 'icon-chevron-left' %}</button>
+            </div>
+            <div class="p-absolute right-0">
+              <button type="button" data-step="1" class="js-carousel-next-btn btn btn-outline btn-icon icon middle-y btn--medium" aria-label="{{ 'accessibility.next_slide' | t }}" name="next" disabled>{% render 'icon-chevron-right' %}</button>
+            </div>
+          </div>
+        </sht-media-with-text>
+      </sht-carousel-wrapper>
+    </div>
+    <div class="s-footer {{ section.settings.button_text | default: 'd-none' | replace: section.settings.button_text, '' }} {{ content_align_mobile }} {{ content_align_desktop }} {% if subheading == blank and heading == blank and description == blank %} d-none {% endif %}">
+      <a class="btn hide-empty {{ section.settings.style_button }}" href="{{- section.settings.button_link | default: '#' -}}" {% if section.settings.button_link == blank %} tabindex="-1" {% endif %}>
+        {{- section.settings.button_text -}}
+      </a>
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "t:sections.media_with_text_columns.name",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.general.content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_scheme.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "t:general.settings.section_subheading.label",
+      "default": "Add a tagline"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:general.settings.section_heading.label",
+      "info": "t:general.settings.prominent_font.info",
+      "default": "Our core values"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.heading_size.label",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "t:general.settings.heading_size.options.h2.label"
+        },
+        {
+          "value": "h3",
+          "label": "t:general.settings.heading_size.options.h3.label"
+        },
+        {
+          "value": "h4",
+          "label": "t:general.settings.heading_size.options.h4.label"
+        },
+        {
+          "value": "h5",
+          "label": "t:general.settings.heading_size.options.h5.label"
+        }
+      ],
+      "default": "h2"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "t:general.settings.section_description.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.media_with_text_columns.settings.header_media_column_item.content"
+    },
+    {
+      "type": "select",
+      "id": "item_alignment",
+      "label": "t:general.settings.item_alignment.label",
+      "default": "ta-center",
+      "options": [
+        {
+          "value": "ta-left",
+          "label": "t:general.settings.option_left.label"
+        },
+        {
+          "value": "ta-center",
+          "label": "t:general.settings.option_center.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "t:general.settings.image_ratio.label",
+      "options": [
+        {
+          "value": "16/9",
+          "label": "t:general.settings.video_ratio.options_2.label"
+        },
+        {
+          "value": "1",
+          "label": "t:general.settings.video_ratio.options_3.label"
+        },
+        {
+          "value": "3/2",
+          "label": "t:general.settings.video_ratio.options_4.label"
+        },
+        {
+          "value": "2/3",
+          "label": "t:general.settings.video_ratio.options_5.label"
+        }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "select",
+      "id": "column_heading_size",
+      "label": "t:sections.media_with_text_columns.settings.column_heading_size.label",
+      "options": [
+        {
+          "value": "h3",
+          "label": "t:general.settings.heading_size.options.h3.label"
+        },
+        {
+          "value": "h4",
+          "label": "t:general.settings.heading_size.options.h4.label"
+        },
+        {
+          "value": "h5",
+          "label": "t:general.settings.heading_size.options.h5.label"
+        },
+        {
+          "value": "h6",
+          "label": "t:general.settings.heading_size.options.h6.label"
+        }
+      ],
+      "default": "h4"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_item_background",
+      "label": "t:general.settings.enable_item_background.label"
+    },
+    {
+      "type": "color",
+      "id": "background_content",
+      "label": "t:general.settings.background.label"
+    },
+    {
+      "type": "color",
+      "id": "color_content",
+      "label": "t:general.settings.content.label"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_large_screen.content"
+    },
+    {
+      "type": "select",
+      "id": "content_align_desktop",
+      "label": "t:general.settings.section_heading_position.label",
+      "default": "ta-center-md",
+      "options": [
+        {
+          "value": "ta-left-md",
+          "label": "t:general.settings.option_top_left.label"
+        },
+        {
+          "value": "ta-center-md",
+          "label": "t:general.settings.option_top_center.label"
+        },
+        {
+          "value": "inline",
+          "label": "t:general.settings.option_inline.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "columns_per_row",
+      "label": "t:general.settings.columns_per_row.label",
+      "default": "4",
+      "options": [
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        },
+        {
+          "value": "5",
+          "label": "5"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_mobile_screen.content"
+    },
+    {
+      "type": "select",
+      "id": "content_align_mobile",
+      "label": "t:general.settings.section_heading_position.label",
+      "default": "ta-center",
+      "options": [
+        {
+          "value": "ta-left",
+          "label": "t:general.settings.option_top_left.label"
+        },
+        {
+          "value": "ta-center",
+          "label": "t:general.settings.option_top_center.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "list_style",
+      "label": "t:general.settings.list_style.label",
+      "default": "true",
+      "options": [
+        {
+          "value": "false",
+          "label": "t:general.settings.option_grid.label"
+        },
+        {
+          "value": "true",
+          "label": "t:general.settings.option_carousel.label"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.button.content"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "t:general.settings.label.label",
+      "info": "t:general.settings.hide_if_empty.info",
+      "default": "Explore more"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.style.label",
+      "id": "style_button",
+      "options": [
+        {
+          "value": "btn-primary",
+          "label": "t:general.settings.filled.label"
+        },
+        {
+          "value": "btn-outline",
+          "label": "t:general.settings.oulined.label"
+        },
+        {
+          "value": "btn-link",
+          "label": "t:general.settings.text_link.label"
+        }
+      ],
+      "default": "btn-primary"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "t:general.settings.link.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "video",
+      "name": "t:sections.media_with_text_columns.blocks.video_column.name",
+      "settings": [
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.video.content"
+        },
+        {
+          "type": "select",
+          "id": "video_source",
+          "label": "t:sections.video_banner.settings.video_source.label",
+          "default": "video_external",
+          "options": [
+            {
+              "value": "video_external",
+              "label": "t:general.settings.external.label"
+            },
+            {
+              "value": "video_hosted",
+              "label": "t:general.settings.shopify_hosted.label"
+            }
+          ]
+        },
+        {
+          "type": "video_url",
+          "id": "video",
+          "accept": [
+            "youtube",
+            "vimeo"
+          ],
+          "default": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+          "label": "t:general.settings.external_video.label",
+          "info": "t:general.settings.video_link.info"
+        },
+        {
+          "type": "video",
+          "id": "video_hosted",
+          "label": "t:general.settings.header_hosted_video.label"
+        },
+        {
+          "type": "image_picker",
+          "id": "video_thumbnail",
+          "label": "t:general.settings.video_thubnail.label"
+        },
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.text.content"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:general.settings.heading.label",
+          "default": "Featured video"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "t:general.settings.description.label",
+          "default": "<p>Highlight your values, products, or services</p>"
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "name": "t:sections.media_with_text_columns.blocks.image_column.name",
+      "settings": [
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.image.content"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:general.settings.image.label"
+        },
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.text.content"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:general.settings.heading.label",
+          "default": "Featured image"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "t:general.settings.description.label",
+          "default": "<p>Highlight your values, products, or services</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.media_with_text_columns.name",
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "video"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "video"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

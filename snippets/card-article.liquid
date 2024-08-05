@@ -1,0 +1,63 @@
+{% liquid
+    assign loading = "lazy"
+    assign decoding ="async"
+    assign fetchpriority = "auto"
+
+    if section.index <= 2 and is_first and force_eager == false
+      assign loading = "eager"
+      assign fetchpriority = "high"
+    endif
+
+    if is_first and force_eager == true
+      assign loading = "eager"
+      assign fetchpriority = "high"
+    endif
+  assign show_blog_tag = show_blog_tag | default: false
+%}
+<div class="sht-card card w-100 h-100 {% if settings.blog_card_style == 'card' %} color-{{ settings.blog_card_color_scheme }} {% else %} card--standard {% endif %}">
+  {% if show_image %}
+    {%- liquid
+      assign image_width = '320, 450, 550, 750, 950, 1024'
+      assign sizes = "(min-width: 459px) calc(100vw/2), (min-width: 769px) calc(100vw/4), 100vw"
+      assign article_placeholder = 'detailed-apparel-1' | placeholder_svg_tag: 'js-image-lazy placeholder media of-cover h-100 w-100'
+      assign article_image = article_placeholder
+      assign article_image = article.image.src | image_url: width: article.image.width | image_tag: widths: image_width, sizes: sizes, alt: article.title, class: 'js-image-lazy media of-cover w-100', loading: loading, fetchpriority: fetchpriority, decoding: decoding
+    -%}
+    <div class="p-relative card__media focus-state rounded-2x media--hover-effect">
+      <a aria-label="{{ article.title | escape }}" href="{{ article.url }}" class="card__media-link p-absolute w-100 h-100 zi-3"></a>
+      {% render 'image', ratio: image_ratio, image_item: article_image %}
+    </div>
+  {% endif %}
+  <div class="card__content" >
+    <ul class="ls-none mb-8 r-gap-16 c-gap-8 fw-wrap hide-empty {{ show_blog_tag | default: 'd-none' | replace: 'true', 'd-flex' }}">
+      {%- for tag in article.tags -%}
+        <li>
+          {{- tag | link_to_tag: tag | replace: '<a', '<a class="tag"' -}}
+        </li>
+      {%- endfor -%}
+    </ul>
+    <h3 class="mb-8 card__heading">
+      <a href="{{ article.url }}">{{ article.title }}</a>
+    </h3>
+    <div class="mb-12 subtext color-light">
+      <span class="{{ show_author | default: 'd-none' | replace: true, 'd-inline-block' }}">
+        {{- article.author -}}
+      </span>
+      {% if show_author and show_published_date %}
+        <span class="mr-12 ml-12">•</span>
+      {% endif %}
+      <span class="{{ show_published_date | default: 'd-none' | replace: true, 'd-inline-block' }}">
+        {{- article.published_at | date: format: 'abbreviated_date' -}}
+      </span>
+    </div>
+    {% if show_excerpt %}
+      {%- if article.excerpt.size > 0 or article.content.size > 0 -%}
+        <p class="card__excerpt o-hidden mb-12 hide-empty">
+          {%- if article.excerpt.size > 0 -%}
+            {{ article.excerpt | strip_html | truncatewords: 30 }}
+          {%- endif -%}
+        </p>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+</div>

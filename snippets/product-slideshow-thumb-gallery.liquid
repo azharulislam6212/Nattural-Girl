@@ -1,0 +1,34 @@
+
+{%-liquid
+assign image_element = place_holder
+assign image_id = "productGalleryThumb-" | append: section.id | append: "-" | append: thumb_index
+assign class = 'js-image-lazy media p-relative object_fit h-100 w-100' | replace: 'object_fit', object_fit
+assign image_element = media | image_url: width: 130 | image_tag: alt: media.alt, class: class, id: image_id
+-%}
+<sht-horiz-carousel-itm role="listitem" class="gallery__thumb gallery__thumb--{{ media.media_type }} product-slideshow__thumb center-md d-flex-md middle-md p-zero-md maw-md-100 js-gallery-thumb js-carousel-item p-relative scrollable-aln-start ta-center d-flex aln-itm-ctr fg-1 fs-0" data-media-target-id="{{ section.id }}-{{ media.id }}">
+  <button aria-describedby="{{ image_id }}" aria-label="{{ 'accessibility.open_media_gallery' | t: index: thumb_index }}" aria-controls="zoomContainer-{{ section.id }}" class="js-gallery-btn-thumb btn-slideshow-thumb o-hidden p-zero b-zero p-relative c-pointer media" data-target="{{ section.id }}-{{ media.id }}" style="--ratio: {{ ratio }}; background-color: {{ media_background }};">
+    {%- unless media.media_type == 'image' -%}
+      {% case media.media_type %}
+        {% when 'model' %}
+          <span class="slideshow__thumb-icon zi-2 br-50p p-absolute d-flex middle-xs center-xs ">
+            {% render 'icon-3d-model' size: 16 %}
+          </span>
+          {% when 'external_video' %}
+          <span class="slideshow__thumb-icon zi-2 br-50p p-absolute d-flex middle-xs center-xs ">
+            {% render 'icon-play' size: 16 %}
+          </span>
+          {% when 'video' %}
+          <span class="slideshow__thumb-icon zi-2 br-50p p-absolute d-flex middle-xs center-xs ">
+            {% render 'icon-play' size: 16 %}
+          </span>
+        {% endcase %}
+      {%- endunless -%}
+      <div class="d-block o-hidden h-100 h-100">
+      <div class="d-block p-relative w-100 h-100" style="--ratio: {{ ratio }}">
+       {{ image_element }}
+      </div>
+      </div>
+
+  </button>
+</sht-horiz-carousel-itm>
+

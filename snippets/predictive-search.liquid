@@ -1,0 +1,55 @@
+{% liquid
+  assign search_results_types = ''
+
+  if settings.predictive_search_article
+    assign search_results_types = search_results_types | append: ',article'
+  endif
+  if settings.predictive_search_page
+    assign search_results_types = search_results_types | append: ',page'
+  endif
+  if settings.predictive_search_collection
+    assign search_results_types = search_results_types | append: ',collection'
+  endif
+
+  assign search_results_types = search_results_types | replace_first: ',', ""
+%}
+
+<sht-predictive-srch role="dialog" aria-modal="true" class="js-predictive-search {{ class }} color-{{- settings.color_scheme_drawer_popover }}" data-search-type="{%- if search_results_types == blank -%}product{%- else -%}{{ search_results_types | prepend: 'product,' }}{%- endif -%}">
+  <form action="{{ routes.search_url }}" method="get" role="search" class="predictive-search-form js-predictive-search-form p-relative zi-1 d-flex fd-column h-100">
+    <input type="hidden" name="type" value="product">
+    <input name="options[prefix]" type="hidden" value="last">
+    <div class="predictive-search-form-header dialog__header p-sticky top-0 zi-1 d-flex">
+      <div class="search__field  d-flex gap-8 w-100 p-relative">
+        <input id="predictiveSearch_Input" type="search" name="q" aria-label="{{ 'accessibility.search' | t }}" value="" placeholder="{{ 'general.search.input_placeholder' | t }}" role="combobox" aria-expanded="false" aria-owns="predictive-search-results-list" aria-controls="predictive-search-results-list" aria-haspopup="listbox" aria-autocomplete="list" autocorrect="off" autocomplete="off" autocapitalize="off" spellcheck="false" class="field__text js-predictive-search-input w-100">
+        <span class="icon--default d-flex middle-xs center-xs mr-8 p-absolute left-0 top-0 pe-none">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M21.0004 20.9999L16.6504 16.6499" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <label class="field__label visually-hidden" for="predictiveSearch_Input">{{ 'general.search.search' | t }}</label>
+      </div>
+      <button type="button" aria-label="{{- "accessibility.close_modal" | t -}}" 
+      class="btn-close-search js-dialog-close-btn js-predictive-search-close-trigger btn btn-icon  btn--large btn-plain" >
+        <svg style="width: 16px; height: 16px;" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M13 1L1 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M1 1L13 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        
+      </button>
+    </div>
+    <div class="search__result dialog__body o-hidden d-block opacity-0 js-predictive-search-results flex-1 p-relative h-100" tabindex="-1" hidden>
+      <div class="js-predictive-search-loading search-loading ta-center p-absolute center-middle" hidden>
+        {% render 'icon-spinner' %}
+      </div>
+      <div class="search__result-empty d-flex middle-xs center-xs h-100 js-predictive-search-message-placeholder ta-center color-light" hidden>
+        {{ 'general.search.search_message_placeholder' | t }}
+      </div>
+      <div class="js-predictive-search-results-panel h-100"></div>
+    </div>
+  </form>
+</sht-predictive-srch>
+{% comment %} <sht-dialog class="sht-dialog color-{{- settings.color_scheme_drawer_popover }} no-focus-visible middle-md bottom-xs center-xs p-fixed left-0 top-0 h-100 w-100 o-auto zi-9" id="dialogSearch" hidden tabindex="-1">
+  <div class="dialog h-100 predictive-search__dialog" role="dialog" aria-labelledby="dialogTitle" aria-modal="true">
+  </div>
+</sht-dialog> {% endcomment %}

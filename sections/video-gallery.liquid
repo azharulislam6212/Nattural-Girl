@@ -1,0 +1,656 @@
+{{ 'section-video-gallery.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top_mobile | append: 'px' }};
+    padding-bottom: {{ section.settings.padding_bottom_mobile | append: 'px' }};
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top | append: 'px'}};
+      padding-bottom: {{ section.settings.padding_bottom | append: 'px'}};
+    }
+  }
+{%- endstyle -%}
+
+{% liquid
+  assign video_items = section.blocks | where: 'type', 'video_item'
+
+  assign desktop_column = section.settings.desktop_column
+  assign tab_column = section.settings.tab_column
+  assign mobile_column = section.settings.mobile_column
+  assign enable_pagination = section.settings.enable_pagination
+  assign enable_navigation = section.settings.enable_navigation
+  assign autoPlay = section.settings.autoplay_enabled
+  assign loop = section.settings.loop_enabled
+  assign delay = section.settings.autoplay_timeout | times: 1000
+  assign enable_scroll = section.settings.enable_scroll
+assign pagination_type = section.settings.pagination_type
+%}
+
+<div class="video-gallery  solate section-{{ section.id }}-padding color-{{ section.settings.color_scheme }} gradient">
+  <div class="container">
+    <span class="video-sparkle-top-right">
+      <svg class="sparkle" width="29" height="23" viewBox="0 0 29 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M25.0691 22.2334C21.1011 13.3631 21.4372 11.9683 29.0002 5.86452C20.1299 9.83245 18.7351 9.49643 12.6313 1.93342C16.5993 10.8037 16.2632 12.1985 8.7002 18.3023C17.5705 14.3344 18.9653 14.6704 25.0691 22.2334Z" fill="#8E2210"/>
+        <path d="M7.01524 8.70007C5.31469 4.89851 5.45871 4.30076 8.7 1.68484C4.89844 3.38538 4.30069 3.24137 1.68477 8.10623e-05C3.38531 3.80164 3.24129 4.3994 0 7.01532C3.80156 5.31477 4.39932 5.45878 7.01524 8.70007Z" fill="#8E2210"/>
+      </svg>
+    </span>
+
+
+    {% if section.settings.heading != blank %}
+      <div class="row">
+        <div class="col-12">
+          <div class="video-gallery-header">
+            <div class="video-gallery-text-wrap">
+              {% if section.settings.svg_heading != blank %}
+                <div class="mobile-hidden desktop--heading position-relative">
+                  <img
+                    src="{{ section.settings.svg_heading  | img_url: "master"  }}"
+                    alt="{{ section.settings.svg_heading.alt}}"
+                  >
+
+                  <span class="video-sparkle-top-middle position-relative">
+                    <svg class="sparkle" width="29" height="23" viewBox="0 0 29 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M25.0691 22.2334C21.1011 13.3631 21.4372 11.9683 29.0002 5.86452C20.1299 9.83245 18.7351 9.49643 12.6313 1.93342C16.5993 10.8037 16.2632 12.1985 8.7002 18.3023C17.5705 14.3344 18.9653 14.6704 25.0691 22.2334Z" fill="#8E2210"/>
+                      <path d="M7.01524 8.70007C5.31469 4.89851 5.45871 4.30076 8.7 1.68484C4.89844 3.38538 4.30069 3.24137 1.68477 8.10623e-05C3.38531 3.80164 3.24129 4.3994 0 7.01532C3.80156 5.31477 4.39932 5.45878 7.01524 8.70007Z" fill="#8E2210"/>
+                    </svg>
+                  </span>
+                </div>
+                <div class="desktop-hidden mobile--heading">
+                  <img
+                    src="{{ section.settings.svg_heading_mobile  | img_url: "master"  }}"
+                    alt="{{ section.settings.svg_heading.alt}}"
+                  >
+
+
+                  <span class="video-sparkle-top-middle position-relative">
+                    <svg class="sparkle" width="29" height="23" viewBox="0 0 29 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M25.0691 22.2334C21.1011 13.3631 21.4372 11.9683 29.0002 5.86452C20.1299 9.83245 18.7351 9.49643 12.6313 1.93342C16.5993 10.8037 16.2632 12.1985 8.7002 18.3023C17.5705 14.3344 18.9653 14.6704 25.0691 22.2334Z" fill="#8E2210"/>
+                      <path d="M7.01524 8.70007C5.31469 4.89851 5.45871 4.30076 8.7 1.68484C4.89844 3.38538 4.30069 3.24137 1.68477 8.10623e-05C3.38531 3.80164 3.24129 4.3994 0 7.01532C3.80156 5.31477 4.39932 5.45878 7.01524 8.70007Z" fill="#8E2210"/>
+                    </svg>
+                  </span>
+                </div>
+              {% else %}
+                <h2
+                  class="video-gallery-title inline-richtext {% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+                  {% if settings.animations_reveal_on_scroll %}
+                    data-cascade
+                  {% endif %}
+                >
+                  {{ section.settings.heading }}
+
+                  <span class="video-sparkle-top-middle">
+                    <svg class="sparkle" width="29" height="23" viewBox="0 0 29 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M25.0691 22.2334C21.1011 13.3631 21.4372 11.9683 29.0002 5.86452C20.1299 9.83245 18.7351 9.49643 12.6313 1.93342C16.5993 10.8037 16.2632 12.1985 8.7002 18.3023C17.5705 14.3344 18.9653 14.6704 25.0691 22.2334Z" fill="#8E2210"/>
+                      <path d="M7.01524 8.70007C5.31469 4.89851 5.45871 4.30076 8.7 1.68484C4.89844 3.38538 4.30069 3.24137 1.68477 8.10623e-05C3.38531 3.80164 3.24129 4.3994 0 7.01532C3.80156 5.31477 4.39932 5.45878 7.01524 8.70007Z" fill="#8E2210"/>
+                    </svg>
+                  </span>
+
+
+                </h2>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+    <slideshow-swiper>
+      <div
+        class="slideshow__swiper swiper-container video-slider  {%if enable_pagination or enable_scroll%} enable-pagination{%endif %} "
+        data-centeredslides="false"
+        data-slidesDesktop="{{ desktop_column }}"
+        data-slidesTab="{{ tab_column }}"
+        data-slidesMobile="{{ mobile_column }}"
+        data-autoPlay="{{ autoPlay }}"
+        data-loop="{{ loop }}"
+        data-mousewheel="false"
+        data-freemode="false"
+        data-freemomentum="false"
+        data-desktopspace="16"
+        data-tabspace="16"
+        data-mobilespace="16"
+      >
+        <div
+          class=" swiper-wrapper"
+        >
+          {%- for block in video_items -%}
+            <div
+              class="swiper-slide"
+            >
+              <div class="video-item">
+                {% liquid
+                  assign loading = 'lazy'
+                  assign decoding = 'async'
+                  assign fetchpriority = 'auto'
+
+                  if loop.index <= 2
+                    assign loading = 'eager'
+                    assign fetchpriority = 'high'
+                  endif
+
+                  assign media_ratio = block.settings.video_ratio
+                  assign video_thumbnail = 'image' | placeholder_svg_tag: 'placeholder js-image-lazy media of-cover'
+                  assign alt_video_thumbnail = 'accessibility.load_video' | t
+                  assign video_thumbnail = block.settings.video_thumbnail | image_url: width: block.settings.video_thumbnail.width | image_tag: widths: '320, 450, 550, 750, 950, 1024, 1200, 1400, 1600', sizes: '(min-width: 459px) calc(100vw - 96px), (min-width: 1025px) calc((100vw - 128px) * 0.7), 100vw', alt: alt_video_thumbnail, class: 'js-image-lazy media of-cover w-100 media', loading: loading, fetchpriority: fetchpriority, decoding: decoding
+
+                  assign video_type = block.settings.video.type
+                  if block.settings.video_source == 'video_hosted'
+                    assign video_type = 'video_hosted'
+                  endif
+
+                  unless block.settings.section_content_overlay_color.alpha == 0.0 or block.settings.section_content_overlay_color == blank
+                    assign content_color = 'color:' | append: block.settings.section_content_overlay_color
+                  endunless
+                %}
+
+                {% liquid
+                  assign detect_background = 1
+                  if block.settings.color_scheme.settings.color_background.alpha != 0.0
+                    assign no_transparent = 'no-transparent'
+                    assign detect_background = block.settings.color_scheme.settings.color_background | color_brightness | times: 9999
+                  endif
+                %}
+
+                <sht-load-media
+                  data-section-id="{{ block.id }}"
+                  data-id-video="{{ block.settings.video.id }}"
+                  data-type="{{ video_type }}"
+                  class="d-block p-relative rounded-2x js-product-media-deferred-video"
+                  style="--ratio: {{ media_ratio }}"
+                >
+                  {% if block.settings.caption != blank %}
+                    <div class="video--caption">
+                      <svg
+                        width="152"
+                        height="155"
+                        viewBox="0 0 152 155"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M70.781 2.34283C73.7544 -0.48404 78.4217 -0.484037 81.3951 2.34283L93.4237 13.7786C95.2189 15.4854 97.694 16.281 100.147 15.9399L116.719 13.6365C120.818 13.0667 124.634 15.8379 125.361 19.912L128.207 35.8541C128.65 38.3354 130.218 40.4713 132.453 41.6366L147.004 49.2236C150.725 51.1639 152.208 55.726 150.339 59.4834L143.179 73.8778C142.044 76.1593 142.044 78.8407 143.179 81.1221L150.339 95.5166C152.208 99.274 150.725 103.836 147.004 105.776L132.453 113.363C130.218 114.529 128.65 116.665 128.207 119.146L125.361 135.088C124.634 139.162 120.818 141.933 116.719 141.364L100.147 139.06C97.694 138.719 95.2189 139.515 93.4237 141.221L81.3951 152.657C78.4217 155.484 73.7544 155.484 70.781 152.657L58.7524 141.221C56.9572 139.515 54.4821 138.719 52.0287 139.06L35.4576 141.364C31.3585 141.933 27.5418 139.162 26.8146 135.088L23.9691 119.146C23.5262 116.665 21.9578 114.529 19.7228 113.363L5.17249 105.776C1.45137 103.836 -0.0316372 99.274 1.83734 95.5166L8.99719 81.1221C10.132 78.8407 10.132 76.1593 8.99719 73.8778L1.83734 59.4834C-0.0316372 55.726 1.45136 51.1639 5.17249 49.2236L19.7228 41.6366C21.9578 40.4713 23.5262 38.3354 23.9691 35.8541L26.8146 19.912C27.5418 15.8379 31.3585 13.0667 35.4576 13.6365L52.0287 15.9399C54.4821 16.281 56.9572 15.4854 58.7524 13.7786L70.781 2.34283Z" fill="#8E2210" stroke="#8E2210" stroke-width="0.430898"/>
+                      </svg>
+
+                      <div class="video__inner-caption">
+                        {{ block.settings.caption }}
+                      </div>
+                    </div>
+                  {% endif %}
+
+                  <button
+                    class="w-100 h-100 p-zero c-pointer js-load-media-trigger media--hover-effect"
+                    type="button"
+                    aria-label="{{ 'accessibility.load_video' | t: video: block.settings.heading }}"
+                  >
+                    {% render 'image', image_item: video_thumbnail, ratio: media_ratio %}
+                    <div class="p-absolute center-middle">
+                      <span class="btn-icon playt-btn">
+                        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <g opacity="0.65">
+                          <path d="M32 0C40.4869 0 48.6263 3.37142 54.6274 9.37258C60.6286 15.3737 64 23.5131 64 32C64 40.4869 60.6286 48.6263 54.6274 54.6274C48.6263 60.6286 40.4869 64 32 64C23.5131 64 15.3737 60.6286 9.37258 54.6274C3.37142 48.6263 0 40.4869 0 32C0 23.5131 3.37142 15.3737 9.37258 9.37258C15.3737 3.37142 23.5131 0 32 0ZM6 32C6 38.8956 8.73928 45.5088 13.6152 50.3848C18.4912 55.2607 25.1044 58 32 58C38.8956 58 45.5088 55.2607 50.3848 50.3848C55.2607 45.5088 58 38.8956 58 32C58 25.1044 55.2607 18.4912 50.3848 13.6152C45.5088 8.73928 38.8956 6 32 6C25.1044 6 18.4912 8.73928 13.6152 13.6152C8.73928 18.4912 6 25.1044 6 32ZM25.516 20.908L42.572 31.144C42.7194 31.233 42.8413 31.3586 42.9259 31.5086C43.0106 31.6585 43.055 31.8278 43.055 32C43.055 32.1722 43.0106 32.3415 42.9259 32.4914C42.8413 32.6414 42.7194 32.767 42.572 32.856L25.516 43.092C25.3643 43.1834 25.1911 43.2328 25.0141 43.2353C24.837 43.2378 24.6625 43.1932 24.5083 43.1062C24.3541 43.0191 24.2258 42.8927 24.1365 42.7398C24.0472 42.5869 24.0001 42.4131 24 42.236V21.768C23.9994 21.5906 24.046 21.4162 24.135 21.2628C24.224 21.1093 24.3523 20.9823 24.5066 20.8948C24.6609 20.8073 24.8357 20.7624 25.0131 20.7647C25.1905 20.767 25.364 20.8165 25.516 20.908Z" fill="currentColor"/>
+                          </g>
+                        </svg>
+                      </span>
+                    </div>
+                  </button>
+                  {%- if block.settings.video_source == 'video_hosted' and block.settings.video_hosted != blank -%}
+                    <template>
+                      {{
+                        block.settings.video_hosted
+                        | video_tag:
+                          autoplay: true,
+                          muted: false,
+                          controls: true,
+                          preload: 'none',
+                          class: 'ratio-media w-100 h-100 d-block js-media-item-video'
+                      }}
+                    </template>
+                  {%- else -%}
+                    <div
+                      class="js-media-item external-video ratio-media h-100 w-100 d-none middle-xs center-xs"
+                      data-type="{{ block.settings.video.type }}"
+                      id="shtVideo-{{ block.id }}-{{ block.settings.video.id }}"
+                    ></div>
+                  {%- endif -%}
+                </sht-load-media>
+
+                {% if block.settings.text %}
+                  <div class="video--text">
+                    <p>{{ block.settings.text }}</p>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+
+        {% if enable_navigation %}
+          <div class="swiper-navigation-wrapper  color-{{ section.settings.secondary_color_scheme }}">
+            <div class="swiper-button-prev">
+              <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4.60222 9.82499H15.1555C15.5235 9.82499 15.8363 9.69615 16.094 9.43849C16.3516 9.18099 16.4805 8.86815 16.4805 8.49999C16.4805 8.13182 16.3516 7.81899 16.094 7.56149C15.8363 7.30382 15.5235 7.17499 15.1555 7.17499H4.60222L8.95097 2.82599C9.21697 2.56015 9.34813 2.24674 9.34447 1.88574C9.34097 1.5249 9.20622 1.21157 8.94022 0.945737C8.67422 0.696403 8.3608 0.569904 7.99997 0.566237C7.63913 0.56257 7.32572 0.693737 7.05972 0.959737L0.459719 7.55974C0.331553 7.68807 0.2348 7.83407 0.169468 7.99774C0.104301 8.16157 0.0717182 8.32899 0.0717182 8.49999C0.0717182 8.67099 0.104301 8.8384 0.169468 9.00224C0.2348 9.1659 0.331553 9.3119 0.459719 9.44024L7.07397 16.0542C7.33264 16.3131 7.64188 16.4425 8.00172 16.4425C8.36139 16.4425 8.67422 16.3131 8.94022 16.0542C9.20622 15.7884 9.33922 15.4732 9.33922 15.1087C9.33922 14.7442 9.20622 14.429 8.94022 14.163L4.60222 9.82499Z" fill="currentColor"/>
+              </svg>
+            </div>
+
+            <div class="swiper-button-next">
+              <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12.3978 9.82499H1.84453C1.47653 9.82499 1.1637 9.69615 0.906031 9.43849C0.648365 9.18099 0.519531 8.86815 0.519531 8.49999C0.519531 8.13182 0.648365 7.81899 0.906031 7.56149C1.1637 7.30382 1.47653 7.17499 1.84453 7.17499H12.3978L8.04903 2.82599C7.78303 2.56015 7.65187 2.24674 7.65553 1.88574C7.65903 1.5249 7.79378 1.21157 8.05978 0.945737C8.32578 0.696403 8.6392 0.569904 9.00003 0.566237C9.36087 0.56257 9.67428 0.693737 9.94028 0.959737L16.5403 7.55974C16.6684 7.68807 16.7652 7.83407 16.8305 7.99774C16.8957 8.16157 16.9283 8.32899 16.9283 8.49999C16.9283 8.67099 16.8957 8.8384 16.8305 9.00224C16.7652 9.1659 16.6684 9.3119 16.5403 9.44024L9.92603 16.0542C9.66736 16.3131 9.35812 16.4425 8.99828 16.4425C8.63861 16.4425 8.32578 16.3131 8.05978 16.0542C7.79378 15.7884 7.66078 15.4732 7.66078 15.1087C7.66078 14.7442 7.79378 14.429 8.05978 14.163L12.3978 9.82499Z" fill="currentColor"/>
+              </svg>
+            </div>
+          </div>
+        {% endif %}
+
+        {% if enable_pagination %}
+          <div class="swiper-pagination color-{{ section.settings.secondary_color_scheme }}"></div>
+        {% endif %}
+
+        {% if  enable_scroll %}
+          <div class="swiper-scrollbar"></div>
+       {% endif %}
+
+
+      </div>
+    </slideshow-swiper>
+
+    <span class="video-sparkle-bottom-left">
+      <svg class="sparkle" width="29" height="23" viewBox="0 0 29 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M25.0691 22.2334C21.1011 13.3631 21.4372 11.9683 29.0002 5.86452C20.1299 9.83245 18.7351 9.49643 12.6313 1.93342C16.5993 10.8037 16.2632 12.1985 8.7002 18.3023C17.5705 14.3344 18.9653 14.6704 25.0691 22.2334Z" fill="#8E2210"/>
+        <path d="M7.01524 8.70007C5.31469 4.89851 5.45871 4.30076 8.7 1.68484C4.89844 3.38538 4.30069 3.24137 1.68477 8.10623e-05C3.38531 3.80164 3.24129 4.3994 0 7.01532C3.80156 5.31477 4.39932 5.45878 7.01524 8.70007Z" fill="#8E2210"/>
+      </svg>
+    </span>
+
+    <span class="video-sparkle-bottom-right">
+      <svg class="sparkle" width="29" height="23" viewBox="0 0 29 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M25.0691 22.2334C21.1011 13.3631 21.4372 11.9683 29.0002 5.86452C20.1299 9.83245 18.7351 9.49643 12.6313 1.93342C16.5993 10.8037 16.2632 12.1985 8.7002 18.3023C17.5705 14.3344 18.9653 14.6704 25.0691 22.2334Z" fill="#8E2210"/>
+        <path d="M7.01524 8.70007C5.31469 4.89851 5.45871 4.30076 8.7 1.68484C4.89844 3.38538 4.30069 3.24137 1.68477 8.10623e-05C3.38531 3.80164 3.24129 4.3994 0 7.01532C3.80156 5.31477 4.39932 5.45878 7.01524 8.70007Z" fill="#8E2210"/>
+      </svg>
+    </span>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Video Gallery",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "svg_heading",
+      "label": "Image/Svg Heading Desktop"
+    },
+    {
+      "type": "image_picker",
+      "id": "svg_heading_mobile",
+      "label": "Image/Svg Heading Mobile"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "default": "Video gallery",
+      "label": "Heading"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "Adapt to image"
+        },
+        {
+          "value": "square",
+          "label": "Square"
+        },
+        {
+          "value": "landscape",
+          "label": "Landscape"
+        },
+        {
+          "value": "portrait",
+          "label": "Portrait"
+        },
+        {
+          "value": "16-9",
+          "label": "Custom 16:9"
+        }
+      ],
+      "default": "portrait",
+      "label": "Image ratio"
+    },
+    {
+      "type": "select",
+      "id": "desktop_column",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        },
+        {
+          "value": "5",
+          "label": "5"
+        }
+      ],
+      "default": "3",
+      "label": "Desktop Column"
+    },
+    {
+      "type": "select",
+      "id": "tab_column",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        }
+      ],
+      "default": "2",
+      "label": "Tab Column"
+    },
+    {
+      "type": "select",
+      "id": "mobile_column",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "default": "1",
+      "label": "Mobile Column"
+    },
+    {
+      "type": "header",
+      "content": "Slider Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay_enabled",
+      "label": "Enable Auto Play",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "autoplay_timeout",
+      "label": "Chnage Time",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "default": 5,
+      "unit": "s"
+    },
+    {
+      "type": "checkbox",
+      "id": "loop_enabled",
+      "label": "Enable Loop",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_pagination",
+      "label": "Enable Pagination",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "pagination_type",
+      "options": [
+        {
+          "value": "bullets",
+          "label": "Bullets"
+        },
+        {
+          "value": "progressbar",
+          "label": "Progress"
+        }
+      ],
+      "default": "bullets",
+      "label": "Pagination Type"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_navigation",
+      "label": "Enable Naviagtion",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_scroll",
+      "label": "Enable Scroll",
+      "default": false
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color",
+      "default": "background-1"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "paragraph",
+      "content": "Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 116
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 116
+    },
+    {
+      "type": "paragraph",
+      "content": " Mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 58
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 58
+    }
+  ],
+  "blocks": [
+    {
+      "type": "video_item",
+      "name": "Video Item",
+      "settings": [
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.video.content"
+        },
+        {
+          "type": "select",
+          "id": "video_source",
+          "label": "t:sections.video_banner.settings.video_source.label",
+          "default": "video_external",
+          "options": [
+            {
+              "value": "video_external",
+              "label": "t:general.settings.external.label"
+            },
+            {
+              "value": "video_hosted",
+              "label": "t:general.settings.shopify_hosted.label"
+            }
+          ]
+        },
+        {
+          "type": "video_url",
+          "id": "video",
+          "accept": ["youtube", "vimeo"],
+          "default": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+          "label": "t:general.settings.external_video.label",
+          "info": "t:general.settings.video_link.info"
+        },
+        {
+          "type": "video",
+          "id": "video_hosted",
+          "label": "t:general.settings.header_hosted_video.label"
+        },
+        {
+          "type": "select",
+          "label": "t:sections.video_with_text.video_size.label",
+          "id": "video_ratio",
+          "options": [
+            {
+              "value": "4/3",
+              "label": "t:general.settings.video_ratio.options_1.label"
+            },
+            {
+              "value": "16/9",
+              "label": "t:general.settings.video_ratio.options_2.label"
+            },
+            {
+              "value": "1",
+              "label": "t:general.settings.video_ratio.options_3.label"
+            },
+            {
+              "value": "3/2",
+              "label": "t:general.settings.video_ratio.options_4.label"
+            },
+            {
+              "value": "4/5",
+              "label": "4:5"
+            }
+          ],
+          "default": "16/9"
+        },
+        {
+          "type": "image_picker",
+          "id": "video_thumbnail",
+          "label": "t:general.settings.video_thubnail.label"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_autoplay",
+          "label": "t:general.settings.enable_autoplay.label",
+          "info": "t:general.settings.enable_autoplay.info",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_video_loop",
+          "label": "t:general.settings.enable_video_loop.label",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_video_mute",
+          "label": "t:general.settings.enable_video_mute.label",
+          "default": true
+        },
+
+        {
+          "type": "inline_richtext",
+          "id": "caption",
+          "default": "Enhanced Wig Cap Construction",
+          "label": "Caption"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "text",
+          "default": "Maybe she was born with it, they will never know. Instant glam, in a box!",
+          "label": "Text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Video Gallery",
+      "blocks": [
+        {
+          "type": "video_item"
+        },
+        {
+          "type": "video_item"
+        },
+        {
+          "type": "video_item"
+        },
+        {
+          "type": "video_item"
+        },
+        {
+          "type": "video_item"
+        },
+        {
+          "type": "video_item"
+        },
+        {
+          "type": "video_item"
+        },
+        {
+          "type": "video_item"
+        },
+        {
+          "type": "video_item"
+        },
+        {
+          "type": "video_item"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

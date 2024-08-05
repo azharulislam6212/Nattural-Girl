@@ -1,0 +1,33 @@
+{% liquid
+  assign content_align_class_desktop = 'top-md ta-left-md start-md'
+  if content_align_desktop contains 'ta-center'
+    assign content_align_class_desktop = 'middle-md ta-center-md center-md'
+  endif
+
+  assign content_align_class_mobile = 'top-xs ta-left start-xs'
+  if content_align_mobile contains 'ta-center'
+    assign content_align_class_mobile = 'middle-xs ta-center center-xs'
+  endif
+%}
+
+<div class="s-header {{ header_class }}">
+  <div class="s-header__content s-header__banner d-flex fd-column {{ content_align_class_mobile }} {{ content_align_class_desktop }} wb-break-word" >
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+          {%- when 'heading' -%}
+          <h2 id="sectionHeading-{{ section.id | md5 | truncate: 12, "" }}" class="s-header__title {{ block.settings.heading_size }} wb-break-word hide-empty d-block" style="--duration: .6s; --delay: .3s" {{ block.shopify_attributes }}>{{- block.settings.heading | replace: '[', '<span class="prominent-heading">' | replace: ']', '</span>' -}}</h2>
+        {%- when 'description' -%}
+          <div class="s-header__desc  rte hide-empty" {{ block.shopify_attributes }}>{{- block.settings.description -}}</div>
+        {%- when 'button' -%}
+        <div class="s-header__buttons  d-flex gap-12 fw-wrap hide-empty {{ content_align_class_mobile }} {{ content_align_class_desktop }}" {{ block.shopify_attributes }}>
+          {%- if block.settings.button_main_text != blank -%}
+            <a class="btn btn--large {{ block.settings.button_main_style }}" href="{{- block.settings.button_main_link | default: '#' -}}" {% if block.settings.button_main_link == blank %} tabindex="-1" {% endif %}>{{- block.settings.button_main_text -}}</a>
+          {%- endif -%}
+          {%- if block.settings.button_sub_text != blank -%}
+            <a class="btn btn--large {{ block.settings.button_sub_style }}" href="{{- block.settings.button_sub_link | default: '#' -}}" {% if block.settings.button_sub_link == blank %} tabindex="-1" {% endif %}>{{- block.settings.button_sub_text -}}</a>
+          {%- endif -%}
+        </div>
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+</div>

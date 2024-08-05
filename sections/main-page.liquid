@@ -1,0 +1,64 @@
+{% liquid
+  assign detect_background = 1
+  if section.settings.color_scheme.settings.color_background.alpha != 0.0
+    assign no_transparent = 'no-transparent'
+    assign detect_background = section.settings.color_scheme.settings.color_background | color_brightness | times: 9999
+  endif
+%}
+<style>
+  #shopify-section-{{ section.id }} {
+    --section-background-hash: {{ detect_background }};
+  }
+  #shopify-section-{{ section.id }} + * {
+    --previous-section-background-hash: {{ detect_background }};
+  }
+</style>
+
+<div class="s--margin color-{{- section.settings.color_scheme }} s-container-radius {{ no_transparent }}" data-ui-component="Main Page Section">
+  <div class="section ctnr d-grid gap-2x   hide-empty wb-break-word">
+    {%- if section.settings.show_page_title -%}
+      <h2 class="s-header__title ta-center hide-empty m-auto">
+        {{- page.title -}}
+      </h2>
+    {%- endif -%}
+    {%- if section.settings.show_page_content -%}
+      <div class="s-content m-auto rte mw-content hide-empty">
+        {{- page.content -}}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.main_page.name",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.general.content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_schemes.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.content.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_page_title",
+      "label": "t:sections.main_page.settings.show_page_title.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_page_content",
+      "label": "t:sections.main_page.settings.show_page_content.label",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,108 @@
+<div class="s--margin color-{{- section.settings.color_scheme }} s-container-radius ">
+  <div class="section ctnr   ta-center">
+    <div class="gift-card__logo mb-2x">
+      {% render 'header-logo', logo_width_desktop: section.settings.logo_width, logo_width_mobile: section.settings.logo_width_mobile %}
+    </div>
+    <h1 class="h2 mb-2x">{{ 'gift_cards.issued.subtext' | t }}</h1>
+    <div class="mw-content">
+      <div class="gift-card__image p-relative">
+        <span class="p-absolute price fw-700 center-middle h4">
+          {% if settings.currency_code_enabled %}
+            {{ gift_card.initial_value | money_with_currency }}
+          {% else %}
+            {{ gift_card.initial_value | money }}
+          {% endif %}
+        </span>
+        {%- if gift_card.enabled == false or gift_card.expired -%}
+          <span>{{ 'gift_cards.issued.expired' | t }}</span>
+        {%- endif -%}
+        <img class="w-100" src="{{ 'gift-card/card.svg' | shopify_asset_url }}" alt="{{ shop.name | escape }}" height="134" width="202" loading="lazy">
+      </div>
+      <div class="pt-2x pb-2x">
+        <p class="mb-3x">{{ 'gift_cards.issued.redeem' | t }}</p>
+        <input
+          type="text"
+          value="{{ gift_card.code | format_code }}"
+          aria-label="{{ 'gift_cards.issued.gift_card_code' | t }}"
+          readonly
+          class="gift-card__number ta-center h5 fw-700"
+        >
+        <div class="mb-20">
+          <button class="gift-card-copy btn btn-outline  btn--large">{{ 'gift_cards.issued.copy_code' | t }}</button>
+          <div class="d-flex middle-xs center-xs gift-card__copy-success message--success hide-empty" role="status"></div>
+          <template>
+            <div class="icon icon--small icon--success fs-0">
+              {%- render 'icon-check' , size: 16 -%}
+            </div>
+            <span class="ml-8 subtext">
+              {{ 'gift_cards.issued.copy_code_success' | t }}
+            </span>
+          </template>
+        </div>
+        {%- if gift_card.pass_url -%}
+          <a class="d-block mb-12" href="{{ gift_card.pass_url }}">
+            <img src="{{ 'gift-card/add-to-apple-wallet.svg' | shopify_asset_url }}" width="120" height="40" alt="{{ 'gift_cards.issued.add_to_apple_wallet' | t }}" loading="lazy">
+          </a>
+        {%- endif -%}
+        <div class="d-flex fd-column gap-content">
+          <div class="gift-card__qr-code p-relative d-flex center-xs" data-identifier="{{ gift_card.qr_identifier }}"></div>
+          <div class="d-flex fd-column fd-row-md gap-1x">
+            <a href="{{ shop.url }}" class="btn btn-primary  btn--medium w-100" target="_blank" rel="noopener" aria-describedby="a11y-new-window-message">
+              {{ 'gift_cards.issued.shop_link' | t }}
+            </a>
+            <button class="btn btn-outline  btn--medium w-100" onclick="window.print();">
+              {{ 'gift_cards.issued.print_gift_card' | t }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "t:sections.giftcard.name",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.general.content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_schemes.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.logo.content"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "t:sections.header.settings.logo_image.label",
+      "info": "t:general.settings.recomended_3.info"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "min": 40,
+      "max": 200,
+      "label": "t:sections.header.settings.max_width_on_large_screen.label",
+      "unit": "px",
+      "default": 140,
+      "step": 5
+    },
+    {
+      "type": "range",
+      "id": "logo_width_mobile",
+      "min": 40,
+      "max": 140,
+      "label": "t:sections.header.settings.max_width_on_mobile.label",
+      "unit": "px",
+      "default": 70,
+      "step": 5
+    }
+  ]
+}
+{% endschema %}

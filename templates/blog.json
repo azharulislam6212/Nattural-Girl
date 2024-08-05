@@ -1,0 +1,31 @@
+{
+  "sections": {
+    "breadcrumb": {
+      "type": "breadcrumb",
+      "settings": {
+        "color_scheme": ""
+      }
+    },
+    "main": {
+      "type": "main-blog",
+      "settings": {
+        "color_scheme": "scheme-5",
+        "items_per_load": "20",
+        "blogs_load_method": "pagination",
+        "show_rss": false,
+        "show_featured_image": true,
+        "show_blog_tags": false,
+        "show_published_date": false,
+        "show_author": false,
+        "show_excerpt": true,
+        "columns_per_row": "3",
+        "content_align_desktop": "ta-center-md m-0-auto-md",
+        "content_align_mobile": "ta-center"
+      }
+    }
+  },
+  "order": [
+    "breadcrumb",
+    "main"
+  ]
+}

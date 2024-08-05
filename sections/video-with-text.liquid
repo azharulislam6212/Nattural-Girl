@@ -1,0 +1,468 @@
+{% liquid
+  assign loading = "lazy"
+  assign decoding ="async"
+  assign fetchpriority = "auto"
+
+  if section.index <= 2
+    assign loading = "eager"
+    assign fetchpriority = "high"
+  endif
+
+  assign media_ratio         = section.settings.video_ratio
+  assign video_thumbnail     = 'hero-apparel-3' | placeholder_svg_tag: 'placeholder js-image-lazy media of-cover'
+  assign alt_video_thumbnail = 'accessibility.load_video' | t
+  assign video_thumbnail     = section.settings.video_thumbnail | image_url: width: section.settings.video_thumbnail.width | image_tag: widths: '320, 450, 550, 750, 950, 1024, 1200, 1400, 1600', sizes: '(min-width: 459px) calc(100vw - 96px), (min-width: 1025px) calc((100vw - 128px) * 0.7), 100vw', alt: alt_video_thumbnail, class: 'js-image-lazy media of-cover w-100 media', loading: loading, fetchpriority: fetchpriority, decoding: decoding
+
+  assign video_type = section.settings.video.type
+  if section.settings.video_source == 'video_hosted'
+    assign video_type = 'video_hosted'
+  endif
+
+  unless section.settings.section_content_overlay_color.alpha == 0.0 or section.settings.section_content_overlay_color == blank
+    assign content_color =  'color:' | append: section.settings.section_content_overlay_color
+  endunless
+%}
+
+{% liquid
+  assign detect_background = 1
+  if section.settings.color_scheme.settings.color_background.alpha != 0.0
+    assign no_transparent = 'no-transparent'
+    assign detect_background = section.settings.color_scheme.settings.color_background | color_brightness | times: 9999
+  endif
+%}
+<style>
+  #shopify-section-{{ section.id }} {
+    --section-background-hash: {{ detect_background }};
+  }
+  #shopify-section-{{ section.id }} + * {
+    --previous-section-background-hash: {{ detect_background }};
+  }
+</style>
+
+<div class="s--margin color-{{- section.settings.color_scheme }} s-container-radius {{ no_transparent }}" data-ui-component="Video With Text Section" role="region" aria-labelledby="sectionHeading-{{ section.id | md5 | truncate: 12, "" }}">
+  <div class="section ctnr d-grid  ">
+    <div class="d-flex fd-column gap-content gap-horizontal-md center-xs {{ section.settings.content_ordering_mobile }} {{ section.settings.content_ordering_desktop }}" style="--ratio: {{ media_ratio }}">
+      {% if section.blocks.size > 0 %}
+        <div style="--w-md:{{- 12 | minus: section.settings.video_with -}}; {{ content_color }}">
+          {% render 'section-header-block',
+            content_align_mobile: section.settings.content_position_mobile,
+            section: section
+          %}
+        </div>
+      {% endif %}
+      <div class="s-content" style="--w-md:{{- section.settings.video_with -}};">
+        <sht-load-media data-section-id="{{ section.id }}" data-id-video="{{ section.settings.video.id }}" data-type="{{ video_type }}" class="d-block p-relative rounded-2x background-video js-product-media-deferred-video" style="--ratio: {{ media_ratio }}">
+          <button class="w-100 h-100 b-zero p-zero c-pointer js-load-media-trigger media--hover-effect" type="button" aria-label="{{ 'accessibility.load_video' | t: video: section.settings.heading }}">
+            {% render 'image', image_item: video_thumbnail, ratio: media_ratio %}
+            <div class="p-absolute center-middle">
+              <span class="btn btn--large btn-outline btn-icon">
+                {%- render 'icon-play' -%}
+              </span>
+            </div>
+          </button>
+          {%- if section.settings.video_source == 'video_hosted' and section.settings.video_hosted != blank -%}
+            <template>
+              {{ section.settings.video_hosted | video_tag: autoplay: true, muted: false, controls: true, preload: 'none', class: 'ratio-media w-100 h-100 d-block js-media-item-video' }}
+            </template>
+          {%- else if -%}
+            <div class="js-media-item external-video ratio-media h-100 w-100 d-none middle-xs center-xs" data-type="{{ section.settings.video.type }}" id="shtVideo-{{ section.id }}-{{ section.settings.video.id }}"></div>
+          {%- endif -%}
+        </sht-load-media>
+      </div>
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "t:sections.video_with_text.name",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.general.content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_schemes.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.video.content"
+    },
+    {
+      "type": "select",
+      "id": "video_source",
+      "label": "t:sections.video_banner.settings.video_source.label",
+      "default": "video_external",
+      "options": [
+        {
+          "value": "video_external",
+          "label": "t:general.settings.external.label"
+        },
+        {
+          "value": "video_hosted",
+          "label": "t:general.settings.shopify_hosted.label"
+        }
+      ]
+    },
+    {
+      "type": "video_url",
+      "id": "video",
+      "accept": [
+        "youtube",
+        "vimeo"
+      ],
+      "default": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+      "label": "t:general.settings.external_video.label",
+      "info": "t:general.settings.video_link.info"
+    },
+    {
+      "type": "video",
+      "id": "video_hosted",
+      "label": "t:general.settings.header_hosted_video.label"
+    },
+    {
+      "type": "select",
+      "label": "t:sections.video_with_text.video_size.label",
+      "id": "video_ratio",
+      "options": [
+        {
+          "value": "4/3",
+          "label": "t:general.settings.video_ratio.options_1.label"
+        },
+        {
+          "value": "16/9",
+          "label": "t:general.settings.video_ratio.options_2.label"
+        },
+        {
+          "value": "1",
+          "label": "t:general.settings.video_ratio.options_3.label"
+        },
+        {
+          "value": "3/2",
+          "label": "t:general.settings.video_ratio.options_4.label"
+        }
+      ],
+      "default": "16/9"
+    },
+    {
+      "type": "image_picker",
+      "id": "video_thumbnail",
+      "label": "t:general.settings.video_thubnail.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_autoplay",
+      "label": "t:general.settings.enable_autoplay.label",
+      "info": "t:general.settings.enable_autoplay.info",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_video_loop",
+      "label": "t:general.settings.enable_video_loop.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_video_mute",
+      "label": "t:general.settings.enable_video_mute.label",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_large_screen.content"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.section_ordering.label",
+      "id": "content_ordering_desktop",
+      "options": [
+        {
+          "value": "fd-row-md",
+          "label": "t:general.settings.section_ordering.option_text_first.label"
+        },
+        {
+          "value": "fd-row-reverse-md",
+          "label": "t:general.settings.section_ordering.option_video_first.label"
+        }
+      ],
+      "default": "fd-row-md"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.video_width.label",
+      "id": "video_with",
+      "options": [
+        {
+          "value": "6",
+          "label": "t:general.settings.option_regular.label"
+        },
+        {
+          "value": "8.4",
+          "label": "t:general.settings.option_large.label"
+        }
+      ],
+      "default": "8.4"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.header.mobile_screen.content"
+    },
+    {
+      "type": "select",
+      "id": "content_position_mobile",
+      "label": "t:general.settings.section_heading_alignment.label",
+      "options": [
+        {
+          "value": "ta-left",
+          "label": "t:general.settings.option_left.label"
+        },
+        {
+          "value": "ta-center",
+          "label": "t:general.settings.option_center.label"
+        }
+      ],
+      "default": "ta-center"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.section_ordering.label",
+      "id": "content_ordering_mobile",
+      "options": [
+        {
+          "value": "text-first-mb",
+          "label": "t:general.settings.section_ordering.option_text_first.label"
+        },
+        {
+          "value": "fd-column-reverse",
+          "label": "t:general.settings.section_ordering.option_video_first.label"
+        }
+      ],
+      "default": "fd-column-reverse"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "subheading",
+      "name": "t:general.settings.headers.subheading.content",
+      "settings": [
+        {
+          "type": "text",
+          "label": "t:general.settings.text.label",
+          "id": "subheading",
+          "default": "Add a tagline"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "name": "t:general.settings.headers.heading.content",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:general.settings.text.label",
+          "info": "t:general.settings.prominent_font.info",
+          "default": "[Welcome] to our store"
+        },
+        {
+          "type": "select",
+          "label": "t:general.settings.heading_size.label",
+          "id": "heading_size",
+          "options": [
+            {
+              "value": "headline",
+              "label": "t:general.settings.heading_size.options.headline.label"
+            },
+            {
+              "value": "h1",
+              "label": "t:general.settings.heading_size.options.h1.label"
+            },
+            {
+              "value": "h2",
+              "label": "t:general.settings.heading_size.options.h2.label"
+            },
+            {
+              "value": "h3",
+              "label": "t:general.settings.heading_size.options.h3.label"
+            }
+          ],
+          "default": "h2"
+        }
+      ]
+    },
+    {
+      "type": "description",
+      "name": "t:general.settings.headers.description.content",
+      "settings": [
+        {
+          "type": "richtext",
+          "label": "t:general.settings.text.label",
+          "id": "description",
+          "default": "<p>Highlight your values, products, or services</p>"
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "name": "t:general.settings.headers.buttons.content",
+      "settings": [
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.button_1.content"
+        },
+        {
+          "type": "text",
+          "label": "t:general.settings.label.label",
+          "id": "button_main_text",
+          "default": "Check now",
+          "info": "t:general.settings.hide_if_empty.info"
+        },
+        {
+          "type": "select",
+          "label": "t:general.settings.style.label",
+          "id": "button_main_style",
+          "options": [
+            {
+              "value": "btn-primary",
+              "label": "t:general.settings.filled.label"
+            },
+            {
+              "value": "btn-outline",
+              "label": "t:general.settings.oulined.label"
+            },
+            {
+              "value": "btn-link",
+              "label": "t:general.settings.text_link.label"
+            }
+          ],
+          "default": "btn-primary"
+        },
+        {
+          "type": "url",
+          "id": "button_main_link",
+          "label": "t:general.settings.link.label"
+        },
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.button_2.content"
+        },
+        {
+          "type": "text",
+          "label": "t:general.settings.label.label",
+          "id": "button_sub_text",
+          "default": "View details",
+          "info": "t:general.settings.hide_if_empty.info"
+        },
+        {
+          "type": "select",
+          "label": "t:general.settings.style.label",
+          "id": "button_sub_style",
+          "options": [
+            {
+              "value": "btn-primary",
+              "label": "t:general.settings.filled.label"
+            },
+            {
+              "value": "btn-outline",
+              "label": "t:general.settings.oulined.label"
+            },
+            {
+              "value": "btn-link",
+              "label": "t:general.settings.text_link.label"
+            }
+          ],
+          "default": "btn-outline"
+        },
+        {
+          "type": "url",
+          "id": "button_sub_link",
+          "label": "t:general.settings.link.label"
+        }
+      ]
+    },
+    {
+      "type": "countdown",
+      "name": "t:general.settings.headers.countdown_timer.content",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "hide_on_end",
+          "label": "t:general.settings.hide_on_end.label",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "end_date",
+          "label": "t:general.settings.end_date.label",
+          "info": "t:general.settings.end_date.info"
+        },
+        {
+          "type": "text",
+          "id": "end_time",
+          "label": "t:general.settings.end_time.label",
+          "info": "t:general.settings.end_time.info"
+        },
+        {
+          "type": "richtext",
+          "id": "end_text",
+          "label": "t:general.settings.end_text.label",
+          "info": "t:general.settings.end_text.info",
+          "default": "<p>This event is finished.</p>"
+        },
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.custom_color.content"
+        },
+        {
+          "type": "color",
+          "id": "countdown_background",
+          "label": "t:general.settings.countdown_background.label"
+        },
+        {
+          "type": "color",
+          "id": "countdown_number_color",
+          "label": "t:general.settings.countdown_number.label"
+        },
+        {
+          "type": "color",
+          "id": "color_end_text",
+          "label": "t:general.settings.end_text.label",
+          "default": "#FF0000"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.video_with_text.name",
+      "blocks": [
+        {
+          "type": "subheading"
+        },
+        {
+          "type": "heading"
+        },
+        {
+          "type": "description"
+        },
+        {
+          "type": "countdown"
+        },
+        {
+          "type": "button"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

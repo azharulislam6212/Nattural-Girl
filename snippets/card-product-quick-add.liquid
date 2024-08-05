@@ -1,0 +1,59 @@
+{%- liquid
+  assign product_form_id = 'productQuickViewForm-' | append: section.id | append: '-' | append: product.id
+-%}
+<sht-prd-qck-vw-frm class="product__form dialog--animate w-100">
+  {%- form 'product', product, id: product_form_id, class: 'form form__fields', novalidate: 'novalidate' -%}
+    <div class="form__field">
+      <input type="hidden" class="form__control" name="id" value="{{ product.selected_or_first_available_variant.id }}" disabled>
+    </div>
+    <div class="d-flex fd-column">
+      <div class="js-product-form-error-wrapper" data-type="error-wrapper" role="alert" hidden>
+        <span class="d-flex middle-xs mb-12">
+          <span class="icon--error icon icon--small mr-8 fs-0">
+            {%- render 'icon-functional-info', size: 16 -%}
+          </span>
+          <span class="js-product-form-error-message" data-type="error-message"></span>
+        </span>
+      </div>
+      <div class="quickview-form__buttons d-flex {{ content_align | default: settings.product_card_position }}">
+        <button
+          type="submit"
+          name="add"
+          class="js-product-form-submit-btn btn w-100 {{ quickview_buttons_style }}"
+          {% if product.selected_or_first_available_variant.available == false %}
+            disabled
+          {% endif %}
+        >
+          <span class="p-relative d-flex middle-xs center-xs ta-center">
+            <span class="js-product-form-submit-btn-text {{ content_align | default: settings.product_card_position }}">
+              {%- if product.selected_or_first_available_variant.available -%}
+                {{ 'products.product.add_to_cart' | t }}
+              {%- else -%}
+                {{ 'products.product.sold_out' | t }}
+              {%- endif -%}
+            </span>
+            <span class="hidden js-product-form-spinner product-form-spinner">
+              {% render 'icon-spinner', class: 'sht-spinner ml-8' %}
+            </span>
+          </span>
+        </button>
+      </div>
+    </div>
+  {%- endform -%}
+</sht-prd-qck-vw-frm>
+<div class="quickview-btn-details dialog--animate w-100 ta-center {{ quickview_btn_details }}">
+  <a href="{{ product.url }}" class="btn btn-link">{{ 'products.product.view_details' | t }}</a>
+</div>
+{%- assign files = 'component-quickview.js' | split: ', ' -%}
+<script>
+{%- for file in files -%}
+  {%- assign id = file | replace: ".js", "-js" | strip | append: "-file" -%}
+  {%- assign fileName = id | replace: "-", "_" -%}
+  if (!SHTHelper.qs(`#{{ id }}`)) {
+      let {{ fileName }} = document.createElement("script");
+      {{ fileName }}.setAttribute('src', `{{ file | asset_url }}`);
+      {{ fileName }}.setAttribute('id', '{{ id }}');
+      document.body.appendChild({{ fileName }});
+  }
+{%- endfor -%}
+</script>

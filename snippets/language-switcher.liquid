@@ -1,0 +1,39 @@
+{% liquid
+  assign section_id = section.id | md5 | truncate: 12, ""
+  assign rand = 'now' | date: '%N' | append: section_id
+  assign form_id = 'LanguageSwitcher-' | append: rand
+%}
+<sht-language-switcher class="fg-1">
+  {%- form 'localization', id: form_id, class: 'js-language-switcher-form' -%}
+    <div class="language-switcher__container no-js-hidden">
+      <h2 class="visually-hidden" id="LanguageSwitcherLabel-{{ rand }}">{{ 'localization.language_label' | t }}</h2>
+      <div class="language-switcher__wrapper p-relative">
+        <button type="button" class="js-language-switcher-btn btn-localization focus-state subtext fw-700 d-flex between-xs middle-xs w-100 ta-left c-pointer gap-4 b-zero" aria-expanded="false" aria-controls="LanguageSwitcherLanguageList-{{ rand }}" aria-describedby="LanguageSwitcherLabel-{{ rand }}">
+          {{ localization.language.iso_code | upcase }}
+          {% render 'icon-chevron-down', size: '12', class: 'icon-chevron-down' %}
+        </button>
+        <div class="localization-wapper color-{{- settings.color_scheme_drawer_popover }} js-language-switcher-language-list zi-9 p-absolute field__dropdown o-hidden" hidden="true">
+          <ul role="list" id="LanguageSwitcherLanguageList-{{ rand }}" class="localization-list dropdown-list ls-none o-hidden w-100 oy-scroll scrollbars">
+            {%- for language in localization.available_languages -%}
+              {% liquid
+                assign active_class = ''
+                assign active_attrs = ''
+
+                if language.iso_code == localization.language.iso_code
+                  assign active_class = 'link--active'
+                  assign active_attrs = 'aria-current="true"'
+                endif
+              %}
+              <li class="fs-body pt-12 pb-12 pr-16 pl-16 dropdown-item" tabindex="-1">
+                <a class="js-language-switcher-language-item-link link d-block tt-cap field__dropdown__link {{ active_class }}" href="#" {{ active_attrs }} data-value="{{ language.iso_code }}">
+                  {{ language.endonym_name | capitalize }} ({{ language.iso_code | upcase }})
+                </a>
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+      <input type="hidden" class="js-language-switcher-language-code-field" name="locale_code" value="{{ localization.language.iso_code }}">
+    </div>
+  {%- endform -%}
+</sht-language-switcher>

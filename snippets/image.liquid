@@ -1,0 +1,26 @@
+{% comment %}
+    Renders image with lazyload
+
+    Accepts:
+    - image_item: {Object} Image object.
+    - src: {String} The relative URL of the image.
+    - image_wrap_classes: {String} Custom image wrap css classes.
+    - image_classes: {String} Custom image css classes.
+    - ratio: {Number} The aspect ratio of the image as a decimal.
+
+    Example usage:
+    {% render 'image',
+      image_item: media,
+      src: block.settings.image.src,
+      image_wrap_classes: 'custom-wrap-image-class',
+      image_classes: 'custom-image-class',
+      ratio: '3/2'
+    %}
+{% endcomment %}
+{% assign ratio = ratio | default: 'auto' %}
+
+<div class="js-wrap-image-lazy d-block o-hidden {{ image_wrap_classes }}" loaded="true" style="{{ media_wrap_style }}">
+  <sht-image-atf class="d-block p-relative media-wrapper {{ image_classes }}" style="--ratio: {{ ratio }}">
+   {{ image_item }}
+  </sht-image-atf>
+</div>

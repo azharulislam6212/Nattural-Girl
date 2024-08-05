@@ -1,0 +1,38 @@
+<sht-dialog id="TextHotspotDialog{{- section_id -}}" class="sht-dialog hotspot-dialog d-flex bottom-xs no-focus-visible middle-md bottom-xs center-xs p-fixed left-0 top-0 h-100 w-100 o-auto zi-9" tabindex="-1" hidden="true">
+  <div class="dialog disable-scrollbars color-{{- settings.color_scheme_drawer_popover }}" role="dialog" aria-labelledby="dialogTitle" aria-modal="true">
+    <div class="dialog__content d-flex fd-column h-100">
+      <div class="js-dialog-body">
+        <sht-carousel class="p-relative d-block text-hotspot-carousel" id="carousel-{{ section.id }}" data-section-id="{{ section.id }}" data-carousel-trigger="carouselTrigger-{{ section.id }}">
+          <div class="popover--rounded o-hidden">
+            <div aria-atomic="true" class="js-carousel-items d-flex p-zero m-zero ox-auto p-relative disable-scrollbars scrollable scrollable-x">
+              {{ carousel_item }}
+            </div>
+          </div>
+
+          <div class="hotspot-dialog__pagination d-flex center-xs middle-xs no-js-hidden js-carousel-pagination">
+            <button type="button" data-step="1" class="js-carousel-prev-btn btn btn-icon btn-plain  d-none-important" aria-label="{{ 'accessibility.previous_slide' | t }}" name="previous" disabled="disabled">
+              {%- render 'icon-arrow-left' -%}
+            </button>
+            <ul class="js-carousel-pagination-dots pagination pagination-list mt-12 d-flex middle-xs ls-none gap-20">
+              {{ pagination_dots }}
+            </ul>
+            <div class="d-none-important middle-xs">
+              <div class="carousel__counter">
+                <span class="js-carousel-counter-current">1</span>
+                <span aria-hidden="true"> / </span>
+                <span class="visually-hidden">{{ 'accessibility.of' | t }}</span>
+                <span class="js-carousel-counter-total">{{ section.blocks.size }}</span>
+              </div>
+            </div>
+            <button type="button" data-step="1" class="js-carousel-next-btn btn btn-icon btn-plain d-none-important" aria-label="{{ 'accessibility.next_slide' | t }}" name="next">
+              {%- render 'icon-arrow-right' -%}
+            </button>
+          </div>
+        </sht-carousel>
+      </div>
+      <div class="dialog__footer d-none">
+        <button type="button" aria-label="{{- "accessibility.close_modal" | t -}}" class="js-dialog-close-btn js-dialog-close-btn--last d-none">{{- "accessibility.close_modal" | t -}}</button>
+      </div>
+    </div>
+  </div>
+</sht-dialog>

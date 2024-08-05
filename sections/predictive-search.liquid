@@ -1,0 +1,214 @@
+{% liquid
+  assign section_id = section.id | md5 | truncate: 12, ""
+  assign now =  "now" | date: "%N"
+  assign tab_aria_controls_prefix = "products-tabs-tabs-" | append: section_id | append: now
+  assign tab_id = "products-tabs-tab-" | append: section_id | append: now
+
+  assign is_result_matching = true
+  if predictive_search.resources.products.size <= 0 and predictive_search.resources.collections.size <= 0 and predictive_search.resources.articles.size <= 0 and predictive_search.resources.pages.size <= 0
+    assign is_result_matching = false
+  endif
+ %}
+
+{%- if predictive_search.performed -%}
+  {% capture no_result %}
+    <span class="color-light h-100 d-flex middle-xs center-xs">
+      {{ 'general.search.no_matching_results' | t }}
+    </span>
+  {% endcapture %}
+  {% if is_result_matching %}
+    <sht-tabs class="d-flex fd-column h-100">
+      <ul class="tab__header p-relative ox-auto disable-scrollbars ls-none ws-nowrap d-flex" role="tablist">
+        <li class="tab__item d-inline-block" role="presentation">
+          <a class="tab__link h6 mb-0 d-block p-relative color-light tab__link--active js-tab-link" role="tab" id="{{ tab_id }}-1" href="#{{ tab_aria_controls_prefix }}-1" aria-controls="{{ tab_aria_controls_prefix }}-1">
+            {{ 'general.search.products' | t }}
+          </a>
+        </li>
+        <li class="tab__item {{ settings.predictive_search_collection | default: 'd-none' | replace: 'true', 'd-inline-block' }}" role="presentation">
+          <a class="tab__link h6 mb-0 d-block p-relative color-light js-tab-link" role="tab" id="{{ tab_id }}-2" href="#{{ tab_aria_controls_prefix }}-2" aria-controls="{{ tab_aria_controls_prefix }}-2">
+            {{ 'general.search.collections' | t }}
+          </a>
+        </li>
+        <li class="tab__item {{ settings.predictive_search_article | default: 'd-none' | replace: 'true', 'd-inline-block' }}" role="presentation">
+          <a class="tab__link h6 mb-0 d-block p-relative color-light js-tab-link" role="tab" id="{{ tab_id }}-3" href="#{{ tab_aria_controls_prefix }}-3" aria-controls="{{ tab_aria_controls_prefix }}-3">
+            {{ 'general.search.blog_posts' | t }}
+          </a>
+        </li>
+        <li class="tab__item {{ settings.predictive_search_page | default: 'd-none' | replace: 'true', 'd-inline-block' }}" role="presentation">
+          <a class="tab__link h6 mb-0 d-block p-relative color-light js-tab-link" role="tab" id="{{ tab_id }}-4" href="#{{ tab_aria_controls_prefix }}-4" aria-controls="{{ tab_aria_controls_prefix }}-4">
+            {{ 'general.search.pages' | t }}
+          </a>
+        </li>
+      </ul>
+      <div class="search__result-contents mt-24 o-auto h-100 disable-scrollbars flex-1" id="predictive-search-results-list">
+        <div class="search__result-items js-predictive-search-result-items gap-32 gap-md-40 h-100">
+          <div class="tab__content h-100">
+            <div class="tab__panel tab__panel--active d-block h-100 js-tab-panel {{ tab_aria_controls_prefix }}-1 js-animate" data-tab-content-id="{{ tab_aria_controls_prefix }}-1" aria-labelledby="{{ tab_id }}-1" role="tabpanel">
+              {%- if predictive_search.resources.products.size > 0 -%}
+                  <div class="search__result-type search__result--product o-hidden d-flex fd-column h-100">
+                    <ul class="search__result--list disable-scrollbars r-gap-12 r-gap-sm-24 ls-none rw flex-1" role="listbox">
+                      {%- for product in predictive_search.resources.products -%}
+                        <li class="clm" style="--w-xs: 12; --w-sm: 6; --w-lg: 4;" role="option">
+                          {%- liquid
+                            assign media = 'product-apparel-1' | placeholder_svg_tag: 'placeholder js-image-lazy w-100 h-100'
+                            assign media = product | image_url: width: product.image.width | image_tag: widths: '320, 450, 550, 750, 950', sizes: '(min-width: 361px) calc(100vw/2), calc(100vw/3)', alt: product.title, class: 'js-image-lazy media of-cover h-100 w-100'
+                          %}
+                          <div class="predictive-search__product d-flex gap-12 top-xs" style="--image-background: {{ settings.product_result_image_background | default: 'transparent' }}">
+                            <div class="p-relative">
+                              {% render 'image', image_item: media, ratio: settings.product_result_image_ratio, image_classes: 'predictive-search__media rounded-small o-hidden' %}
+                              <a href="{{ product.url }}" class="p-absolute bottom-0 left-0 w-100 h-100"></a>
+                            </div>
+                            <div class="predictive-search__product-info flex-1 d-flex fd-column gap-8">
+                              {% comment %} <p class="subtext color-light hide-empty wb-break-word m-zero">
+                                {{- product.vendor -}}
+                              </p> {% endcomment %}
+                              <a href="{{ product.url }}" class="wb-break-word d-block m-zero fw-700 hide-empty">{{- product.title | escape -}}</a>
+
+
+                              <div class="d-flex fw-wrap gap-8"> 
+
+                              {%- render 'product-price-card' product: product, target: product, content_align: 'ta-left start-xs' -%}
+
+
+                              <div class="product__badge d-flex fw-wrap gap-8 hide-empty">
+                                {%- if product.selected_or_first_available_variant.compare_at_price
+                                    > product.selected_or_first_available_variant.price
+                                -%}
+                                  {%- liquid
+                                    assign discount_cost = product.selected_or_first_available_variant.compare_at_price | minus: product.selected_or_first_available_variant.price
+                                    assign discount_percent = discount_cost | times: 100.0 | divided_by: product.selected_or_first_available_variant.compare_at_price | round: 0
+                                  -%}
+                                  <span class="badge sale-badge subtext d-inline-block p-relative fw-700">
+                                    {{- 'products.product.on_sale' | t }}
+                                    {{ discount_percent }}%
+                                    <span hidden>
+                                      {%- if settings.currency_code_enabled -%}
+                                        {{- discount_cost | money_with_currency -}}
+                                      {% else %}
+                                        {{- discount_cost | money -}}
+                                      {%- endif -%}
+                                    </span>
+                                  </span>
+                                {%- endif -%}
+          
+                                {%- if product.selected_or_first_available_variant.available == false -%}
+                                  <span class="badge badge--soldout fw-700">
+                                    {{- 'products.product.sold_out' | t -}}
+                                  </span>
+                                {%- endif -%}
+                              </div>
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                    <div class="search__result-view-all w-100">
+                      <a href="{{ routes.search_url }}?type=product&q={{ predictive_search.terms | escape }}&{{ 'options[prefix]' | url_encode }}=last" class="btn btn-primary  btn--large w-100 gap-8">{{ 'general.search.view_all_results' | t }} {% render 'icon-arrow-right' %}</a>
+                    </div>
+                  </div>
+                {% else %}
+                  {{ no_result }}
+                {%- endif -%}
+            </div>
+            <div class="tab__panel tab__panel--active d-none h-100 js-tab-panel {{ tab_aria_controls_prefix }}-2 js-animate" data-tab-content-id="{{ tab_aria_controls_prefix }}-2" aria-labelledby="{{ tab_id }}-2" role="tabpanel">
+                {%- if predictive_search.resources.collections.size > 0 -%}
+                  <div class="search__result-type search__result--product o-hidden d-flex fd-column h-100">
+                    <ul class="search__result--list disable-scrollbars r-gap-12 r-gap-sm-24 ls-none rw flex-1" role="listbox">
+                      {%- for collection in predictive_search.resources.collections -%}
+                        <li class="clm" style="--w-xs: 12; --w-sm: 6; --w-lg: 4;" role="option">
+                          {%- liquid
+                            assign media = 'image' | placeholder_svg_tag: 'placeholder js-image-lazy w-100 h-100'
+                            assign media = collection | image_url: width: collection.image.width | image_tag: widths: '320, 450, 550, 750, 950', sizes: '(min-width: 361px) calc(100vw/2), calc(100vw/3)', alt: product.title, class: 'js-image-lazy media of-cover h-100 w-100'
+                          %}
+                          <div class="d-flex gap-12 top-xs">
+                            <div class="p-relative">
+                              {% render 'image', image_item: media, ratio: settings.collection_result_image_ratio, image_classes: 'predictive-search__media rounded-small o-hidden' %}
+                              <a href="{{ collection.url }}" class="p-absolute bottom-0 left-0 w-100 h-100"></a>
+                            </div>
+                            <div class="flex-1 gap-4 d-flex fd-column">
+                              <a href="{{ collection.url }}" class="wb-break-word d-block m-zero fw-700 hide-empty">{{- collection.title | escape -}}</a>
+                              <p class="d-none {{ settings.show_product_quantity | default: '' | replace: 'true', 'd-block' }}">
+                                {{ 'general.search.collection.view_count_product' | t: count: collection.products.size }}
+                              </p>
+                            </div>
+                          </div>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                    <div class="search__result-view-all w-100">
+                      <a href="{{ routes.search_url }}?type=collection&q={{ predictive_search.terms | escape }}&{{ 'options[prefix]' | url_encode }}=last" class="btn btn-primary  btn--large w-100 gap-8">{{ 'general.search.view_all_results' | t }} {% render 'icon-arrow-right' %}</a>
+                    </div>
+                  </div>
+                {% else %}
+                  {{ no_result }}
+              {%- endif -%}
+            </div>
+            <div class="tab__panel tab__panel--active d-none h-100 js-tab-panel {{ tab_aria_controls_prefix }}-3 js-animate" data-tab-content-id="{{ tab_aria_controls_prefix }}-3" aria-labelledby="{{ tab_id }}-3" role="tabpanel">
+                {%- if predictive_search.resources.articles.size > 0 -%}
+                  <div class="search__result-type search__result--product o-hidden d-flex fd-column h-100">
+                    <ul class="search__result--list disable-scrollbars r-gap-12 r-gap-sm-24 ls-none rw flex-1" role="listbox">
+                      {%- for article in predictive_search.resources.articles -%}
+                        <li class="clm" style="--w-xs: 12; --w-sm: 6; --w-lg: 4;" role="option">
+                          {%- liquid
+                            assign media = 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder js-image-lazy w-100 h-100'
+                            assign media = article | image_url: width: article.image.width | image_tag: widths: '320, 450, 550, 750, 950', sizes: '(min-width: 361px) calc(100vw/2), calc(100vw/3)', alt: product.title, class: 'js-image-lazy media of-cover h-100 w-100'
+                          %}
+                          <div class="d-flex gap-12 top-xs">
+                            <div class="p-relative">
+                              {% render 'image', image_item: media, ratio: settings.blog_post_result_image_ratio, image_classes: 'predictive-search__media rounded-small o-hidden' %}
+                              <a href="{{ article.url }}" class="p-absolute bottom-0 left-0 w-100 h-100"></a>
+                            </div>
+                            <div class="flex-1 d-flex fd-column">
+                              {%- if article.tags.size > 0 -%}
+                                <ul class="ls-none gap-8 fw-wrap hide-empty d-none mb-8 p-zero {{ settings.show_blog_post_tag | default: '' | replace: 'true', 'd-flex' }}">
+                                  {% for tag in article.tags %}
+                                    <li>
+                                      {{- tag | link_to_tag: tag | replace: '<a', '<a class="tag"' -}}
+                                    </li>
+                                  {% endfor %}
+                                </ul>
+                              {%- endif -%}
+                              <a href="{{ article.url }}" class="wb-break-word d-block m-zero fw-700 hide-empty">{{- article.title | escape -}}</a>
+                            </div>
+                          </div>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                    <div class="search__result-view-all w-100">
+                      <a href="{{ routes.search_url }}?type=article&q={{ predictive_search.terms | escape }}&{{ 'options[prefix]' | url_encode }}=last" class="btn btn-primary  btn--large w-100 gap-8">{{ 'general.search.view_all_results' | t }} {% render 'icon-arrow-right' %}</a>
+                    </div>
+                  </div>
+                {% else %}
+                  {{ no_result }}
+                {%- endif -%}
+            </div>
+            <div class="tab__panel tab__panel--active d-none h-100 js-tab-panel {{ tab_aria_controls_prefix }}-4 js-animate" data-tab-content-id="{{ tab_aria_controls_prefix }}-4" aria-labelledby="{{ tab_id }}-4" role="tabpanel">
+              {%- if predictive_search.resources.pages.size > 0 -%}
+                  <div class="search__result-type search__result--product o-hidden d-flex fd-column h-100">
+                    <ul class="search__result--list disable-scrollbars r-gap-12 r-gap-sm-24 ls-none rw flex-1" role="listbox">
+                      {%- for page in predictive_search.resources.pages -%}
+                        <li class="clm" style="--w-xs: 12;" role="option">
+                          <a class="main-search_result-page c-pointer d-flex c-gap-8">
+                            {% render 'icon-page', class: 'search__result--icon' %}
+                            <span href="{{ page.url }}" class="flex-1 fw-700 hide-empty btn-link result-page__title">{{- page.title -}}</span>
+                          </a>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                    <div class="search__result-view-all w-100">
+                      <a href="{{ routes.search_url }}?type=page&q={{ predictive_search.terms | escape }}&{{ 'options[prefix]' | url_encode }}=last" class="btn btn-primary  btn--large w-100 gap-8">{{ 'general.search.view_all_results' | t }} {% render 'icon-arrow-right' %}</a>
+                    </div>
+                  </div>
+                {% else %}
+                  {{ no_result }}
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+      </div>
+    </sht-tabs>
+  {%  else %}
+      {{- no_result -}}
+  {% endif %}
+{%- endif -%}

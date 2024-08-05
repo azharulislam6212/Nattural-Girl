@@ -1,0 +1,308 @@
+{{ 'section-after-before.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top_mobile | append: 'px' }};
+    padding-bottom: {{ section.settings.padding_bottom_mobile | append: 'px' }};
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top | append: 'px'}};
+      padding-bottom: {{ section.settings.padding_bottom | append: 'px'}};
+    }
+  }
+{%- endstyle -%}
+
+{% liquid
+  assign columns = section.blocks | where: 'type', 'column'
+
+  assign desktop_column = section.settings.desktop_column
+  assign mobile_column = section.settings.mobile_column
+%}
+
+<div class="after-before-column after-before-column--product solate section-{{ section.id }}-padding color-{{ section.settings.color_scheme }} gradient">
+  <div class="container">
+
+  {% if section.settings.heading != blank %}
+    <div class="row">
+      <div class="col-12 text-center">
+        <div class="after-before-header">
+
+            <h2
+          class="after-before-title inline-richtext {% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+          {% if settings.animations_reveal_on_scroll %}
+            data-cascade
+          {% endif %}
+        >
+          {{ section.settings.heading }}
+        </h2>
+        <span class="position-right-heading"> 
+          <svg class="sparkle" width="41" height="41" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M33.0603 0C25.0463 17.9154 25.725 20.7324 41.0001 33.0603C23.0846 25.0463 20.2676 25.7249 7.93972 41C15.9538 23.0846 15.2751 20.2676 0 7.93967C17.9154 15.9537 20.7324 15.2751 33.0603 0Z" fill="#8E2210"/>
+</svg>
+
+            </span>
+            
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+
+    <div class="row row-cols-{{mobile_column}} row-cols-md-{{desktop_column}} align-items-stretch">
+      {%- for block in columns -%}
+        {%- liquid
+          assign loading = 'lazy'
+          assign decoding = 'async'
+          assign fetchpriority = 'auto'
+
+          if section.index <= 2
+            assign loading = 'eager'
+            assign fetchpriority = 'high'
+          endif
+          assign desktop_image_width = '320, 450, 550, 750, 950, 1024, 1200, 1400, 1600, 1800, 2000, 2200, 2400, 2600, 2800, 3000'
+
+          assign desktop_image = 'hero-apparel-1' | placeholder_svg_tag: 'placeholder w-100 h-100 of-cover'
+
+          assign desktop_image_alt = block.settings.desktop_image.alt | default: block.settings.desktop_image.image | split: '/' | last
+          assign desktop_image = block.settings.desktop_image | image_url: width: block.settings.desktop_image.width | image_tag: widths: desktop_image_width, sizes: 'calc(100vw - 48px)', alt: desktop_image_alt, class: 'w-100 h-100 of-cover', loading: loading, fetchpriority: fetchpriority, decoding: decoding
+
+          assign desktop_image_second = 'hero-apparel-3' | placeholder_svg_tag: 'placeholder w-100 h-100 of-cover'
+
+          assign desktop_image_alt_second = block.settings.desktop_image_second.alt | default: block.settings.desktop_image_second.image | split: '/' | last
+          assign desktop_image_second = block.settings.desktop_image_second | image_url: width: block.settings.desktop_image_second.width | image_tag: widths: desktop_image_width, sizes: 'calc(100vw - 48px)', alt: desktop_image_alt_second, class: 'w-100 h-100 of-cover', loading: loading, fetchpriority: fetchpriority, decoding: decoding
+
+          assign ratio_md = block.settings.desktop_image.aspect_ratio
+          assign ratio = block.settings.desktop_image.aspect_ratio
+        -%}
+
+        <div class="col">
+          <div class="column-item color-{{ section.settings.color_scheme_secondary }} gradient">
+            <div class="column-item__content ">
+              <sht-before-after-images
+                class="p-relative d-block rounded-2x"
+                style="--aspect-ratio: {{ ratio }}; --aspect-ratio-md: {{ ratio_md }}; --before-after-initial-drag-position: 50%;"
+              >
+                <div class="before-image w-100 h-100 media-wrapper">
+                  <div class="before-text">
+                    {{ block.settings.before_text}}
+                  </div>
+                  {%- liquid
+                    echo desktop_image
+                  -%}
+
+                </div>
+                <div class="after-image js-after-image p-absolute top-0 left-0 h-100 w-100">
+                  <div class="w-100 h-100 media-wrapper">
+                    {%- liquid
+                      echo desktop_image_second
+                    -%}
+
+                    <div class="after-text">
+                      {{ block.settings.after_text}}
+                    </div>
+                  </div>
+                </div>
+                <div class="p-absolute top-0 left-0 bottom-0 right-0">
+                  <div class="split-cursor js-split-cursor">
+
+                      <span class="btn-icon c-grab ">
+                        <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="0.75" y="0.75" width="58.5" height="58.5" rx="29.25" stroke="#8E2210" stroke-width="1.5"/>
+                        <rect x="5" y="5" width="50" height="50" rx="25" fill="#8E2210"/>
+                        <mask id="mask0_497_636" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="18" y="18" width="24" height="24">
+                        <rect x="18" y="18" width="24" height="24" fill="#D9D9D9"/>
+                        </mask>
+                        <g mask="url(#mask0_497_636)">
+                        <path d="M22.8248 30.025L26.6998 33.9C26.8831 34.0833 26.9748 34.3167 26.9748 34.6C26.9748 34.8833 26.8831 35.1167 26.6998 35.3C26.5165 35.4833 26.2831 35.575 25.9998 35.575C25.7165 35.575 25.4831 35.4833 25.2998 35.3L20.6998 30.7C20.5998 30.6 20.529 30.4917 20.4873 30.375C20.4456 30.2583 20.4248 30.1333 20.4248 30C20.4248 29.8667 20.4456 29.7417 20.4873 29.625C20.529 29.5083 20.5998 29.4 20.6998 29.3L25.2998 24.7C25.4998 24.5 25.7373 24.4 26.0123 24.4C26.2873 24.4 26.5248 24.5 26.7248 24.7C26.9248 24.9 27.0248 25.1375 27.0248 25.4125C27.0248 25.6875 26.9248 25.925 26.7248 26.125L22.8248 30.025ZM37.1748 29.975L33.2998 26.1C33.1165 25.9167 33.0248 25.6833 33.0248 25.4C33.0248 25.1167 33.1165 24.8833 33.2998 24.7C33.4831 24.5167 33.7165 24.425 33.9998 24.425C34.2831 24.425 34.5165 24.5167 34.6998 24.7L39.2998 29.3C39.3998 29.4 39.4706 29.5083 39.5123 29.625C39.554 29.7417 39.5748 29.8667 39.5748 30C39.5748 30.1333 39.554 30.2583 39.5123 30.375C39.4706 30.4917 39.3998 30.6 39.2998 30.7L34.6998 35.3C34.4998 35.5 34.2665 35.5958 33.9998 35.5875C33.7331 35.5792 33.4998 35.475 33.2998 35.275C33.0998 35.075 32.9998 34.8375 32.9998 34.5625C32.9998 34.2875 33.0998 34.05 33.2998 33.85L37.1748 29.975Z" fill="white"/>
+                        </g>
+                        </svg>
+                        
+                      </span>
+                 
+                  </div>
+                </div>
+              </sht-before-after-images>
+
+              {% if block.settings.heading != blank %}
+                <div class="heading-title">
+                  {{ block.settings.heading}}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "After Before Product",
+  "tag": "section",
+  "disabled_on": {
+    "templates": ["index"],
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "default": "After / Before",
+      "label": "Heading"
+    },
+    {
+      "type": "select",
+      "id": "desktop_column",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        }
+      ],
+      "default": "3",
+      "label": "Desktop Column"
+    },
+    {
+      "type": "select",
+      "id": "mobile_column",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "default": "1",
+      "label": "Mobile Column"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color",
+      "default": "background-1"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "paragraph",
+      "content": "Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 116
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 116
+    },
+    {
+      "type": "paragraph",
+      "content": " Mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 58
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 58
+    }
+  ],
+  "blocks": [
+    {
+      "type": "column",
+      "name": "Column",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "desktop_image",
+          "label": "Before Image"
+        },
+        {
+          "type": "image_picker",
+          "label": "After Image",
+          "id": "desktop_image_second"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "heading",
+          "default": "Real hair shine",
+          "label": "Heading"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "before_text",
+          "default": "US",
+          "label": "Before Text"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "after_text",
+          "default": "Them",
+          "label": "After Text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "After Before Product",
+      "blocks": [
+        {
+          "type": "column"
+        },
+        {
+          "type": "column"
+        },
+        {
+          "type": "column"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

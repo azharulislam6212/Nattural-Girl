@@ -1,0 +1,896 @@
+{%- liquid
+  assign subheading = section.settings.subheading
+  assign heading = section.settings.heading
+  assign description = section.settings.description
+
+  assign content_align_mobile = section.settings.content_align_mobile
+  assign content_align_desktop = section.settings.content_align_desktop
+  assign icon_size = section.settings.icon_size
+
+  assign block_per_row = section.settings.columns_per_row | minus: 1
+  assign md = 12.0 | divided_by: section.settings.columns_per_row
+  if content_align_desktop == 'inline'
+    assign section_layout = 's-layout--vertical'
+    assign s_button = section.settings.button_text
+    unless subheading == blank and heading == blank and description == blank
+      assign md = 12.0 | divided_by: block_per_row
+      assign item_per_row = section.settings.columns_per_row
+    endunless
+  endif
+
+  if section.settings.enable_block_background
+    assign card_layout = 'br-card-content border'
+    unless section.settings.color_content.alpha == 0.0 or section.settings.color_content == blank
+      assign color_content = 'color: ' | append: section.settings.color_content | append: '; --color-normal-text-rgb:' | append: section.settings.color_content.red | append: ',' | append: section.settings.color_content.green | append: ',' | append: section.settings.color_content.blue
+    endunless
+    unless section.settings.background_content.alpha == 0.0 or section.settings.background_content == blank
+      assign background_content = '; background: ' | append: section.settings.background_content
+    endunless
+  endif
+
+-%}
+
+{% liquid
+  assign detect_background = 1
+  if section.settings.color_scheme.settings.color_background.alpha != 0.0
+    assign no_transparent = 'no-transparent'
+    assign detect_background = section.settings.color_scheme.settings.color_background | color_brightness | times: 9999
+  endif
+%}
+<style>
+  #shopify-section-{{ section.id }} {
+    --section-background-hash: {{ detect_background }};
+  }
+  #shopify-section-{{ section.id }} + * {
+    --previous-section-background-hash: {{ detect_background }};
+  }
+</style>
+
+<div class="s--margin color-{{- section.settings.color_scheme }} s-container-radius o-hidden {{ no_transparent }}" data-ui-component="Icon With Text Section" role="region" aria-labelledby="sectionHeading-{{ section.id | md5 | truncate: 12, "" }}">
+  <div class="section ctnr d-grid-md d-flex fd-column {{ section_layout }}  " style="--item-per-row: {{ item_per_row }}">
+    {% render 'section-header',
+     content_align_mobile: content_align_mobile,
+     content_align_desktop: content_align_desktop,
+     subheading: subheading,
+     heading: heading,
+     description: description,
+     heading_size: section.settings.heading_size,
+     button_main_text: s_button,
+     button_main_link: section.settings.button_link,
+     button_main_style: section.settings.style_button,
+     section: section
+    %}
+    <div class="s-content">
+      <sht-carousel-wrapper data-on-mobile-only="{{ section.settings.list_style }}" data-css-class-on-container="carousel-xs m-zero ox-auto p-relative fw-nowrap scrollable scrollable-x disable-scrollbars" data-css-class-on-item="carousel__item-xs p-relative scrollable-aln-start d-flex fg-1 fs-0">
+        <sht-carousel class="sht-carousel p-relative d-block">
+          <div class="rw r-gap-equal js-carousel-items" role="list" aria-label="{{ 'accessibility.slider' | t }}">
+            {%- for block in section.blocks limit: section.blocks.size -%}
+              <sht-carousel-itm role="listitem" tabindex="-1" class="clm js-carousel-item {{ section.settings.enable_block_background | default: 'card--standard' | replace: 'true', '' }}" style="--w-xs:12;--w-sm: 6;--w-md:{{- md -}};" {{ block.shopify_attributes }}>
+                <div class="icon-with-text-item card__content {{ card_layout }} d-flex fd-column gap-12 h-100 w-100 {{ section.settings.block_align }}" style="{{ color_content }} {{ background_content }}">
+                  <div class="custom-icon hide-empty" style="width: {{ icon_size }}; height: {{ icon_size }}">
+                    {%- liquid
+                    assign loading = "lazy"
+                    assign decoding ="async"
+                    assign fetchpriority = "auto"
+
+                    if section.index <= 2 and forloop.first
+                      assign loading = "eager"
+                      assign fetchpriority = "high"
+                    endif
+
+                    assign icon_svg = ''
+                    assign icon_source = block.settings.icon_source
+                    if icon_source == 'theme_library'
+                      render 'icon-loader', icon: block.settings.options_icon, class: 'h-100 w-100'
+                    elsif icon_source == 'custom_img'
+                      assign custom_icon = 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder media of-cover h-100 w-100 js-image-lazy'
+                      assign custom_icon = block.settings.custom_img | image_url: width: block.settings.custom_img.width | image_tag: widths: '120', sizes: '(min-width: 361px) calc(100vw/2), calc(100vw/3)', alt: block.settings.heading, class: 'media of-cover h-100 w-100', loading: loading, fetchpriority: fetchpriority, decoding: decoding
+                      render 'image', image_item: custom_icon, image_wrap_classes: "d-inline-block h-100 w-100", image_classes: "h-100 w-100"
+                    else
+                      assign icon_svg = block.settings.html_code
+                    endif
+                    -%}
+                    {%- if icon_svg != '' -%}
+                      {{- icon_svg -}}
+                    {%- endif -%}
+                  </div>
+                  <div class="d-flex fd-column gap-8">
+                    <h3 class="m-zero card__heading hide-empty">{{- block.settings.heading -}}</h3>
+                    <div class="rte hide-empty" tabindex="-1">{{- block.settings.description -}}</div>
+                  </div>
+                </div>
+              </sht-carousel-itm>
+            {%- endfor -%}
+          </div>
+          <div class="carousel-pagination middle-y w-100 p-absolute d-none-important no-js-hidden zi-1">
+            <div class="p-absolute left-0">
+              <button type="button" data-step="1" class="js-carousel-prev-btn btn btn-outline btn-icon icon middle-y btn--medium" aria-label="{{ 'accessibility.previous_slide' | t }}" name="previous" disabled>{% render 'icon-chevron-left' %}</button>
+            </div>
+            <div class="p-absolute right-0">
+              <button type="button" data-step="1" class="js-carousel-next-btn btn btn-outline btn-icon icon middle-y btn--medium" aria-label="{{ 'accessibility.next_slide' | t }}" name="next" disabled>{% render 'icon-chevron-right' %}</button>
+            </div>
+          </div>
+        </sht-carousel>
+      </sht-carousel-wrapper>
+    </div>
+    <div class="s-footer {{ section.settings.button_text | default: 'd-none' | replace: section.settings.button_text, '' }} {{ content_align_mobile }} {{ content_align_desktop }} {% if subheading == blank and heading == blank and description == blank %} d-none {% endif %}">
+      <a class="btn hide-empty {{ section.settings.style_button }}" href="{{- section.settings.button_link | default: '#' -}}" {% if section.settings.button_link == blank %} tabindex="-1" {% endif %}>
+        {{- section.settings.button_text -}}
+      </a>
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "t:sections.icon_with_text.name",
+  "disabled_on": {
+    "groups": [
+      "header"
+    ]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.general.content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_scheme.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "t:general.settings.section_subheading.label",
+      "default": "Add a tagline"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:general.settings.section_heading.label",
+      "info": "t:general.settings.prominent_font.info",
+      "default": "Our core values"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.heading_size.label",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "t:general.settings.heading_size.options.h2.label"
+        },
+        {
+          "value": "h3",
+          "label": "t:general.settings.heading_size.options.h3.label"
+        },
+        {
+          "value": "h4",
+          "label": "t:general.settings.heading_size.options.h4.label"
+        },
+        {
+          "value": "h5",
+          "label": "t:general.settings.heading_size.options.h5.label"
+        }
+      ],
+      "default": "h2"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "t:general.settings.section_description.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.icon_with_text.settings.headers.header_icon_with_text_block.content"
+    },
+    {
+      "type": "select",
+      "id": "block_align",
+      "label": "t:general.settings.item_alignment.label",
+      "default": "ta-center middle-xs",
+      "options": [
+        {
+          "value": "ta-left top-xs",
+          "label": "t:general.settings.option_left.label"
+        },
+        {
+          "value": "ta-center middle-xs",
+          "label": "t:general.settings.option_center.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "icon_size",
+      "label": "t:general.settings.icon_size.label",
+      "default": "32px",
+      "options": [
+        {
+          "value": "32px",
+          "label": "32px"
+        },
+        {
+          "value": "48px",
+          "label": "48px"
+        },
+        {
+          "value": "64px",
+          "label": "64px"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_block_background",
+      "label": "t:general.settings.enable_block_background.label"
+    },
+    {
+      "type": "color",
+      "id": "background_content",
+      "label": "t:general.settings.background.label"
+    },
+    {
+      "type": "color",
+      "id": "color_content",
+      "label": "t:general.settings.content.label"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_large_screen.content"
+    },
+    {
+      "type": "select",
+      "id": "content_align_desktop",
+      "label": "t:general.settings.section_heading_position.label",
+      "default": "ta-center-md",
+      "options": [
+        {
+          "value": "ta-left-md",
+          "label": "t:general.settings.option_top_left.label"
+        },
+        {
+          "value": "ta-center-md",
+          "label": "t:general.settings.option_top_center.label"
+        },
+        {
+          "value": "inline",
+          "label": "t:general.settings.option_inline.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "columns_per_row",
+      "label": "t:general.settings.columns_per_row.label",
+      "default": "4",
+      "options": [
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        },
+        {
+          "value": "5",
+          "label": "5"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_mobile_screen.content"
+    },
+    {
+      "type": "select",
+      "id": "content_align_mobile",
+      "label": "t:general.settings.section_heading_position.label",
+      "default": "ta-center",
+      "options": [
+        {
+          "value": "ta-left",
+          "label": "t:general.settings.option_left.label"
+        },
+        {
+          "value": "ta-center",
+          "label": "t:general.settings.option_center.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "list_style",
+      "label": "t:general.settings.list_style.label",
+      "default": "true",
+      "options": [
+        {
+          "value": "false",
+          "label": "t:general.settings.option_grid.label"
+        },
+        {
+          "value": "true",
+          "label": "t:general.settings.option_carousel.label"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.button.content"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "t:general.settings.label.label",
+      "info": "t:general.settings.hide_if_empty.info",
+      "default": "Explore more"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.style.label",
+      "id": "style_button",
+      "options": [
+        {
+          "value": "btn-primary",
+          "label": "t:general.settings.filled.label"
+        },
+        {
+          "value": "btn-outline",
+          "label": "t:general.settings.oulined.label"
+        },
+        {
+          "value": "btn-link",
+          "label": "t:general.settings.text_link.label"
+        }
+      ],
+      "default": "btn-primary"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "t:general.settings.link.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "t:sections.icon_with_text.blocks.icon_with_text_item.name",
+      "settings": [
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.icon.content"
+        },
+        {
+          "type": "select",
+          "id": "icon_source",
+          "label": "t:general.settings.icon_source.label",
+          "options": [
+            {
+              "value": "theme_library",
+              "label": "t:general.settings.theme_library.label"
+            },
+            {
+              "value": "custom_img",
+              "label": "t:general.settings.image.label"
+            },
+            {
+              "value": "custom_svg",
+              "label": "t:general.settings.custom_svg.label"
+            }
+          ],
+          "default": "theme_library"
+        },
+        {
+          "type": "select",
+          "id": "options_icon",
+          "label": "t:general.settings.theme_library.label",
+          "default": "subscription",
+          "options": [
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "3d-model",
+              "label": "3d model"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "account",
+              "label": "Account"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "arrow-down",
+              "label": "Arrow down"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "arrow-left",
+              "label": "Arrow left"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "arrow-right",
+              "label": "Arrow right"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "arrow-up",
+              "label": "Arrow up"
+            },
+            {
+              "group": "t:general.settings.health_beauty.label",
+              "value": "bottle",
+              "label": "Bottle"
+            },
+            {
+              "group": "t:general.settings.shipping.label",
+              "value": "box",
+              "label": "Box"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "cart",
+              "label": "Cart"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "check-circle",
+              "label": "Check circle"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "check",
+              "label": "Check"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "chevron-down",
+              "label": "Chevron down"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "chevron-left",
+              "label": "Chevron left"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "chevron-right",
+              "label": "Chevron right"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "chevron-up",
+              "label": "Chevron up"
+            },
+            {
+              "group": "t:general.settings.shipping.label",
+              "value": "clock",
+              "label": "Clock"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "close",
+              "label": "Close"
+            },
+            {
+              "group": "t:general.settings.health_beauty.label",
+              "value": "cream-tube",
+              "label": "Cream tube"
+            },
+            {
+              "group": "t:general.settings.shop.label",
+              "value": "discount",
+              "label": "Discount"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "drag",
+              "label": "Drag"
+            },
+            {
+              "group": "t:general.settings.fashion.label",
+              "value": "dress",
+              "label": "Dress"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "ellipsis",
+              "label": "Ellipsis"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "exit-full-screen",
+              "label": "Exit full screen"
+            },
+            {
+              "group": "t:general.settings.social.label",
+              "value": "facebook",
+              "label": "Facebook"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "filter-2",
+              "label": "Filter 2"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "filter",
+              "label": "Filter"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "full-screen",
+              "label": "Full screen"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "functional-3d",
+              "label": "Functional 3d"
+            },
+            {
+              "group": "t:general.settings.shop.label",
+              "value": "gift",
+              "label": "Gift"
+            },
+            {
+              "group": "t:general.settings.shipping.label",
+              "value": "global",
+              "label": "Global"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "grid-1",
+              "label": "Grid 1"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "grid-2",
+              "label": "Grid 2"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "hamburger",
+              "label": "Hamburger"
+            },
+            {
+              "group": "t:general.settings.health_beauty.label",
+              "value": "hand",
+              "label": "Hand"
+            },
+            {
+              "group": "t:general.settings.shop.label",
+              "value": "heart",
+              "label": "Heart"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "home",
+              "label": "Home"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "info",
+              "label": "Info"
+            },
+            {
+              "group": "t:general.settings.social.label",
+              "value": "instagram",
+              "label": "Instagram"
+            },
+            {
+              "group": "t:general.settings.fashion.label",
+              "value": "iron",
+              "label": "Iron"
+            },
+            {
+              "group": "t:general.settings.shop.label",
+              "value": "like",
+              "label": "Like"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "linear",
+              "label": "Linear"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "link",
+              "label": "Link"
+            },
+            {
+              "group": "t:general.settings.social.label",
+              "value": "linkedin",
+              "label": "Linkedin"
+            },
+            {
+              "group": "t:general.settings.health_beauty.label",
+              "value": "lipstick",
+              "label": "Lipstick"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "mail",
+              "label": "Mail"
+            },
+            {
+              "group": "t:general.settings.health_beauty.label",
+              "value": "makeup-brush",
+              "label": "Makeup brush"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "map-pin",
+              "label": "Map pin"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "minus",
+              "label": "Minus"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "mute",
+              "label": "Mute"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "next",
+              "label": "Next"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "page",
+              "label": "Page"
+            },
+            {
+              "group": "t:general.settings.fashion.label",
+              "value": "pants",
+              "label": "Pants"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "pause",
+              "label": "Pause"
+            },
+            {
+              "group": "t:general.settings.shop.label",
+              "value": "percent",
+              "label": "Percent"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "phone",
+              "label": "Phone"
+            },
+            {
+              "group": "t:general.settings.social.label",
+              "value": "pinterest",
+              "label": "Pinterest"
+            },
+            {
+              "group": "t:general.settings.shipping.label",
+              "value": "plane",
+              "label": "Plane"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "play-circle",
+              "label": "Play Circle"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "play",
+              "label": "Play"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "plus",
+              "label": "Plus"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "quote",
+              "label": "Quote"
+            },
+            {
+              "group": "t:general.settings.shipping.label",
+              "value": "return",
+              "label": "Return"
+            },
+            {
+              "group": "t:general.settings.fashion.label",
+              "value": "rss",
+              "label": "Rss"
+            },
+            {
+              "group": "t:general.settings.fashion.label",
+              "value": "ruler",
+              "label": "Ruler"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "save",
+              "label": "Save"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "search",
+              "label": "Search"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "share",
+              "label": "Share"
+            },
+            {
+              "group": "t:general.settings.fashion.label",
+              "value": "shirt",
+              "label": "Shirt"
+            },
+            {
+              "group": "t:general.settings.fashion.label",
+              "value": "shoe",
+              "label": "Shoe"
+            },
+            {
+              "group": "t:general.settings.social.label",
+              "value": "snapchat",
+              "label": "Snapchat"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "spinner",
+              "label": "Spinner"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "star-half",
+              "label": "Star half"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "star-line",
+              "label": "Star line"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "star",
+              "label": "Star"
+            },
+            {
+              "group": "t:general.settings.shop.label",
+              "value": "storefront",
+              "label": "Storefront"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "subscription",
+              "label": "Subscription"
+            },
+            {
+              "group": "t:general.settings.social.label",
+              "value": "tiktok",
+              "label": "Tiktok"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "trash-bin",
+              "label": "Trash bin"
+            },
+            {
+              "group": "t:general.settings.shipping.label",
+              "value": "truck",
+              "label": "Truck"
+            },
+            {
+              "group": "t:general.settings.social.label",
+              "value": "tumblr",
+              "label": "Tumblr"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "unmute",
+              "label": "Unmute"
+            },
+            {
+              "group": "t:general.settings.social.label",
+              "value": "vimeo",
+              "label": "Vimeo"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "warning",
+              "label": "Warning"
+            },
+            {
+              "group": "t:general.settings.fashion.label",
+              "value": "washing",
+              "label": "Washing"
+            },
+            {
+              "group": "t:general.settings.social.label",
+              "value": "x-twitter",
+              "label": "Twitter"
+            },
+            {
+              "group": "t:general.settings.social.label",
+              "value": "youtube",
+              "label": "Youtube"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "zoom-in",
+              "label": "Zoom in"
+            },
+            {
+              "group": "t:general.settings.functional.label",
+              "value": "zoom-out",
+              "label": "Zoom out"
+            }
+          ]
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_img",
+          "label": "t:general.settings.image.label",
+          "info": "t:general.settings.custom_img.info"
+        },
+        {
+          "type": "html",
+          "id": "html_code",
+          "label": "t:general.settings.custom_svg.label",
+          "info": "t:general.settings.custom_svg.info"
+        },
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.text.content"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:general.settings.heading.label",
+          "default": "Item heading"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "t:general.settings.description.label",
+          "default": "<p>Highlight your values, products, or services</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.icon_with_text.name",
+      "blocks": [
+        {
+          "type": "item",
+          "settings": {
+            "options_icon": "check"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "options_icon": "account"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "options_icon": "close"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "options_icon": "check-circle"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

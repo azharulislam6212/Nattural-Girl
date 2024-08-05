@@ -1,0 +1,323 @@
+
+{% liquid
+  assign md = 12.0 | divided_by: section.settings.columns_per_row
+  if section.settings.enable_item_background
+    unless section.settings.color_content.alpha == 0.0 or section.settings.color_content == blank
+      assign color_content = 'color: ' | append: section.settings.color_content | append: '; --color-normal-text-rgb:' | append: section.settings.color_content.red | append: ',' | append: section.settings.color_content.green | append: ',' | append: section.settings.color_content.blue
+    endunless
+    unless section.settings.background_content.alpha == 0.0 or section.settings.background_content == blank
+      assign background_content = '; background: ' | append: section.settings.background_content
+    endunless
+  endif
+%}
+
+{% liquid
+  assign detect_background = 1
+  if section.settings.color_scheme.settings.color_background.alpha != 0.0
+    assign no_transparent = 'no-transparent'
+    assign detect_background = section.settings.color_scheme.settings.color_background | color_brightness | times: 9999
+  endif
+%}
+<style>
+  #shopify-section-{{ section.id }} {
+    --section-background-hash: {{ detect_background }};
+  }
+  #shopify-section-{{ section.id }} + * {
+    --previous-section-background-hash: {{ detect_background }};
+  }
+</style>
+
+<div class="s--margin color-{{- section.settings.color_scheme }} s-container-radius {{ no_transparent }}" data-ui-component="Value List Section" role="region" aria-labelledby="sectionHeading-{{ section.id | md5 | truncate: 12, "" }}">
+  <div class="section ctnr d-grid  ">
+    {% render 'section-header',
+     content_align_mobile: section.settings.content_align_mobile,
+     content_align_desktop: section.settings.content_align_desktop,
+     subheading: section.settings.subheading,
+     heading: section.settings.heading,
+     description: section.settings.description,
+     heading_size: section.settings.heading_size,
+     section: section
+    %}
+    <div class="s-content">
+      <div class="rw r-gap-equal">
+        {%- for block in section.blocks limit: section.blocks.size -%}
+          {% liquid
+            assign text_color_class = ''
+            assign text_color_style = 'color:' | append: block.settings.text_color
+            if block.settings.text_color_gradient != empty
+              assign text_color_class = 'value-text'
+              assign text_color_style = '--text-color-gradient:' | append: block.settings.text_color_gradient
+            endif
+          %}
+          <div class="clm" style="--w-xs:12;--w-sm: 6;--w-md:{{- md -}};" {{ block.shopify_attributes }}>
+            <div class="sht-card h-100 {{ section.settings.enable_item_background | default: 'card--standard' | replace: 'true', 'border' }}" style="{{ color_content }} {{ background_content }}">
+              <div class="card__content gap-12 d-grid {{ section.settings.item_alignment }}">
+                <h3 class="h2 m-zero hide-empty wb-break-word {{ text_color_class }} {{ section.settings.value_text_size }}" style="{{- text_color_style -}}">
+                  {{- block.settings.value_text -}}
+                </h3>
+                <div class="d-grid gap-8">
+                  <h4 class="card__heading m-zero hide-empty wb-break-word">{{- block.settings.subheading -}}</h4>
+                  <div class="rte hide-empty">{{- block.settings.description -}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "t:sections.value_list.name",
+  "disabled_on": {
+    "groups": [
+      "header"
+    ]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.general.content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_scheme.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "t:general.settings.section_subheading.label",
+      "default": "Add a tagline"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:general.settings.section_heading.label",
+      "info": "t:general.settings.prominent_font.info",
+      "default": "Our core values"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.heading_size.label",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "t:general.settings.heading_size.options.h2.label"
+        },
+        {
+          "value": "h3",
+          "label": "t:general.settings.heading_size.options.h3.label"
+        },
+        {
+          "value": "h4",
+          "label": "t:general.settings.heading_size.options.h4.label"
+        },
+        {
+          "value": "h5",
+          "label": "t:general.settings.heading_size.options.h5.label"
+        }
+      ],
+      "default": "h2"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "t:general.settings.section_description.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.value_list.settings.headers.value_item.content"
+    },
+    {
+      "type": "select",
+      "id": "item_alignment",
+      "label": "t:general.settings.item_alignment.label",
+      "default": "ta-center",
+      "options": [
+        {
+          "value": "ta-center",
+          "label": "t:general.settings.option_center.label"
+        },
+        {
+          "value": "ta-left",
+          "label": "t:general.settings.option_left.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "label": "t:sections.value_list.settings.value_text_size.label",
+      "id": "value_text_size",
+      "options": [
+        {
+          "value": "headline",
+          "label": "t:general.settings.heading_size.options.headline.label"
+        },
+        {
+          "value": "h1",
+          "label": "t:general.settings.heading_size.options.h1.label"
+        },
+        {
+          "value": "h2",
+          "label": "t:general.settings.heading_size.options.h2.label"
+        },
+        {
+          "value": "h3",
+          "label": "t:general.settings.heading_size.options.h3.label"
+        },
+        {
+          "value": "h4",
+          "label": "t:general.settings.heading_size.options.h4.label"
+        },
+        {
+          "value": "h5",
+          "label": "t:general.settings.heading_size.options.h5.label"
+        },
+        {
+          "value": "h6",
+          "label": "t:general.settings.heading_size.options.h6.label"
+        }
+      ],
+      "default": "h3"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_item_background",
+      "label": "t:general.settings.enable_item_background.label"
+    },
+    {
+      "type": "color",
+      "id": "background_content",
+      "label": "t:general.settings.background.label"
+    },
+    {
+      "type": "color",
+      "id": "color_content",
+      "label": "t:general.settings.content.label"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_large_screen.content"
+    },
+    {
+      "type": "select",
+      "id": "content_align_desktop",
+      "label": "t:general.settings.section_heading_alignment.label",
+      "default": "ta-center-md",
+      "options": [
+        {
+          "value": "ta-left-md",
+          "label": "t:general.settings.option_left.label"
+        },
+        {
+          "value": "ta-center-md",
+          "label": "t:general.settings.option_center.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "columns_per_row",
+      "label": "t:general.settings.columns_per_row.label",
+      "default": "4",
+      "options": [
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        },
+        {
+          "value": "5",
+          "label": "5"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_mobile_screen.content"
+    },
+    {
+      "type": "select",
+      "id": "content_align_mobile",
+      "label": "t:general.settings.section_heading_alignment.label",
+      "default": "ta-center",
+      "options": [
+        {
+          "value": "ta-left",
+          "label": "t:general.settings.option_left.label"
+        },
+        {
+          "value": "ta-center",
+          "label": "t:general.settings.option_center.label"
+        }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "t:sections.value_list.blocks.value.name",
+      "settings": [
+        {
+          "type": "header",
+          "content": "t:sections.value_list.settings.header_value.content"
+        },
+        {
+          "type": "text",
+          "id": "value_text",
+          "label": "t:sections.value_list.blocks.settings.value_text.label",
+          "default": "100%"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "t:sections.value_list.blocks.settings.value.label"
+        },
+        {
+          "type": "color_background",
+          "id": "text_color_gradient",
+          "label": "t:sections.value_list.blocks.settings.value_gradient.label"
+        },
+        {
+          "type": "text",
+          "id": "subheading",
+          "label": "t:general.settings.subheading.label",
+          "default": "Guarantee"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "t:general.settings.description.label",
+          "default": "<p>Highlight your values, products, or services</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.value_list.name",
+      "blocks": [
+        {
+          "type": "item"
+        },
+        {
+          "type": "item"
+        },
+        {
+          "type": "item"
+        },
+        {
+          "type": "item"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

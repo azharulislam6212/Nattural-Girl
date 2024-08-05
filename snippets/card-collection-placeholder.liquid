@@ -1,0 +1,15 @@
+{%- liquid
+  assign collection_placeholder = 'collection-apparel-' | append: collection_placeholder | placeholder_svg_tag: 'placeholder media of-cover js-image-lazy h-100 w-100'
+  assign media_ratio = settings.collection_image_ratio
+-%}
+
+<div class="sht-card collection-card w-100 p-relative sht-mask o-hidden color-{{- settings.collection_card_color_scheme }} {{ settings.collection_card_position }}" style="--overlay: {{ settings.collection_mask_overlay_opacity }}; {{- card_collection_style -}}">
+  <a href="#" aria-label="{{ 'sections.collection_list.collection.title' | t }}" aria-disabled="true" class="d-block pe-no-link p-absolute top-0 left-0 w-100 h-100 zi-1"></a>
+  {% render 'image', image_item: collection_placeholder, ratio: media_ratio, image_wrap_classes: 'h-100', image_classes: 'h-100 w-100' %}
+  <div class="card--content-inner p-absolute bottom-0 w-100 zi-2 pe-none wb-break-word">
+    <h3 aria-label="{{ 'accessibility.collection_title' | t }}" class="h6 m-zero card__heading">{{ 'sections.collection_list.collection.title' | t }}</h3>
+    <p class="mt-8 d-block {{ settings.show_collection_product_quantity | default: ' d-none-important' | replace: 'true', '' }}">
+      {{ 'general.search.collection.view_count_product' | t: count: '50' }}
+    </p>
+  </div>
+</div>

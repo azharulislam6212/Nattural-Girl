@@ -1,0 +1,184 @@
+{%- liquid
+
+  assign loading = "lazy"
+  assign decoding ="async"
+  assign fetchpriority = "auto"
+  assign animation_one_cls = 'js-animate anm anm-fadeInUp'
+
+  if section.index <= 2
+    assign loading = "eager"
+    assign fetchpriority = "high"
+    assign animation_one_cls = ''
+  endif
+
+  assign desktop_background_image = 'hero-apparel-1' | placeholder_svg_tag: 'js-image-lazy placeholder w-100 h-100 of-cover'
+
+  assign desktop_background_image_alt  = section.settings.desktop_background_image.alt | default: section.settings.desktop_background_image.image | split: '/' | last
+  assign desktop_background_image = section.settings.desktop_background_image | image_url: width: section.settings.desktop_background_image.width | image_tag: widths: '320, 450, 550, 750, 950, 1024, 1200, 1400, 1600, 1800, 2000, 2200, 2400, 2600, 2800, 3000', sizes: "100vw", alt: desktop_background_image_alt, class: 'js-image-lazy w-100 h-100 of-cover', loading: loading, fetchpriority: fetchpriority, decoding: decoding
+
+  if section.settings.mobile_background_image
+    assign mobile_background_image_alt  = section.settings.mobile_background_image.alt | default: section.settings.mobile_background_image.image | split: '/' | last
+    assign mobile_background_image = section.settings.mobile_background_image | image_url: width: section.settings.mobile_background_image.width | image_tag: widths: '320, 450, 550, 750, 950, 1024, 1200', sizes: "100vw", alt: mobile_background_image_alt, class: 'js-image-lazy-mobile d-none-md d-block w-100 h-100 of-cover p-absolute top-0 zi-1', loading: loading, fetchpriority: fetchpriority, decoding: decoding
+  endif
+
+  unless section.settings.mask_overlay.alpha == 0.0 or section.settings.mask_overlay == blank
+    assign overlay_color = '--color-background:' | append: section.settings.mask_overlay
+  endunless
+  unless section.settings.text_overlay.alpha == 0.0 or section.settings.text_overlay == blank
+    assign content_color = 'color:' | append: section.settings.text_overlay
+  endunless
+
+-%}
+<div class="s--margin color-{{- section.settings.color_scheme }} s-container-radius no-transparent" data-ui-component="Compacted Banner Section" role="region" aria-labelledby="sectionHeading-{{ section.id | md5 | truncate: 12, "" }}">
+  <div class="s-container-radius p-relative   o-hidden">
+    <div class="sht-mask p-absolute w-100 h-100 o-hidden" style="--overlay: {{ section.settings.section_overlay_opacity }}; {{ overlay_color }}">
+      <div class="d-block w-100 h-100 js-animate anm anm-zoomOut media-wrapper">
+        {{ desktop_background_image }}
+        {{ mobile_background_image }}
+      </div>
+    </div>
+    <div class="section ctnr s-banner zi-3 w-100 h-100 p-relative d-flex fw-wrap fw-nowrap-md middle-xs between-xs" style="--mh-xs: 30vh; {{ content_color }}">
+      <div class="wb-break-word">
+        <h2 id="sectionHeading-{{ section.id | md5 | truncate: 12, "" }}" class="compacted-title mb-0 hide-empty {{ section.settings.heading_size }} {{ animation_one_cls }}">{{- section.settings.heading | replace: '[', '<span class="prominent-heading">' | replace: ']', '</span>' -}}</h2>
+      </div>
+      {%- if section.settings.button_text != blank and section.settings.heading != blank -%}
+        <a class="btn btn--large {{ section.settings.style_button }}" href="{{- section.settings.button_link | default: '#' -}}" {% if section.settings.button_link == blank %} tabindex="-1" {% endif %}>{{- section.settings.button_text -}}</a>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "t:sections.compacted_banner.name",
+  "disabled_on": {
+    "groups": [
+      "header"
+    ]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.general.content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_schemes.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:general.settings.heading.label",
+      "info": "t:general.settings.prominent_font.info",
+      "default": "[Welcome] to our store"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.heading_size.label",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "t:general.settings.heading_size.options.h2.label"
+        },
+        {
+          "value": "h3",
+          "label": "t:general.settings.heading_size.options.h3.label"
+        },
+        {
+          "value": "h4",
+          "label": "t:general.settings.heading_size.options.h4.label"
+        },
+        {
+          "value": "h5",
+          "label": "t:general.settings.heading_size.options.h5.label"
+        }
+      ],
+      "default": "h2"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.image.content",
+      "info": "t:general.settings.headers.header_image.info"
+    },
+    {
+      "type": "image_picker",
+      "label": "t:general.settings.desktop_background_image.label",
+      "id": "desktop_background_image",
+      "info": "t:sections.compacted_banner.settings.desktop_background_image.info"
+    },
+    {
+      "type": "image_picker",
+      "label": "t:general.settings.mobile_background_image.label",
+      "id": "mobile_background_image",
+      "info": "t:sections.compacted_banner.settings.mobile_background_image.info"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.button.content"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "t:general.settings.label.label",
+      "info": "t:general.settings.hide_if_empty.info",
+      "default": "Check now"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.style.label",
+      "id": "style_button",
+      "options": [
+        {
+          "value": "btn-primary",
+          "label": "t:general.settings.filled.label"
+        },
+        {
+          "value": "btn-outline",
+          "label": "t:general.settings.oulined.label"
+        },
+        {
+          "value": "btn-link",
+          "label": "t:general.settings.text_link.label"
+        }
+      ],
+      "default": "btn-primary"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "t:general.settings.link.label"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.custom_color.content"
+    },
+    {
+      "type": "color",
+      "id": "mask_overlay",
+      "label": "t:general.settings.mask_overlay.label"
+    },
+    {
+      "type": "range",
+      "unit": "%",
+      "max": 90,
+      "min": 0,
+      "step": 1,
+      "default": 30,
+      "id": "section_overlay_opacity",
+      "label": "t:general.settings.overlay_opacity.label"
+    },
+    {
+      "type": "color",
+      "id": "text_overlay",
+      "label": "t:general.settings.text_overlay.label"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.compacted_banner.name"
+    }
+  ]
+}
+{% endschema %}

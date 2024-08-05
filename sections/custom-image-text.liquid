@@ -1,0 +1,416 @@
+{{ 'section-custom-image-text.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top_mobile | append: 'px' }};
+    padding-bottom: {{ section.settings.padding_bottom_mobile | append: 'px' }};
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top | append: 'px'}};
+      padding-bottom: {{ section.settings.padding_bottom | append: 'px'}};
+    }
+  }
+{%- endstyle -%}
+
+{% liquid
+  assign items = section.blocks | where: 'type', 'custom_image'
+
+  assign enable_pagination = section.settings.enable_pagination
+  assign enable_navigation = section.settings.enable_navigation
+  assign autoPlay = section.settings.autoplay_enabled
+  assign loop = section.settings.loop_enabled
+  assign delay = section.settings.autoplay_timeout | times: 1000
+%}
+
+<div class="custom--image-text  solate section-{{ section.id }}-padding color-{{ section.settings.color_scheme }} gradient">
+  <div class="container">
+
+  
+    <div class="row gift-row">
+        <div class="col-12 col-md-9 ml-auto mr-auto text-center">
+
+        {% if section.settings.image != blank %}
+            <div class="gift-image-wrapper">
+              <div
+                class="media media--{{ section.settings.image_ratio}}"
+                {% if section.settings.image_ratio == 'adapt' and section.settings.image != blank %}
+                  style="padding-bottom: {{ 1 | divided_by: section.settings.image.aspect_ratio | times: 100 }}%;"
+                {% endif %}
+              >
+                {% render 'resposive-img' with image: section.settings.image %}
+              </div>
+
+            </div>
+          {% else %}
+          <div class="gift-image-wrapper">
+            <div class="media  placeholder-media media--{{ section.settings.image_ratio}} ">
+              {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+            </div>
+            </div>
+          {% endif %}
+          <div class="gift-image-text">
+          <p>
+            {{ section.settings.text}}
+          </p>
+
+          {% if section.settings.button_label != blank %}
+            <div class="gift-image-button">
+              <span class="custom-sparkle-button-top">
+
+              <svg class="sparkle" width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15.5599 13.8C13.097 8.29434 13.3056 7.42862 17.9999 3.64005C12.4942 6.10291 11.6285 5.89434 7.83991 1.20006C10.3028 6.70577 10.0942 7.57149 5.3999 11.3601C10.9056 8.8972 11.7713 9.10576 15.5599 13.8Z" fill="#8E2210"/>
+              <path d="M4.35428 5.40002C3.29877 3.04043 3.38817 2.66941 5.4 1.04574C3.04041 2.10125 2.66939 2.01187 1.04572 2.96499e-05C2.10123 2.35962 2.01184 2.73064 0 4.35431C2.35959 3.2988 2.73061 3.38819 4.35428 5.40002Z" fill="#8E2210"/>
+              </svg>
+
+
+              </span>
+
+         
+            <a href="{{  section.settings.button_link}}" class="link" target="_blank">{{ section.settings.button_label}}</a>
+
+            </div>
+          {% endif %}
+          </div>
+        </div>
+
+    </div>
+
+
+    <div class="mobile-hidden">
+    {%- for block in items limit: 4 -%}
+     
+          <div class="custom-image-block position--{{ forloop.index }}">
+            {% if block.settings.image != blank %}
+              <div class="custom-image">
+                <div
+                  class="media media--{{ section.settings.image_ratio}}"
+                  {% if section.settings.image_ratio == 'adapt' and block.settings.image != blank %}
+                    style="padding-bottom: {{ 1 | divided_by: block.settings.image.aspect_ratio | times: 100 }}%;"
+                  {% endif %}
+                >
+                  {% render 'resposive-img' with image: block.settings.image %}
+                </div>
+              </div>
+            {% else %}
+            <div class="custom-image">
+              <div class="media  placeholder-media media--{{ section.settings.image_ratio}} ">
+                {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+              </div>
+              </div>
+            {% endif %}
+          </div>
+      
+      {%- endfor -%}
+
+    </div>
+  </div>
+
+
+  <div class="desktop-hidden  mobile-custom-image"> 
+    <slideshow-mobile>
+      <div
+        class="slideshow__mobile swiper-container  custom-image-slider  {%if enable_pagination %} enable-pagination{%endif %} "
+        data-centeredslides="false"
+        data-slidesMobile="2"
+        data-autoPlay="{{ autoPlay }}"
+        data-delay="{{ delay }}"
+        data-loop="{{ loop }}"
+        data-freemode="false"
+        data-freemomentum="false"
+        data-speed="700"
+        data-mobilespace="15"
+      >
+
+
+      <div
+        class="swiper-wrapper"
+      >
+        {%- for block in items -%}
+          <div
+            class="swiper-slide"
+          >
+            <div class="custom-image-item position--{{ forloop.index }}">
+              {% if block.settings.image != blank %}
+                <div class="custom-image">
+                  <div
+                    class="media media--{{ section.settings.image_ratio}}"
+                    {% if section.settings.image_ratio == 'adapt' and block.settings.image != blank %}
+                      style="padding-bottom: {{ 1 | divided_by: block.settings.image.aspect_ratio | times: 100 }}%;"
+                    {% endif %}
+                  >
+                    {% render 'resposive-img' with image: block.settings.image %}
+                  </div>
+                </div>
+              {% else %}
+              <div class="custom-image">
+                <div class="media  placeholder-media media--{{ section.settings.image_ratio}} ">
+                  {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                </div>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+
+      {% if enable_navigation %}
+        <div class="swiper-navigation-wrapper  color-{{ section.settings.secondary_color_scheme }}">
+          <div class="swiper-button-prev">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3.8284 6.77812L9.1924 1.41421L7.7782 1.48994e-05L3.39997e-07 7.77812L7.7782 15.5563L9.1924 14.1421L3.8284 8.77812L16 8.77812L16 6.77812L3.8284 6.77812Z" fill="currentColor"/>
+            </svg>
+          </div>
+
+          <div class="swiper-button-next">
+            <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12.3978 9.82499H1.84453C1.47653 9.82499 1.1637 9.69615 0.906031 9.43849C0.648365 9.18099 0.519531 8.86815 0.519531 8.49999C0.519531 8.13182 0.648365 7.81899 0.906031 7.56149C1.1637 7.30382 1.47653 7.17499 1.84453 7.17499H12.3978L8.04903 2.82599C7.78303 2.56015 7.65187 2.24674 7.65553 1.88574C7.65903 1.5249 7.79378 1.21157 8.05978 0.945737C8.32578 0.696403 8.6392 0.569904 9.00003 0.566237C9.36087 0.56257 9.67428 0.693737 9.94028 0.959737L16.5403 7.55974C16.6684 7.68807 16.7652 7.83407 16.8305 7.99774C16.8957 8.16157 16.9283 8.32899 16.9283 8.49999C16.9283 8.67099 16.8957 8.8384 16.8305 9.00224C16.7652 9.1659 16.6684 9.3119 16.5403 9.44024L9.92603 16.0542C9.66736 16.3131 9.35812 16.4425 8.99828 16.4425C8.63861 16.4425 8.32578 16.3131 8.05978 16.0542C7.79378 15.7884 7.66078 15.4732 7.66078 15.1087C7.66078 14.7442 7.79378 14.429 8.05978 14.163L12.3978 9.82499Z" fill="currentColor"/>
+            </svg>
+          </div>
+        </div>
+      {% endif %}
+
+      {% if enable_pagination %}
+        <div class="swiper-pagination color-{{ section.settings.secondary_color_scheme }}"></div>
+      {% endif %}
+    </div>
+    </slideshow-mobile>
+    </div>
+
+
+ <span class="custom-sparkle-image-top">
+    <svg class="sparkle" width="29" height="23" viewBox="0 0 29 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M25.0691 22.2334C21.1011 13.3631 21.4372 11.9683 29.0002 5.86452C20.1299 9.83245 18.7351 9.49643 12.6313 1.93342C16.5993 10.8037 16.2632 12.1985 8.7002 18.3023C17.5705 14.3344 18.9653 14.6704 25.0691 22.2334Z" fill="#8E2210"/>
+    <path d="M7.01524 8.70007C5.31469 4.89851 5.45871 4.30076 8.7 1.68484C4.89844 3.38538 4.30069 3.24137 1.68477 8.10623e-05C3.38531 3.80164 3.24129 4.3994 0 7.01532C3.80156 5.31477 4.39932 5.45878 7.01524 8.70007Z" fill="#8E2210"/>
+    </svg>
+</span>
+
+
+<span class="custom-sparkle-image-middle">
+    <svg class="sparkle" width="29" height="23" viewBox="0 0 29 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M25.0691 22.2334C21.1011 13.3631 21.4372 11.9683 29.0002 5.86452C20.1299 9.83245 18.7351 9.49643 12.6313 1.93342C16.5993 10.8037 16.2632 12.1985 8.7002 18.3023C17.5705 14.3344 18.9653 14.6704 25.0691 22.2334Z" fill="#8E2210"/>
+    <path d="M7.01524 8.70007C5.31469 4.89851 5.45871 4.30076 8.7 1.68484C4.89844 3.38538 4.30069 3.24137 1.68477 8.10623e-05C3.38531 3.80164 3.24129 4.3994 0 7.01532C3.80156 5.31477 4.39932 5.45878 7.01524 8.70007Z" fill="#8E2210"/>
+    </svg>
+</span>
+
+
+
+<span class="custom-sparkle-image-left">
+    <svg class="sparkle" width="29" height="23" viewBox="0 0 29 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M25.0691 22.2334C21.1011 13.3631 21.4372 11.9683 29.0002 5.86452C20.1299 9.83245 18.7351 9.49643 12.6313 1.93342C16.5993 10.8037 16.2632 12.1985 8.7002 18.3023C17.5705 14.3344 18.9653 14.6704 25.0691 22.2334Z" fill="#8E2210"/>
+<path d="M7.01524 8.70007C5.31469 4.89851 5.45871 4.30076 8.7 1.68484C4.89844 3.38538 4.30069 3.24137 1.68477 8.10623e-05C3.38531 3.80164 3.24129 4.3994 0 7.01532C3.80156 5.31477 4.39932 5.45878 7.01524 8.70007Z" fill="#8E2210"/>
+</svg>
+</span>
+
+
+<span class="custom-sparkle-image-right">
+
+<svg class="sparkle" width="60" height="46" viewBox="0 0 60 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M51.8666 0C43.6571 18.3524 44.3524 21.2381 60 33.8667C41.6476 25.6571 38.7619 26.3523 26.1334 42C34.3429 23.6476 33.6476 20.7619 18 8.13331C36.3524 16.3428 39.2381 15.6476 51.8666 0Z" fill="#8E2210"/>
+<path d="M14.5143 28C10.9959 35.8653 11.2939 37.102 18 42.5143C10.1347 38.9959 8.89797 39.2939 3.48573 46C7.00409 38.1347 6.70612 36.8979 0 31.4857C7.8653 35.0041 9.10204 34.7061 14.5143 28Z" fill="#8E2210"/>
+</svg>
+
+
+<svg class="sparkle" width="29" height="23" viewBox="0 0 29 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M25.0691 22.2333C21.1011 13.363 21.4372 11.9682 29.0002 5.86439C20.1299 9.83233 18.7351 9.49631 12.6313 1.93329C16.5993 10.8036 16.2632 12.1984 8.7002 18.3022C17.5705 14.3342 18.9653 14.6703 25.0691 22.2333Z" fill="#8E2210"/>
+<path d="M7.01524 8.69995C5.31469 4.89839 5.45871 4.30063 8.7 1.68472C4.89844 3.38526 4.30069 3.24125 1.68477 -4.09585e-05C3.38531 3.80152 3.24129 4.39928 0 7.01519C3.80156 5.31465 4.39932 5.45866 7.01524 8.69995Z" fill="#8E2210"/>
+</svg>
+
+</span>
+
+</div>
+
+{% schema %}
+{
+  "name": "Custom Image Text",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "text",
+      "default": "we’re all about creating elevated, effective, self care essentials that are easy to habit stack into your busy schedule.",
+      "label": "Text"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "default": "Button label",
+      "label": "Button Label"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "header",
+      "content": "Image Ratio"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "Adapt to image"
+        },
+        {
+          "value": "square",
+          "label": "Square"
+        },
+        {
+          "value": "landscape",
+          "label": "Landscape"
+        },
+        {
+          "value": "portrait",
+          "label": "Portrait"
+        },
+        {
+          "value": "16-9",
+          "label": "Custom 16:9"
+        }
+      ],
+      "default": "portrait",
+      "label": "Image ratio"
+    },
+    {
+      "type": "header",
+      "content": "Slider Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay_enabled",
+      "label": "Enable Auto Play",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "autoplay_timeout",
+      "label": "Chnage Time",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "default": 5,
+      "unit": "s"
+    },
+    {
+      "type": "checkbox",
+      "id": "loop_enabled",
+      "label": "Enable Loop",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_pagination",
+      "label": "Enable Pagination",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_navigation",
+      "label": "Enable Naviagtion",
+      "default": true
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color",
+      "default": "background-1"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "paragraph",
+      "content": "Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 116
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 116
+    },
+    {
+      "type": "paragraph",
+      "content": " Mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 58
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 58
+    }
+  ],
+  "blocks": [
+    {
+      "type": "custom_image",
+      "name": "Custom Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Image Text",
+      "blocks": [
+        {
+          "type": "custom_image"
+        },
+        {
+          "type": "custom_image"
+        },
+        {
+          "type": "custom_image"
+        },
+        {
+          "type": "custom_image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

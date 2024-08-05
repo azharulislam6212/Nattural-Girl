@@ -1,0 +1,39 @@
+<sht-dialog class="sht-dialog no-focus-visible d-flex middle-md bottom-xs end-xs p-fixed left-0 top-0 h-100 w-100 o-auto zi-9 color-{{- settings.color_scheme_drawer_popover }}" id="dialogPopupContent{{ popup_content_dialog_id }}" hidden tabindex="-1">
+    <div class="js-dialog-container dialog disable-scrollbars" role="dialog" aria-labelledby="dialogTitle{{- popup_content_dialog_id -}}" aria-modal="true">
+      {% comment %} <button class="dialog--animate dialog__btn js-dialog-close-btn btn  btn--large btn-plain" type="button" aria-label="{{- "accessibility.close_modal" | t -}}">
+     
+
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20.0007 36.6668C29.2054 36.6668 36.6673 29.2049 36.6673 20.0002C36.6673 10.7954 29.2054 3.3335 20.0007 3.3335C10.7959 3.3335 3.33398 10.7954 3.33398 20.0002C3.33398 29.2049 10.7959 36.6668 20.0007 36.6668Z" stroke="#8E2210" stroke-width="3.33333" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M25 15L15 25" stroke="#8E2210" stroke-width="3.33333" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M15 15L25 25" stroke="#8E2210" stroke-width="3.33333" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+
+    </button> {% endcomment %}
+      <div class="dialog__content d-flex fd-column h-100">
+        <div class="dialog__header d-flex between-xs middle-xs p-sticky top-0 gap-1x">
+          <h3 class="dialog--animate h6 m-zero flex-1" id="dialogTitle{{- popup_content_dialog_id -}}">{{ popup_content_block.settings.title }}</h3>
+      
+        </div>
+        <div class="dialog__body js-dialog-body disable-scrollbars">
+          <template>
+            <div class="hide-empty rte dialog--animate">
+              {{- popup_content_block.settings.static_page.content | default: '' -}}
+            </div>
+          </template>
+        </div>
+        <div class="dialog__footer text-center">
+
+        <button class="btn btn-primary btn-custom  btn-custom--large  js-dialog-close-btn">
+            Continue Shopping
+            <span class="spakle-btn">
+              <img src="{{ 'twinkles.gif' | asset_url }}" alt="twinkles">
+            </span>
+          </button>
+
+          
+         
+        </div>
+      </div>
+    </div>
+  </sht-dialog>

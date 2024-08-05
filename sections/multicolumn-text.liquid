@@ -1,0 +1,231 @@
+{{ 'section-multicolumn-text.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top_mobile | append: 'px' }};
+    padding-bottom: {{ section.settings.padding_bottom_mobile | append: 'px' }};
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top | append: 'px'}};
+      padding-bottom: {{ section.settings.padding_bottom | append: 'px'}};
+    }
+  }
+{%- endstyle -%}
+
+{% liquid
+  assign columns = section.blocks | where: 'type', 'column'
+
+  assign desktop_column = section.settings.desktop_column
+  assign mobile_column = section.settings.mobile_column
+%}
+
+<div class="multicolumn  solate section-{{ section.id }}-padding color-{{ section.settings.color_scheme }} gradient">
+  <div class="container">
+    <div class="row row-cols-{{mobile_column}} row-cols-md-{{desktop_column}} align-items-stretch">
+        {%- for block in columns -%}
+        <div class="col">
+
+        <div class="column-box color-{{ section.settings.color_scheme_secondary }} gradient">
+
+        <div class="column-box__content ">
+            {%- if block.settings.heading != blank -%}
+                <h2 class="column-box__title inline-richtext">
+                  {{ block.settings.heading }}
+                </h2>
+              {%- endif -%}
+   
+              {%- if block.settings.text != blank -%}
+                <div class="column-box__text rte">
+                  <p>{{ block.settings.text }}</p>
+                </div>
+              {%- endif -%}
+
+        <a
+        {% if block.settings.button_link == blank %}
+          role="link" aria-disabled="true"
+        {% else %}
+          href="{{ block.settings.button_link }}"
+        {% endif %}
+        class="btn btn-primary  btn-custom  btn-custom--small"
+      >
+        {{ block.settings.button_label | escape }}
+        <span class="spakle-btn">
+          <img src="{{ 'twinkles.gif' | asset_url }}" alt="twinkles">
+
+        </span>
+      </a>
+
+        </div>
+
+        </div>
+
+        </div>
+    {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Multicolumn",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "desktop_column",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        }
+      ],
+      "default": "4",
+      "label": "Desktop Column"
+    },
+    {
+      "type": "select",
+      "id": "mobile_column",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "default": "2",
+      "label": "Mobile Column"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "background-1"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme_secondary",
+      "label": "Secondary Color",
+      "default": "background-2"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "paragraph",
+      "content": "Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 116
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 116
+    },
+    {
+      "type": "paragraph",
+      "content": " Mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 58
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 58
+    }
+  ],
+  "blocks": [
+    {
+      "type": "column",
+      "name": "Column",
+      "settings": [
+        {
+          "type": "inline_richtext",
+          "id": "heading",
+          "default": "Earn points, reap rewards",
+          "label": "Heading"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "text",
+          "default": "Sign up for our reward program and stack up your points for free product.",
+          "label": "text"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "default": "Button label",
+          "label": "Button Label"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Multicolumn",
+      "blocks": [
+        {
+          "type": "column"
+        },
+        {
+          "type": "column"
+        },
+        {
+          "type": "column"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

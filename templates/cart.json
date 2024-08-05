@@ -1,0 +1,13 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-cart",
+      "settings": {
+        "color_scheme": "scheme-5"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

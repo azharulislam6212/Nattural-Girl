@@ -1,0 +1,98 @@
+{{ 'account.css' | asset_url | stylesheet_tag: preload: true }}
+
+{% liquid
+  assign detect_background = 1
+  if section.settings.color_scheme.settings.color_background.alpha != 0.0
+    assign no_transparent = 'no-transparent'
+    assign detect_background = section.settings.color_scheme.settings.color_background | color_brightness | times: 9999
+  endif
+%}
+<style>
+  #shopify-section-{{ section.id }} {
+    --section-background-hash: {{ detect_background }};
+  }
+  #shopify-section-{{ section.id }} + * {
+    --previous-section-background-hash: {{ detect_background }};
+  }
+</style>
+
+<div class="s--margin color-{{- section.settings.color_scheme }} s-container-radius {{ no_transparent }}">
+	<div class="section ctnr  ">
+		<div class="s-content">
+			<div class="d-flex-md middle-md between-md account__header mb-20 m-zero-md">
+				<h2	tabindex="-1" class="h4 mb-16 mb-sm-24 m-zero-md">{{ 'customer.account.title' | t }}</h2>
+				<div class="d-flex end-md middle-md top-xs fd-column fd-row-md gap-equal">
+					<span>{{ 'customer.account.welcome_message' | t }} {{ customer.name | append: '!' }}</span>
+					<a class="btn btn-link" href="{{ routes.account_logout_url }}">{{ 'customer.log_out' | t }}</a>
+				</div>
+			</div>
+			<div class="account__content d-flex fd-column">
+				<ul class="tab__header p-relative ox-auto disable-scrollbars ls-none ws-nowrap d-flex">
+					<li class="tab__item d-inline-block">
+						<a class="tab__link h5 mb-0 p-relative d-block tab__link--active" href="{{ routes.account_url }}">
+							{{ "customer.orders.title" | t }}
+						</a>
+					</li>
+					<li class="tab__item d-inline-block">
+						<a class="tab__link h5 mb-0 p-relative d-block color-light" href="{{ routes.account_addresses_url }}">
+							{{ "customer.addresses.title" | t }}
+						</a>
+					</li>
+				</ul>
+				<div class="d-block">
+					<h3 class="h6 order-title">{{ 'customer.orders.title' | t }}</h3>
+					{% paginate customer.orders by 20 %}
+						{% if customer.orders.size > 0 %}
+							<table class="w-100 ta-left">
+								<thead class="t-thead" role="rowgroup">
+									<tr role="row">
+										<th id="columnOrder" scope="col" role="columnheader">{{ 'customer.orders.order_number' | t }}</th>
+										<th id="columnDate" scope="col" role="columnheader">{{ 'customer.orders.date' | t }}</th>
+										<th id="columnPayment" scope="col" role="columnheader">{{ 'customer.orders.payment_status' | t }}</th>
+										<th id="columnFulfillment" scope="col" role="columnheader">{{ 'customer.orders.fulfillment_status' | t }}</th>
+										<th id="columnTotal" class="ta-right" scope="col" role="columnheader">{{ 'customer.orders.total' | t }}</th>
+									</tr>
+								</thead>
+								<tbody class="t-body" role="rowgroup">
+									{% for order in customer.orders %}
+										<tr class="t-tr pt-2x pb-2x p-zero-md" role="row">
+											<td id="rowOrder"  headers="ColumnOrder" class="t-td" data-name="{{ 'customer.orders.order_number' | t }}" role="cell"><a href="{{ order.customer_url }}" class="tag" aria-label="{{ 'customer.orders.order_number_link' | t: number: order.name }}">{{ order.name }}</a></td>
+											<td headers="rowOrder columnDate" class="t-td" data-name="{{ 'customer.orders.date' | t }}" role="cell">{{ order.created_at | time_tag: format: 'date' }}</td>
+											<td headers="rowOrder columnPayment" class="t-td" data-name="{{ 'customer.orders.payment_status' | t }}" role="cell">{{ order.financial_status_label }}</td>
+											<td headers="rowOrder columnFulfillment" class="t-td" data-name="{{ 'customer.orders.fulfillment_status' | t }}" role="cell">{{ order.fulfillment_status_label }}</td>
+											<td headers="rowOrder columnTotal" class="t-td ta-right" data-name="{{ 'customer.orders.total' | t }}" role="cell">{{ order.total_price | money }}</td>
+										</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+						{% else %}
+							<p>{{ 'customer.orders.none' | t }}</p>
+						{% endif %}
+						{%- if paginate.pages > 1 -%}
+							<div class="s-footer mt-content">
+								{%- render 'pagination', paginate: paginate -%}
+							</div>
+						{%- endif -%}
+					{% endpaginate %}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% schema %}
+{
+  "name": "t:sections.account.name",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.general.content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_scheme.label",
+      "default": "scheme-1"
+    }
+  ]
+}
+{% endschema %}

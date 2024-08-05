@@ -1,0 +1,615 @@
+{{ 'section-media-gallery.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top_mobile | append: 'px' }};
+    padding-bottom: {{ section.settings.padding_bottom_mobile | append: 'px' }};
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top | append: 'px'}};
+      padding-bottom: {{ section.settings.padding_bottom | append: 'px'}};
+    }
+  }
+{%- endstyle -%}
+
+
+{% liquid
+
+assign desktop_column = section.settings.desktop_column
+assign layout = section.settings.layout
+assign tab_column = section.settings.tab_column
+assign mobile_column = section.settings.mobile_column
+assign enable_pagination = section.settings.enable_pagination
+assign enable_navigation = section.settings.enable_navigation
+assign enable_scroll = section.settings.enable_scroll
+assign autoPlay = section.settings.autoplay_enabled
+assign loop = section.settings.loop_enabled
+assign pagination_type = section.settings.pagination_type
+assign delay = section.settings.autoplay_timeout | times: 1000
+assign cnetermode = false 
+assign freeMode = false 
+if layout contains "layout-2"
+ assign cnetermode = true 
+ assign freeMode = true 
+endif
+
+
+%}
+
+
+
+<div class="media-gallery media--{{ layout }}  solate section-{{ section.id }}-padding color-{{ section.settings.color_scheme }} gradient">
+  <div class="container p-0 g-0">
+
+  {% if section.settings.heading != blank or section.settings.text != blank %}
+    <div class="row g-0">
+      <div class="col-12">
+        <div class="media-gallery-header">
+          <div class="media-gallery-text-wrap">
+            <h2
+              class="media-gallery-title inline-richtext"
+   
+            >
+              {{ section.settings.heading }}
+            </h2>
+
+          </div>
+
+          <div class="media-gallery-buttons mobile-hidden"> 
+          <a
+            {% if section.settings.button_link == blank %}
+              role="link" aria-disabled="true"
+            {% else %}
+              href="{{ section.settings.button_link }}"
+            {% endif %}
+            class="btn btn-primary btn-custom  btn-custom--large"
+          >
+            {{ section.settings.button_label | escape }}
+            <span class="spakle-btn">
+
+            
+            <img src="{{ 'twinkles.gif' | asset_url }}" alt="twinkles">
+
+
+            </span>
+          </a>
+
+            </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+
+      <slideshow-swiper>
+        <div
+          class="slideshow__swiper swiper-container  media-slider  {%if enable_pagination or enable_scroll %} enable-pagination{%endif %} "
+          data-centeredslides="{{ cnetermode }}"
+          data-slidesDesktop="{{ desktop_column }}"
+          data-slidesTab="{{ tab_column }}"
+          data-slidesMobile="{{ mobile_column }}"
+          data-autoPlay="{{ autoPlay }}"
+          data-delay="{{ delay }}"
+          data-loop="{{ loop }}"
+          data-freemode="{{ freeMode }}"
+          data-freemomentum="false"
+          data-mousewheel="false"
+          data-desktopspace="31"
+          data-tabspace="31"
+          data-mobilespace="16"
+          data-type="{{pagination_type}}"
+        >
+ 
+
+    <div
+      class=" swiper-wrapper"
+    >
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+
+        {%- when 'media_item' -%}
+        <div
+          class="swiper-slide"
+          {% if settings.animations_reveal_on_scroll %}
+            data-cascade
+            style="--animation-order: {{ forloop.index }};"
+          {% endif %}>
+            <div class="media-item">
+              {% if block.settings.image != blank %}
+                <div class="image-wrapper">
+                  {% if block.settings.image_link != blank %}
+                    <a href="{{ block.settings.image_link }}" target="_blank">
+                  {% endif %}
+                  <div
+                    class="media media--{{ section.settings.image_ratio}}"
+                    {% if section.settings.image_ratio == 'adapt' and block.settings.image != blank %}
+                      style="padding-bottom: {{ 1 | divided_by: block.settings.image.aspect_ratio | times: 100 }}%;"
+                    {% endif %}
+                  >
+                    {% render 'resposive-img' with image: block.settings.image %}
+
+                  </div>
+                  {% if block.settings.image_link != blank %} </a>{% endif %}
+                </div>
+              {% else %}
+                <div class="media  placeholder-media media--{{ section.settings.image_ratio}} ">
+                  {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                </div>
+              {% endif %}
+           </div>
+        </div>
+
+        {%- when 'video_item' -%}
+      
+
+          {% liquid
+    
+          assign video_type = block.settings.video_url.type
+          if block.settings.video_hosted != blank and block.settings.video_source == 'video_hosted'
+            assign video_type = 'local_video'
+          endif
+        %}
+
+          <div
+          class="swiper-slide"
+          {% if settings.animations_reveal_on_scroll %}
+            data-cascade
+            style="--animation-order: {{ forloop.index }};"
+          {% endif %}>
+            <div class="media-item">
+              {% if  block.settings.video_source != blank or block.settings.video_url != blank %}
+                <div class="image-wrapper">
+               
+                  <div
+                    class="media media--{{ section.settings.image_ratio}}"
+                    {% if section.settings.image_ratio == 'adapt' and block.settings.image != blank %}
+                      style="padding-bottom: {{ 1 | divided_by: block.settings.image.aspect_ratio | times: 100 }}%;"
+                    {% endif %}
+                  >
+
+                  <sht-load-video class="p-absolute w-100 h-100 js-animate anm anm-zoomOut" data-video-type="{{ video_type }}" data-video-id="{{ block.settings.video_url.id }}">
+                    {%- if block.settings.video_source == 'video_hosted' -%}
+                      {% capture local_video %}
+                        {{- block.settings.video_hosted | video_tag: autoplay: true, controls: false, loop: true, preload: 'none', class: 'video-local w-100 h-100 of-cover center-middle p-absolute mih' -}}
+                      {% endcapture %}
+                      {{ local_video | replace: '<source src="', '<source data-src="' }}
+                    {%- else %}
+                      <iframe tabindex="-1" title="{{ block.settings.video_url.type }}" class="video-ifram js-local-video w-100 center-middle p-absolute mih miw" allow="autoplay; encrypted-media"
+                        data-src="
+                        {%- if block.settings.video_url.type == 'youtube' -%}
+                          https://www.youtube.com/embed/{{ block.settings.video_url.id }}?version=3&enablejsapi=1&mute=1&loop=1&controls=0&rel=0&showinfo=0&autoplay=1&playlist={{ block.settings.video_url.id }}
+                        {%- elsif block.settings.video_url.type == 'vimeo' -%}
+                          https://player.vimeo.com/video/{{ block.settings.video_url.id }}?api=1&background=1&autoplay=1&loop=1&title=0&byline=0&portrait=0&controls=0&muted=1
+                        {%- endif -%}" style="--miw:177.77vh;--h-xs:56.25vw;">
+                      </iframe>
+                    {% endif %}
+                  </sht-load-video>
+          
+
+                  </div>
+                 
+                </div>
+              {% else %}
+                <div class="media  placeholder-media media--{{ section.settings.image_ratio}} ">
+                  {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                </div>
+              {% endif %}
+           </div>
+        </div>
+
+      {%- endcase -%}
+      {%- endfor -%}
+    </div>
+
+   
+      {% if enable_navigation %}
+        <div class="swiper-navigation-wrapper  color-{{ section.settings.secondary_color_scheme }}">
+          <div class="swiper-button-prev">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3.8284 6.77812L9.1924 1.41421L7.7782 1.48994e-05L3.39997e-07 7.77812L7.7782 15.5563L9.1924 14.1421L3.8284 8.77812L16 8.77812L16 6.77812L3.8284 6.77812Z" fill="currentColor"/>
+          </svg>
+          </div>
+
+          <div class="swiper-button-next">
+            <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12.3978 9.82499H1.84453C1.47653 9.82499 1.1637 9.69615 0.906031 9.43849C0.648365 9.18099 0.519531 8.86815 0.519531 8.49999C0.519531 8.13182 0.648365 7.81899 0.906031 7.56149C1.1637 7.30382 1.47653 7.17499 1.84453 7.17499H12.3978L8.04903 2.82599C7.78303 2.56015 7.65187 2.24674 7.65553 1.88574C7.65903 1.5249 7.79378 1.21157 8.05978 0.945737C8.32578 0.696403 8.6392 0.569904 9.00003 0.566237C9.36087 0.56257 9.67428 0.693737 9.94028 0.959737L16.5403 7.55974C16.6684 7.68807 16.7652 7.83407 16.8305 7.99774C16.8957 8.16157 16.9283 8.32899 16.9283 8.49999C16.9283 8.67099 16.8957 8.8384 16.8305 9.00224C16.7652 9.1659 16.6684 9.3119 16.5403 9.44024L9.92603 16.0542C9.66736 16.3131 9.35812 16.4425 8.99828 16.4425C8.63861 16.4425 8.32578 16.3131 8.05978 16.0542C7.79378 15.7884 7.66078 15.4732 7.66078 15.1087C7.66078 14.7442 7.79378 14.429 8.05978 14.163L12.3978 9.82499Z" fill="currentColor"/>
+              </svg>
+          </div>
+        </div>
+      {% endif %}
+
+      {% if enable_pagination %}
+        <div class="pagination-wrap">
+        <div class="swiper-pagination color-{{ section.settings.secondary_color_scheme }}"></div>
+        </div>
+      {% endif %}
+
+      {% if  enable_scroll %}
+         <div class="swiper-scrollbar"></div>
+      {% endif %}
+
+      </div>
+      </slideshow-swiper>
+
+      <div class="media-gallery-buttons-mobile   desktop-hidden"> 
+        <a
+        {% if section.settings.button_link == blank %}
+          role="link" aria-disabled="true"
+        {% else %}
+          href="{{ section.settings.button_link }}"
+        {% endif %}
+        class="btn btn-primary btn-custom  btn-custom--large"
+      >
+        {{ section.settings.button_label | escape }}
+        <span class="spakle-btn">
+
+        
+        <img src="{{ 'twinkles.gif' | asset_url }}" alt="twinkles">
+
+
+        </span>
+      </a>
+
+          </div>
+    
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Instagram Gallery",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "layout",
+      "options": [
+        {
+          "value": "layout-2",
+          "label": "Layout 2"
+        },
+        {
+          "value": "layout-1",
+          "label": "Layout 1"
+        }
+      ],
+      "default": "layout-1",
+      "label": "Choose Layout"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "default": "Media gallery",
+      "label": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "default": "Button label",
+      "label": "Button Label"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "header",
+      "content": "Image Ratio"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "Adapt to image"
+        },
+        {
+          "value": "square",
+          "label": "Square"
+        },
+        {
+          "value": "landscape",
+          "label": "Landscape"
+        },
+        {
+          "value": "portrait",
+          "label": "Portrait"
+        },
+        {
+          "value": "16-9",
+          "label": "Custom 16:9"
+        },
+        {
+          "value": "ratio-7",
+          "label": "Ratio 0.7"
+        }
+      ],
+      "default": "portrait",
+      "label": "Image ratio"
+    },
+    {
+      "type": "select",
+      "id": "desktop_column",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        },
+        {
+          "value": "5",
+          "label": "5"
+        }
+      ],
+      "default": "3",
+      "label": "Desktop Column"
+    },
+    {
+      "type": "select",
+      "id": "tab_column",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        }
+      ],
+      "default": "3",
+      "label": "Tab Column"
+    },
+    {
+      "type": "select",
+      "id": "mobile_column",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "default": "1",
+      "label": "Mobile Column"
+    },
+    {
+      "type": "header",
+      "content": "Slider Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay_enabled",
+      "label": "Enable Auto Play",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "autoplay_timeout",
+      "label": "Chnage Time",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "default": 5,
+      "unit": "s"
+    },
+    {
+      "type": "checkbox",
+      "id": "loop_enabled",
+      "label": "Enable Loop",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_pagination",
+      "label": "Enable Pagination",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "pagination_type",
+      "options": [
+        {
+          "value": "bullets",
+          "label": "Bullets"
+        },
+        {
+          "value": "progressbar",
+          "label": "Progress"
+        }
+      ],
+      "default": "bullets",
+      "label": "Pagination Type"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_navigation",
+      "label": "Enable Naviagtion",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_scroll",
+      "label": "Enable Scroll",
+      "default": false
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color",
+      "default": "background-1"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "paragraph",
+      "content": "Desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 116
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 116
+    },
+    {
+      "type": "paragraph",
+      "content": " Mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 58
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 58
+    }
+  ],
+  "blocks": [
+    {
+      "type": "media_item",
+      "name": "Media Item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "url",
+          "id": "image_link",
+          "label": "Image Link"
+        }
+      ]
+    },
+    {
+      "type": "video_item",
+      "name": "Video",
+      "settings": [
+        {
+          "type": "select",
+          "id": "video_source",
+          "label": "t:sections.video_banner.settings.video_source.label",
+          "default": "video_external",
+          "options": [
+            {
+              "value": "video_external",
+              "label": "t:general.settings.external.label"
+            },
+            {
+              "value": "video_hosted",
+              "label": "t:general.settings.shopify_hosted.label"
+            }
+          ]
+        },
+        {
+          "type": "video_url",
+          "id": "video_url",
+          "accept": ["youtube", "vimeo"],
+          "default": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+          "label": "t:general.settings.external_video.label",
+          "info": "t:general.settings.video_link.info"
+        },
+        {
+          "type": "video",
+          "id": "video_hosted",
+          "label": "t:general.settings.header_hosted_video.content"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Instagram Gallery",
+      "blocks": [
+        {
+          "type": "media_item"
+        },
+        {
+          "type": "media_item"
+        },
+        {
+          "type": "media_item"
+        },
+        {
+          "type": "media_item"
+        },
+        {
+          "type": "media_item"
+        },
+        {
+          "type": "media_item"
+        },
+        {
+          "type": "media_item"
+        },
+        {
+          "type": "media_item"
+        },
+        {
+          "type": "media_item"
+        },
+        {
+          "type": "media_item"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

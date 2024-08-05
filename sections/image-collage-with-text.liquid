@@ -1,0 +1,469 @@
+{% liquid
+  assign loading = "lazy"
+  assign decoding ="async"
+  assign fetchpriority = "auto"
+  assign image_classes = 'w-100 h-100 media'
+
+  if section.index <= 2
+    assign loading = "eager"
+    assign fetchpriority = "high"
+    assign image_classes = 'w-100 h-100 media'
+  endif
+
+  assign primary_image = section.settings.primary_image
+  assign secondary_image = section.settings.secondary_image
+  assign tertiary_image = section.settings.tertiary_image
+  assign quaternary_image = section.settings.quaternary_image
+  assign collage_alignment = section.settings.collage_alignment
+  assign image_widths = '320, 450, 550, 750, 950, 1024, 1200, 1400, 1600, 1800, 2000'
+  assign image_sizes = '(min-width: 1025px) calc(( 100vw - 144px) / 2), calc((100vw - 48px) / 2)'
+  assign placeholder = 'detailed-apparel-1' | placeholder_svg_tag: 'w-100 placeholder media of-cover js-image-lazy rounded-2x p-sticky top-0'
+  assign primary_image_alt = primary_image.alt | default: primary_image.image | split: '/' | last
+  assign primary_media = primary_image | image_url: width: primary_image.width | image_tag: widths: image_widths , sizes: image_sizes , alt: primary_image_alt, class: 'js-image-lazy media of-cover w-100 h-100 rounded-2x', loading: loading, fetchpriority: fetchpriority, decoding: decoding
+
+  assign secondary_image_alt = secondary_image.alt | default: secondary_image.image | split: '/' | last
+  assign secondary_media = secondary_image | image_url: width: secondary_image.width | image_tag: widths: image_widths, sizes: image_sizes, alt: secondary_image_alt, class: 'js-image-lazy media of-cover w-100 h-100 rounded-2x', loading: 'lazy', fetchpriority: 'auto', decoding: decoding
+
+  assign tertiary_image_alt = tertiary_image.alt | default: tertiary_image.image | split: '/' | last
+  assign tertiary_media = tertiary_image | image_url: width: tertiary_image.width | image_tag: widths: image_widths, sizes: image_sizes, alt: tertiary_image_alt, class: 'js-image-lazy media of-cover w-100 h-100 rounded-2x', loading: 'lazy', fetchpriority: 'auto', decoding: decoding
+
+  assign quaternary_image_alt = quaternary_image.alt | default: quaternary_image.image | split: '/' | last
+  assign quaternary_media = quaternary_image | image_url: width: quaternary_image.width | image_tag: widths: image_widths, sizes: image_sizes, alt: quaternary_image_alt, class: 'js-image-lazy media of-cover w-100 h-100 rounded-2x', loading: 'lazy', fetchpriority: 'auto', decoding: decoding
+
+  assign number_image = 0
+  if primary_image != blank
+    assign number_image = number_image | plus: 1
+    capture primary_image
+      render 'image', image_item: primary_media, image_wrap_classes: 'h-100 media--hover-effect rounded-2x', image_classes: image_classes, ratio: primary_image.aspect_ratio
+    endcapture
+  endif
+  if secondary_image != blank
+    assign number_image = number_image | plus: 1
+    capture secondary_image
+      render 'image', image_item: secondary_media, image_wrap_classes: 'h-100 media--hover-effect rounded-2x', image_classes: image_classes, ratio: secondary_image.aspect_ratio
+    endcapture
+  endif
+  if tertiary_image != blank
+    assign number_image = number_image | plus: 1
+    capture tertiary_image
+      render 'image', image_item: tertiary_media, image_wrap_classes: 'h-100 media--hover-effect rounded-2x', image_classes: image_classes, ratio: tertiary_image.aspect_ratio
+    endcapture
+  endif
+  if quaternary_image != blank
+    assign number_image = number_image | plus: 1
+    capture quaternary_image
+      render 'image', image_item: quaternary_media, image_wrap_classes: 'h-100 media--hover-effect rounded-2x', image_classes: image_classes, ratio: quaternary_image.aspect_ratio
+    endcapture
+  endif
+
+  assign xs = 6
+  if number_image == 1
+    assign xs = 12
+  endif
+%}
+
+{% liquid
+  assign detect_background = 1
+  if section.settings.color_scheme.settings.color_background.alpha != 0.0
+    assign no_transparent = 'no-transparent'
+    assign detect_background = section.settings.color_scheme.settings.color_background | color_brightness | times: 9999
+  endif
+%}
+<style>
+  #shopify-section-{{ section.id }} {
+    --section-background-hash: {{ detect_background }};
+  }
+  #shopify-section-{{ section.id }} + * {
+    --previous-section-background-hash: {{ detect_background }};
+  }
+</style>
+
+<div class="s--margin color-{{- section.settings.color_scheme }} s-container-radius {{ no_transparent }}" data-ui-component="Image Collage With Text Section" role="region" aria-labelledby="sectionHeading-{{ section.id | md5 | truncate: 12, "" }}">
+  <div class="section ctnr d-grid  ">
+    <div class="d-flex fd-column gap-content gap-horizontal-md center-xs {{ section.settings.content_ordering_mobile }} {{ section.settings.content_ordering_desktop }}">
+      {% if section.blocks.size > 0 %}
+        <div style="--w-md:{{- section.settings.collage_width | replace: '8.4', '3.6' -}}">
+          {% render 'section-header-block',
+            content_align_mobile: section.settings.content_position_mobile,
+            section: section
+          %}
+        </div>
+      {% endif %}
+      <div style="--w-md:{{- section.settings.collage_width -}}">
+        {% if number_image == 0 %}
+          {% render 'image', image_item: placeholder, image_wrap_classes: 'h-100 media--hover-effect rounded-2x', image_classes: 'd-block h-100' %}
+        {% else %}
+          <div class="rw {{ collage_alignment }}">
+            <div class="clm" style="--w-xs:{{- xs -}};">
+              <div class="d-grid r-gap-equal hide-empty {{ collage_alignment }}">
+                {{- primary_image -}}
+                {{- tertiary_image -}}
+              </div>
+            </div>
+            <div class="clm" style="--w-xs:{{- xs -}};">
+              <div class="d-grid r-gap-equal hide-empty {{ collage_alignment }}">
+                {{- secondary_image -}}
+                {{- quaternary_image -}}
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "t:sections.image_collage_with_text.name",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.general.content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_schemes.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.image_collage_with_text.settings.header_image_collage.content"
+    },
+    {
+      "type": "select",
+      "id": "collage_alignment",
+      "label": "t:sections.image_collage_with_text.settings.collage_alignment.label",
+      "default": "media-sticky",
+      "options": [
+        {
+          "value": "top-xs",
+          "label": "t:sections.image_collage_with_text.settings.option_top.label"
+        },
+        {
+          "value": "middle-xs",
+          "label": "t:sections.image_collage_with_text.settings.option_middle.label"
+        },
+        {
+          "value": "bottom-xs",
+          "label": "t:sections.image_collage_with_text.settings.option_bottom.label"
+        },
+        {
+          "value": "media-sticky",
+          "label": "t:sections.image_collage_with_text.settings.option_on_scroll.label"
+        }
+      ]
+    },
+    {
+      "type": "image_picker",
+      "id": "primary_image",
+      "label": "t:sections.image_collage_with_text.settings.image_1.label"
+    },
+    {
+      "type": "image_picker",
+      "id": "secondary_image",
+      "label": "t:sections.image_collage_with_text.settings.image_2.label"
+    },
+    {
+      "type": "image_picker",
+      "id": "tertiary_image",
+      "label": "t:sections.image_collage_with_text.settings.image_3.label"
+    },
+    {
+      "type": "image_picker",
+      "id": "quaternary_image",
+      "label": "t:sections.image_collage_with_text.settings.image_4.label"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.header_large_screen.content"
+    },
+    {
+      "type": "select",
+      "id": "content_ordering_desktop",
+      "label": "t:general.settings.section_ordering.label",
+      "default": "fd-row-md",
+      "options": [
+        {
+          "value": "fd-row-md",
+          "label": "t:general.settings.section_ordering.option_text_first.label"
+        },
+        {
+          "value": "fd-row-reverse-md",
+          "label": "t:general.settings.section_ordering.option_image_first.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "collage_width",
+      "label": "t:sections.image_collage_with_text.settings.collage_width.label",
+      "options": [
+        {
+          "value": "6",
+          "label": "t:general.settings.option_regular.label"
+        },
+        {
+          "value": "8.4",
+          "label": "t:general.settings.option_large.label"
+        }
+      ],
+      "default": "8.4"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.header.mobile_screen.content"
+    },
+    {
+      "type": "select",
+      "id": "content_position_mobile",
+      "label": "t:general.settings.section_heading_alignment.label",
+      "options": [
+        {
+          "value": "ta-center",
+          "label": "t:general.settings.option_center.label"
+        },
+        {
+          "value": "ta-left",
+          "label": "t:general.settings.option_left.label"
+        }
+      ],
+      "default": "ta-left"
+    },
+    {
+      "type": "select",
+      "id": "content_ordering_mobile",
+      "label": "t:general.settings.section_ordering.label",
+      "options": [
+        {
+          "value": "text-first-mb",
+          "label": "t:general.settings.section_ordering.option_text_first.label"
+        },
+        {
+          "value": "fd-column-reverse",
+          "label": "t:general.settings.section_ordering.option_image_first.label"
+        }
+      ],
+      "default": "text-first-mb"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "subheading",
+      "name": "t:general.settings.headers.subheading.content",
+      "settings": [
+        {
+          "type": "text",
+          "label": "t:general.settings.text.label",
+          "id": "subheading",
+          "default": "Add a tagline"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "name": "t:general.settings.headers.heading.content",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:general.settings.text.label",
+          "info": "t:general.settings.prominent_font.info",
+          "default": "[Welcome] to our store"
+        },
+        {
+          "type": "select",
+          "label": "t:general.settings.heading_size.label",
+          "id": "heading_size",
+          "options": [
+            {
+              "value": "headline",
+              "label": "t:general.settings.heading_size.options.headline.label"
+            },
+            {
+              "value": "h1",
+              "label": "t:general.settings.heading_size.options.h1.label"
+            },
+            {
+              "value": "h2",
+              "label": "t:general.settings.heading_size.options.h2.label"
+            },
+            {
+              "value": "h3",
+              "label": "t:general.settings.heading_size.options.h3.label"
+            }
+          ],
+          "default": "h2"
+        }
+      ]
+    },
+    {
+      "type": "description",
+      "name": "t:general.settings.headers.description.content",
+      "settings": [
+        {
+          "type": "richtext",
+          "label": "t:general.settings.text.label",
+          "id": "description",
+          "default": "<p>Highlight your values, products, or services</p>"
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "name": "t:general.settings.headers.buttons.content",
+      "settings": [
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.button_1.content"
+        },
+        {
+          "type": "text",
+          "label": "t:general.settings.button.label",
+          "info": "t:general.settings.hide_if_empty.info",
+          "id": "button_main_text",
+          "default": "Check now"
+        },
+        {
+          "type": "select",
+          "label": "t:general.settings.style.label",
+          "id": "button_main_style",
+          "options": [
+            {
+              "value": "btn-primary",
+              "label": "t:general.settings.filled.label"
+            },
+            {
+              "value": "btn-outline",
+              "label": "t:general.settings.oulined.label"
+            },
+            {
+              "value": "btn-link",
+              "label": "t:general.settings.text_link.label"
+            }
+          ],
+          "default": "btn-primary"
+        },
+        {
+          "type": "url",
+          "id": "button_main_link",
+          "label": "t:general.settings.link.label"
+        },
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.button_2.content"
+        },
+        {
+          "type": "text",
+          "label": "t:general.settings.button.label",
+          "id": "button_sub_text",
+          "default": "View details",
+          "info": "t:general.settings.hide_if_empty.info"
+        },
+        {
+          "type": "select",
+          "label": "t:general.settings.style.label",
+          "id": "button_sub_style",
+          "options": [
+            {
+              "value": "btn-primary",
+              "label": "t:general.settings.filled.label"
+            },
+            {
+              "value": "btn-outline",
+              "label": "t:general.settings.oulined.label"
+            },
+            {
+              "value": "btn-link",
+              "label": "t:general.settings.text_link.label"
+            }
+          ],
+          "default": "btn-outline"
+        },
+        {
+          "type": "url",
+          "id": "button_sub_link",
+          "label": "t:general.settings.link.label"
+        }
+      ]
+    },
+    {
+      "type": "countdown",
+      "name": "t:general.settings.headers.countdown_timer.content",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "hide_on_end",
+          "label": "t:general.settings.hide_on_end.label",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "end_date",
+          "label": "t:general.settings.end_date.label",
+          "info": "t:general.settings.end_date.info"
+        },
+        {
+          "type": "text",
+          "id": "end_time",
+          "label": "t:general.settings.end_time.label",
+          "info": "t:general.settings.end_time.info"
+        },
+        {
+          "type": "richtext",
+          "id": "end_text",
+          "label": "t:general.settings.end_text.label",
+          "info": "t:general.settings.end_text.info",
+          "default": "<p>Event is finished.</p>"
+        },
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.custom_color.content"
+        },
+        {
+          "type": "color",
+          "id": "countdown_background",
+          "label": "t:general.settings.countdown_background.label"
+        },
+        {
+          "type": "color",
+          "id": "countdown_number_color",
+          "label": "t:general.settings.countdown_number.label"
+        },
+        {
+          "type": "color",
+          "id": "color_end_text",
+          "label": "t:general.settings.end_text.label",
+          "default": "#FF0000"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.image_collage_with_text.name",
+      "blocks": [
+        {
+          "type": "subheading"
+        },
+        {
+          "type": "heading"
+        },
+        {
+          "type": "description"
+        },
+        {
+          "type": "button"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

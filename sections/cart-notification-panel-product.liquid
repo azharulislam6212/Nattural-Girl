@@ -1,0 +1,124 @@
+{%- if cart != empty -%}
+  {% if settings.cart_show_free_shipping_notification and settings.cart_minimum_order_price_for_free_shipping != blank %}
+    <div class="free-shipping-notification">
+      {% render 'free-shipping-amount', cart: cart, section: section %}
+    </div>
+  {% endif %}
+  {%- for item in cart.items -%}
+    <div class="cart-item js-cart-notification-panel-product-{{ item.id }}">
+      {%- liquid
+          assign image_height = 250 | divided_by: item.image.aspect_ratio
+          assign product_image = 'product-apparel-1' | placeholder_svg_tag: 'placeholder media of-cover h-100 w-100'
+          assign product_image = item.image.src | image_url: width: 250, height: image_height | image_tag: alt: item.product.title, class: 'of-cover w-100 h-100 media'
+        -%}
+      {% render 'image', image_item: product_image, image_wrap_classes: 'rounded-small', ratio: settings.product_image_ratio %}
+      <div class="cart-notification-product__info gap-12 w-100">
+        <p class="mb-8 fw-700">
+          {{ item.product.title | escape }}
+        </p>
+        <div class="cart-drawer__product-price mb-8">
+          {%- if item.original_line_price != item.final_line_price -%}
+            <div class="cart-item__discounted-prices wb-break-word">
+              <span class="visually-hidden">
+                {{ 'products.product.price.sale_price' | t }}
+              </span>
+              <span class=" mr-8">
+                {{ item.original_price | money }}
+              </span>
+              <span class="visually-hidden">
+                {{ 'products.product.price.regular_price' | t }}
+              </span>
+              <s class="color-light subtext">
+                {{ item.variant.compare_at_price | money_with_currency }}
+              </s>
+            </div>
+          {%- else -%}
+            <span class="d-block">
+              {{ item.original_price | money }}
+            </span>
+            {% if item.variant.compare_at_price > item.variant.price %}
+              <s class="color-light subtext d-block"> {{ item.variant.compare_at_price | money_with_currency }} </s>
+            {% endif %}
+          {%- endif -%}
+        </div>
+        {%- if item.product.has_only_default_variant == false or item.properties.size != 0 or item.selling_plan_allocation != null -%}
+          <div class="cart-drawer__item__options mb-8">
+            <dl class="subtext color-light m-zero">
+              <div class="d-flex middle-xs gap-8">
+                {%- if item.product.has_only_default_variant == false -%}
+                  <div class="cart-drawer__item__option">
+                    <span>
+                      {%- liquid
+                        assign options_names = ''
+                        for option in item.options_with_values
+                          assign options_names = options_names | append: ' / ' | append: option.value
+                        endfor
+                        echo  options_names | replace_first: ' / ', ''
+                      -%}
+                      </span>
+                  </div>
+                {%- endif -%}
+                <span class="color-light">x {{ item.quantity }}</span>
+              </div>
+              {%- for property in item.properties -%}
+                {%- assign property_first_char = property.first | slice: 0 -%}
+                {%- if property.last != blank and property_first_char != '_' -%}
+                  <div class="cart-drawer__item__option">
+                    <p class="d-block mt-8">
+                      {{ property.first }}:
+                      {% if property.last contains '/uploads/' %}
+                        <a href="{{ property.last }}" class="link" target="_blank" aria-describedby="a11y-new-window-message">
+                          {{ property.last | split: '/' | last }}
+                        </a>
+                      {% else %}
+                        {{ property.last }}
+                      {% endif %}
+                    </p>
+                  </div>
+                {%- endif -%}
+              {%- endfor -%}
+            </dl>
+          </div>
+        {%- endif -%}
+        {%- if item.variant.available and item.unit_price_measurement -%}
+            <div class="cart-drawer__item__unit-price subtext color-light mt-8">
+              <span class="visually-hidden">{{ 'products.product.price.unit_price' | t }}</span>
+              {{ item.variant.unit_price | money_with_currency }}
+              <span aria-hidden="true">/</span>
+              <span class="visually-hidden">&nbsp;per&nbsp;</span>
+              {%- if item.variant.unit_price_measurement.reference_value != 1 -%}
+                {{- item.variant.unit_price_measurement.reference_value -}}
+              {%- endif -%}
+              {{ item.variant.unit_price_measurement.reference_unit }}
+            </div>
+        {%- endif -%}
+        {% if item.selling_plan_allocation != nil %}
+          <div class="cart-drawer__item__option hide-empty d-flex middle-xs pb-8 mt-12">
+            <span class="icon icon--small mr-8 fs-0 icon--color-inverse">
+              {% render 'icon-subscription', size: 16 %}
+            </span>
+            <span class="subtext">
+              {{ item.selling_plan_allocation.selling_plan.name }}
+            </span>
+          </div>
+        {% endif %}
+        <ul class="ls-none hide-empty p-zero mt-16">
+          {%- for discount in item.discounts -%}
+            <li class="cart-item__discounted d-grid middle-xs">
+              <span class="icon icon--small mr-8 fs-0 icon--color-inverse">
+                {% render 'icon-voucher', size: 16 %}
+              </span>
+              <span class="subtext">
+                {{ discount.title }}
+                (
+                {{- discount.savings | money_with_currency -}}
+                )
+              </span>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    </div>
+  {%- endfor -%}
+  <span class="js-cart-notification-panel-item-count">{{ cart.item_count }}</span>
+{%- endif -%}

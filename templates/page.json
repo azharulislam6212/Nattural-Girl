@@ -1,0 +1,15 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "settings": {
+        "color_scheme": "scheme-9de40e92-c2a4-4eda-a451-36a5f0704118",
+        "show_page_title": true,
+        "show_page_content": true
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

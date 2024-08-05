@@ -1,0 +1,222 @@
+{
+  "sections": {
+    "breadcrumb": {
+      "type": "breadcrumb",
+      "settings": {
+        "color_scheme": "scheme-9de40e92-c2a4-4eda-a451-36a5f0704118"
+      }
+    },
+    "main": {
+      "type": "main-list-collections",
+      "disabled": true,
+      "settings": {
+        "color_scheme": "scheme-5",
+        "heading": "Collection list",
+        "products_per_load": "20",
+        "products_load_method": "pagination",
+        "content_align_desktop": "ta-center-md m-auto",
+        "columns_per_row_desktop": "4",
+        "content_align_mobile": "ta-left",
+        "columns_per_row_mobile": "6"
+      }
+    },
+    "collection_list_Lake3V": {
+      "type": "collection-list",
+      "settings": {
+        "color_scheme": "scheme-9de40e92-c2a4-4eda-a451-36a5f0704118",
+        "subheading": "",
+        "heading": "ALL COLLECTIONS",
+        "heading_size": "h3",
+        "description": "",
+        "collection_list": [
+          "bob-girl",
+          "closure-wigs",
+          "coily-hair-extensions-hairstyles",
+          "curlie-girl",
+          "curly-hair-extensions-hairstyles",
+          "fringe-wigs",
+          "frontal-wigs",
+          "glam-girl",
+          "headband-wigs-1",
+          "highlight-wigs",
+          "layered-hair-extensions-hairstyles",
+          "pony-girl",
+          "straight-hair-extensions-hairstyles"
+        ],
+        "content_align_desktop": "ta-center-md",
+        "carousel_desktop": "false",
+        "columns_per_row_desktop": "3",
+        "content_align_mobile": "ta-center",
+        "carousel_mobile": "false",
+        "columns_per_row_mobile": "2",
+        "enable_button": false,
+        "button_text": "Explore more",
+        "style_button": "btn-primary"
+      }
+    },
+    "running_content": {
+      "type": "running-content",
+      "blocks": {
+        "text_1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>High Heat Resitant<\/p>",
+            "svg_icon": "",
+            "color_text": "",
+            "text_color_gradient": ""
+          }
+        },
+        "icon_dqAh8W": {
+          "type": "icon",
+          "settings": {
+            "icon_source": "custom_svg",
+            "options_icon": "subscription",
+            "html_code": "<svg width=\"12\" height=\"12\" viewbox=\"0 0 12 12\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M9.67619 0C7.33062 5.24354 7.52926 6.06803 12 9.6762C6.75648 7.33062 5.93199 7.52925 2.32382 12C4.6694 6.75646 4.47075 5.93197 0 2.3238C5.24354 4.66938 6.06803 4.47075 9.67619 0Z\" fill=\"#8E2210\"><\/path>\n<\/svg>",
+            "color_content": ""
+          }
+        },
+        "text_2": {
+          "type": "text",
+          "settings": {
+            "text": "<p>10x Style Memory<\/p>",
+            "svg_icon": "",
+            "color_text": "",
+            "text_color_gradient": ""
+          }
+        },
+        "icon_ytp4VW": {
+          "type": "icon",
+          "settings": {
+            "icon_source": "custom_svg",
+            "options_icon": "subscription",
+            "html_code": "<svg width=\"12\" height=\"12\" viewbox=\"0 0 12 12\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M9.67619 0C7.33062 5.24354 7.52926 6.06803 12 9.6762C6.75648 7.33062 5.93199 7.52925 2.32382 12C4.6694 6.75646 4.47075 5.93197 0 2.3238C5.24354 4.66938 6.06803 4.47075 9.67619 0Z\" fill=\"#8E2210\"><\/path>\n<\/svg>",
+            "color_content": ""
+          }
+        },
+        "text_3": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Hair That Moves<\/p>",
+            "svg_icon": "",
+            "color_text": "",
+            "text_color_gradient": ""
+          }
+        },
+        "icon_Mni9Pc": {
+          "type": "icon",
+          "settings": {
+            "icon_source": "custom_svg",
+            "options_icon": "subscription",
+            "html_code": "<svg width=\"12\" height=\"12\" viewbox=\"0 0 12 12\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M9.67619 0C7.33062 5.24354 7.52926 6.06803 12 9.6762C6.75648 7.33062 5.93199 7.52925 2.32382 12C4.6694 6.75646 4.47075 5.93197 0 2.3238C5.24354 4.66938 6.06803 4.47075 9.67619 0Z\" fill=\"#8E2210\"><\/path>\n<\/svg>",
+            "color_content": ""
+          }
+        },
+        "text_RGFtbt": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Styles That Stay<\/p>",
+            "svg_icon": "",
+            "color_text": "",
+            "text_color_gradient": ""
+          }
+        },
+        "icon_JbnPRF": {
+          "type": "icon",
+          "settings": {
+            "icon_source": "custom_svg",
+            "options_icon": "subscription",
+            "html_code": "<svg width=\"12\" height=\"12\" viewbox=\"0 0 12 12\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M9.67619 0C7.33062 5.24354 7.52926 6.06803 12 9.6762C6.75648 7.33062 5.93199 7.52925 2.32382 12C4.6694 6.75646 4.47075 5.93197 0 2.3238C5.24354 4.66938 6.06803 4.47075 9.67619 0Z\" fill=\"#8E2210\"><\/path>\n<\/svg>",
+            "color_content": ""
+          }
+        },
+        "text_cKVXpB": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Pre-treated for  Scalp and Skin<\/p>",
+            "svg_icon": "",
+            "color_text": "",
+            "text_color_gradient": ""
+          }
+        },
+        "icon_dryQkk": {
+          "type": "icon",
+          "settings": {
+            "icon_source": "custom_svg",
+            "options_icon": "subscription",
+            "html_code": "<svg width=\"12\" height=\"12\" viewbox=\"0 0 12 12\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M9.67619 0C7.33062 5.24354 7.52926 6.06803 12 9.6762C6.75648 7.33062 5.93199 7.52925 2.32382 12C4.6694 6.75646 4.47075 5.93197 0 2.3238C5.24354 4.66938 6.06803 4.47075 9.67619 0Z\" fill=\"#8E2210\"><\/path>\n<\/svg>",
+            "color_content": ""
+          }
+        },
+        "text_pKpaaR": {
+          "type": "text",
+          "settings": {
+            "text": "<p>ReXI™ Hair<\/p>",
+            "svg_icon": "",
+            "color_text": "",
+            "text_color_gradient": ""
+          }
+        },
+        "icon_Q3XyRE": {
+          "type": "icon",
+          "settings": {
+            "icon_source": "custom_svg",
+            "options_icon": "subscription",
+            "html_code": "<svg width=\"12\" height=\"12\" viewbox=\"0 0 12 12\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M9.67619 0C7.33062 5.24354 7.52926 6.06803 12 9.6762C6.75648 7.33062 5.93199 7.52925 2.32382 12C4.6694 6.75646 4.47075 5.93197 0 2.3238C5.24354 4.66938 6.06803 4.47075 9.67619 0Z\" fill=\"#8E2210\"><\/path>\n<\/svg>",
+            "color_content": ""
+          }
+        },
+        "text_DYNQd9": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Instant Glam<\/p>",
+            "svg_icon": "",
+            "color_text": "",
+            "text_color_gradient": ""
+          }
+        },
+        "icon_Ld7Vpe": {
+          "type": "icon",
+          "settings": {
+            "icon_source": "custom_svg",
+            "options_icon": "subscription",
+            "html_code": "<svg width=\"12\" height=\"12\" viewbox=\"0 0 12 12\" fill=\"none\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\">\n<path d=\"M9.67619 0C7.33062 5.24354 7.52926 6.06803 12 9.6762C6.75648 7.33062 5.93199 7.52925 2.32382 12C4.6694 6.75646 4.47075 5.93197 0 2.3238C5.24354 4.66938 6.06803 4.47075 9.67619 0Z\" fill=\"#8E2210\"><\/path>\n<\/svg>",
+            "color_content": ""
+          }
+        }
+      },
+      "block_order": [
+        "text_1",
+        "icon_dqAh8W",
+        "text_2",
+        "icon_ytp4VW",
+        "text_3",
+        "icon_Mni9Pc",
+        "text_RGFtbt",
+        "icon_JbnPRF",
+        "text_cKVXpB",
+        "icon_dryQkk",
+        "text_pKpaaR",
+        "icon_Q3XyRE",
+        "text_DYNQd9",
+        "icon_Ld7Vpe"
+      ],
+      "settings": {
+        "color_scheme": "scheme-d13a885b-b43e-4a64-8c46-141e3e107de6",
+        "speed": "50",
+        "moving_direction": "animation-direction",
+        "pause_when_hover": false,
+        "heading_size": "h6",
+        "padding_top": 24,
+        "padding_bottom": 24,
+        "padding_top_mobile": 15,
+        "padding_bottom_mobile": 15
+      }
+    }
+  },
+  "order": [
+    "breadcrumb",
+    "main",
+    "collection_list_Lake3V",
+    "running_content"
+  ]
+}

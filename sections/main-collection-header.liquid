@@ -1,0 +1,115 @@
+{% liquid
+  assign loading = "lazy"
+  assign decoding ="async"
+  assign fetchpriority = "auto"
+  if section.index <= 2
+    assign loading = "eager"
+    assign fetchpriority = "high"
+  endif
+  assign collection_image = collection.image.src | image_url: width: collection.image.width | image_tag: widths: '320, 450, 550, 750, 950, 1024, 1200, 1400, 1600, 1800, 2000, 2200, 2400, 2600, 2800, 3000', sizes: "100vw", alt: collection.title, class: 'js-image-lazy media h-100 w-100 of-cover', loading: loading, fetchpriority: fetchpriority, decoding: decoding
+
+  assign content_layout = "s-banner ctnr d-flex middle-xs center-xs"
+  assign content_style = "--mh-xs:30vh;"
+  if section.settings.image_style contains 'beside-title'
+    assign content_layout = ""
+    assign content_style = "--w-md:6;"
+    assign image_style = "--h-xs:30vh;--w-md:6;"
+    assign info_style = "ta-left-md top-md"
+    assign collection_layout = "s-banner ctnr beside-title d-flex fd-column fd-row-reverse-md middle-xs gap-content gap-horizontal-md end-md"
+  endif
+  if section.settings.image_style == 'p-absolute'
+    unless section.settings.mask_overlay_color.alpha == 0.0 or section.settings.mask_overlay_color == blank
+      assign overlay_color =  '--color-background:' | append: section.settings.mask_overlay_color
+    endunless
+    unless section.settings.content_overlay_color.alpha == 0.0 or section.settings.content_overlay_color == blank
+      assign content_color =  'color:' | append: section.settings.content_overlay_color
+    endunless
+  endif
+%}
+<div class="s--margin color-{{- section.settings.color_scheme }} s-container-radius no-transparent" data-ui-component="Main Collection Header">
+  <div class="collection__header   s-container-radius o-hidden p-relative {{ collection_layout }}" style="{{ content_color }}">
+    {%- if collection.image -%}
+      <div class="w-100 h-100 sht-mask p-relative {{ section.settings.image_style }}" style="--overlay: {{ section.settings.overlay_opacity }}; {{ overlay_color }} {{ image_style }}">
+        {% render 'image', image_item: collection_image, image_wrap_classes: 'h-100', image_classes: 'h-100 js-animate anm anm-zoomOut' %}
+      </div>
+    {%- endif -%}
+    <div class="{{ content_layout }} zi-2 w-100 h-100 p-relative" style="{{ content_style }}">
+      <div class="s-header d-flex fd-column middle-xs ta-center {{ info_style }}">
+        <h2 class="ts-default m-zero tt-cap">
+          {{- collection.title | escape -}}
+        </h2>
+        {% if collection.description %}
+          <div class="s-header__desc s-header__item rte hide-empty">
+            {{- collection.description -}}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "t:sections.collection_header.name",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.general.content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_scheme.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.collection_header.settings.collection_image_header.content"
+    },
+    {
+      "type": "select",
+      "label": "t:general.settings.image_style.label",
+      "id": "image_style",
+      "options": [
+        {
+          "value": "d-none",
+          "label": "t:sections.collection_header.settings.option_hidden.label"
+        },
+        {
+          "value": "p-absolute",
+          "label": "t:sections.collection_header.settings.option_behind_title.label"
+        },
+        {
+          "value": "beside-title rounded-2x",
+          "label": "t:sections.collection_header.settings.option_beside_title.label"
+        }
+      ],
+      "default": "p-absolute"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.custom_color.content",
+      "info": "t:sections.collection_header.settings.custom_color.info"
+    },
+    {
+      "type": "color",
+      "id": "mask_overlay_color",
+      "label": "t:general.settings.mask_overlay.label"
+    },
+    {
+      "type": "range",
+      "unit": "%",
+      "max": 90,
+      "min": 0,
+      "step": 1,
+      "default": 30,
+      "id": "overlay_opacity",
+      "label": "t:general.settings.overlay_opacity.label"
+    },
+    {
+      "type": "color",
+      "id": "content_overlay_color",
+      "label": "t:general.settings.text_overlay.label"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,43 @@
+{% liquid
+  assign section_id = section.id | md5 | truncate: 12, ""
+  assign rand = 'now' | date: '%N' | append: section_id
+  assign form_id = 'CountrySwitcher-' | append: rand
+%}
+<sht-country-switcher class="fg-1">
+  {%- form 'localization', id: form_id, class: 'country-switcher__form js-country-switcher-form' -%}
+    <div class="country-switcher__container no-js-hidden">
+      <h2 class="visually-hidden" id="CountrySwitcherLabel-{{ rand }}">{{ 'localization.country_label' | t }}</h2>
+      <div class="country-switcher__wrapper p-relative">
+        <button type="button" class="js-country-switcher-btn btn-localization focus-state subtext fw-700 d-flex between-xs middle-xs w-100 ta-left c-pointer gap-4 b-zero" aria-expanded="false" aria-controls="CountrySwitcherCountryList-{{ rand }}" aria-describedby="CountrySwitcherLabel-{{ rand }}">
+          {{ localization.country | image_url: width: 20, height: 20 | image_tag: widths: '350', sizes: '100vw', class: 'country-list--flag br-50p of-cover h-100', loading: 'lazy', fetchpriority: 'auto', decoding: 'async' }}
+          {{ localization.country.currency.iso_code }}
+          {{ localization.country.currency.symbol }}
+          {% render 'icon-chevron-down', size: 12, class: 'icon-chevron-down' %}
+        </button>
+        <div class="localization-wapper js-country-switcher-country-list color-{{- settings.color_scheme_drawer_popover }} field__dropdown zi-9 p-absolute left-0 o-hidden" hidden="true">
+          <ul role="list" id="CountrySwitcherCountryList-{{ rand }}" class="country-switcher__country-list localization-list dropdown-list ls-none oy-scroll scrollbars">
+            {%- for country in localization.available_countries -%}
+              {% liquid
+                assign active_class = ''
+                assign active_attrs = ''
+                if country.iso_code == localization.country.iso_code
+                  assign active_class = 'link--active'
+                  assign active_attrs = 'aria-current="true"'
+                endif
+                assign country_flag = country | image_url: width: 20, height: 20 | image_tag: widths: '350', sizes: '100vw', class: 'country-list--flag br-50p of-cover h-100', loading: 'lazy', fetchpriority: 'auto', decoding: 'async'
+              %}
+              <li class="fs-body pt-12 pb-12 pr-16 pl-16" tabindex="-1">
+                <a class="js-country-switcher-country-item-link d-flex middle-xs gap-4 field__dropdown__link {{ active_class }}" href="#" {{ active_attrs }} data-value="{{ country.iso_code }}">
+                  {{ country_flag }}
+                  {{ country.name }}
+                  ({{ country.currency.iso_code }} {{ country.currency.symbol }})
+                </a>
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+      <input type="hidden" class="js-country-switcher-country-code-field" name="country_code" value="{{ localization.country.iso_code }}">
+    </div>
+  {%- endform -%}
+</sht-country-switcher>

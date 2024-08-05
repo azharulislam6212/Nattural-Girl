@@ -1,0 +1,537 @@
+{%- liquid
+  assign section_id = section.id | md5 | truncate: 12, ''
+  capture icon_chevron_down
+    render 'icon-chevron-down', size: '12', class: 'ml-4'
+  endcapture
+  assign open_external_link = section.settings.open_external_link
+-%}
+
+{% liquid
+  assign detect_background = 1
+  if section.settings.color_scheme.settings.color_background.alpha != 0.0
+    assign no_transparent = 'no-transparent'
+    assign detect_background = section.settings.color_scheme.settings.color_background | color_brightness | times: 9999
+  endif
+%}
+<style>
+  #shopify-section-{{ section.id }} {
+    --section-background-hash: {{ detect_background }};
+  }
+  #shopify-section-{{ section.id }} + * {
+    --previous-section-background-hash: {{ detect_background }};
+  }
+</style>
+
+<footer class="footer js-footer pb-0 color-{{- section.settings.color_scheme }} s-container-radius {{ no_transparent }}" data-ui-component="Section Footer">
+  <div class="section ctnr footer__wrapper pb-80  ">
+    <button onclick="SHTHelper.qde.scrollTo({top: 0, behavior: `smooth`});" class="back-to-top btn btn-outline  {{ section.settings.enable_back_to_top | default: 'd-none-important' | replace: 'true', '' }}">
+      {{ 'sections.footer.back_to_top' | t }}
+      {% render 'icon-arrow-up', size: 16, class: 'ml-4' %}
+    </button>
+    <div class="footer__content d-grid gap-32">
+      <div class="rw between-xs hide-empty r-gap-32 gap-lg-zero newslater-reverse">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'store_information' -%}
+              <div class="clm d-flex fd-column gap-24 wb-break-word" style="--w-xs: 12; --w-sm: 6; --w-lg: 5">
+                <span class="footer__menu-heading menu__style menu__link m-zero pb-8 pt-8 m-zero d-block hide-empty">{{- block.settings.heading | escape -}}</span>
+                {% if block.settings.footer_image != blank %}
+                <div class="footer__image d-block"
+                 style="--image-width-desktop: {{ block.settings.image_width | append: 'px' }};
+                --image-width-mobile: {{ block.settings.image_width_mobile | append: 'px' }};">
+                  {%- assign image_size_2x = block.settings.image_width | times: 2 -%}
+                  <img
+                    srcset="{{ block.settings.footer_image | image_url: width: block.settings.image_width }} 1x, {{ block.settings.footer_image | image_url: width: image_size_2x }} 2x"
+                    src="{{ block.settings.image_width | image_url: width: block.settings.image_width }}" loading="lazy"
+                    width="{{ block.settings.image_width.width }}" height="{{ block.settings.image_width.height }}"
+                    alt="{{ block.settings.footer_image.alt | default: shop.name | escape }}">
+                </div>
+                {% endif %}
+                <div class="footer-description rte hide-empty">
+                  {{- block.settings.description -}}
+
+                  <span class="sparkle-footer-content">
+                    <svg class="sparkle" width="30" height="23" viewBox="0 0 30 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M25.9333 0C21.8286 9.1762 22.1762 10.6191 30 16.9333C20.8238 12.8286 19.381 13.1762 13.0667 21C17.1715 11.8238 16.8238 10.3809 9 4.06666C18.1762 8.17142 19.6191 7.82381 25.9333 0Z" fill="#8E2210"/>
+                    <path d="M7.25715 14C5.49796 17.9327 5.64695 18.551 9.00001 21.2571C5.06736 19.498 4.44899 19.6469 1.74287 23C3.50205 19.0673 3.35306 18.449 0 15.7429C3.93266 17.502 4.55102 17.3531 7.25715 14Z" fill="#8E2210"/>
+                    </svg>
+                </span>
+                </div>
+
+                <div class="social-info mb-12">
+
+                <a href="mailto:{{ block.settings.email }}" >
+                  <span class="mr-15"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 4H4C2.9 4 2.01 4.9 2.01 6L2 18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM19.6 8.25L12.53 12.67C12.21 12.87 11.79 12.87 11.47 12.67L4.4 8.25C4.29973 8.19371 4.21192 8.11766 4.14189 8.02645C4.07186 7.93525 4.02106 7.83078 3.99258 7.71937C3.96409 7.60796 3.9585 7.49194 3.97616 7.37831C3.99381 7.26468 4.03434 7.15581 4.09528 7.0583C4.15623 6.96079 4.23632 6.87666 4.33073 6.811C4.42513 6.74533 4.53187 6.69951 4.6445 6.6763C4.75712 6.65309 4.87328 6.65297 4.98595 6.67595C5.09863 6.69893 5.20546 6.74453 5.3 6.81L12 11L18.7 6.81C18.7945 6.74453 18.9014 6.69893 19.014 6.67595C19.1267 6.65297 19.2429 6.65309 19.3555 6.6763C19.4681 6.69951 19.5749 6.74533 19.6693 6.811C19.7637 6.87666 19.8438 6.96079 19.9047 7.0583C19.9657 7.15581 20.0062 7.26468 20.0238 7.37831C20.0415 7.49194 20.0359 7.60796 20.0074 7.71937C19.9789 7.83078 19.9281 7.93525 19.8581 8.02645C19.7881 8.11766 19.7003 8.19371 19.6 8.25Z" fill="#8E2210"/>
+                </svg>
+                </span>{{ block.settings.email}}</a>
+
+                <div class="phone-text">
+                  <span class="mr-15">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M16.5559 12.906L16.1009 13.359C16.1009 13.359 15.0179 14.435 12.0629 11.497C9.10788 8.55898 10.1909 7.48298 10.1909 7.48298L10.4769 7.19698C11.1839 6.49498 11.2509 5.36698 10.6339 4.54298L9.37388 2.85998C8.60988 1.83998 7.13488 1.70498 6.25988 2.57498L4.68988 4.13498C4.25688 4.56698 3.96688 5.12498 4.00188 5.74498C4.09188 7.33198 4.80988 10.745 8.81388 14.727C13.0609 18.949 17.0459 19.117 18.6749 18.965C19.1909 18.917 19.6389 18.655 19.9999 18.295L21.4199 16.883C22.3799 15.93 22.1099 14.295 20.8819 13.628L18.9719 12.589C18.1659 12.151 17.1859 12.28 16.5559 12.906Z" fill="#8E2210"/>
+                      </svg> </span>{{ block.settings.phone }}</div>
+                </div>
+                {%- if block.settings.show_socical_icons -%}
+                  <div class="footer__socials maw-lg-100">
+                    {% render 'socials', classes: 'start-xs gap-8', button_type: block.settings.socical_icons_style %}
+                  </div>
+                {%- endif -%}
+                {%- if shop.features.follow_on_shop? and block.settings.enable_follow_on_shop -%}
+                  <div class="ta-center ta-left-lg">
+                    {% comment %} TODO: enable theme-check once `login_button` is accepted as valid filter {% endcomment %}
+                    {% # theme-check-disable %}
+                    {{ shop | login_button: action: 'follow' }}
+                    {% # theme-check-enable %}
+                  </div>
+                {%- endif -%}
+
+           
+
+              </div>
+            {%- when 'newsletter' -%}
+              {%  liquid
+                if block.settings.enable_block_background
+                  assign newletters_padding_top = 'pt-16 pt-md-24'
+                  if block.settings.newsletter_heading != blank
+                    assign newletters_padding_top = 'pt-8 pt-md-16'
+                  endif
+                  assign spacing_block_newletter = ''
+                  unless block.settings.color_content.alpha == 0.0 or block.settings.color_content == blank
+                    assign color_content = '--color-normal-text: ' | append: block.settings.color_content
+                  endunless
+                  unless block.settings.background_content.alpha == 0.0 or block.settings.background_content == blank
+                    assign background_content = '; background: ' | append: block.settings.background_content
+                    assign spacing_block_newletter = 'newletter-spacing'
+                    assign card_border = 'border'
+                  endunless
+                endif
+              %}
+              <div class="footer-newsletter clm hide-empty clm fg-1 fs-0 maw-100 {{ block.settings.enable_block_background | default: 'card--standard' | replace: 'true', '' }}" style="--w-xs: 12; --w-sm: 6; --w-lg: 7">
+                <div class="{{ card_border }} {{ spacing_block_newletter }} {{ newletters_padding_top }} br-card-content d-flex fd-column h-100 w-100" style="{{ color_content }} {{ background_content }}">
+                  <span class="footer-newsletter__heading  pt-8 pb-8 mb-8 d-block hide-empty">{{- block.settings.newsletter_heading | escape -}}</span>
+                  <div class="rte mb-20 hide-empty">{{- block.settings.newsletter_description -}}</div>
+                  {%- form 'customer', id: 'footerNewsletterForm', class: 'footer-newsletter-form' -%}
+                    <input type="hidden" name="contact[tags]" value="newsletter">
+                    <div class="form__field d-flex fd-column fd-row-sm fd-column-lg gap-12">
+                      <label class="field__label visually-hidden" for="newsletterForm-{{- section_id -}}">
+                        {{ 'general.newsletter.label' | t }}
+                      </label>
+                      <input id="newsletterForm-{{- section_id -}}" type="email" name="contact[email]"
+                        class="field__text field--large field--hover fg-1" value="{{ form.email }}" aria-required="true"
+                        autocorrect="off" autocapitalize="off" autocomplete="email" {% if form.errors %} autofocus
+                        aria-invalid="true" aria-describedby="NewsletterFooter-error" {% elsif form.posted_successfully? %}
+                        aria-describedby="NewsletterFooter-success" {% endif %}
+                        placeholder="{{ 'general.newsletter.email_placeholder' | t }}" required>
+                      <button type="submit" class="btn btn-primary  btn--large lh-inherit submit-button" name="commit" id="subscribe" aria-label="{{ block.settings.submit_button }}">
+                        {% if block.settings.submit_button != blank %}
+                          {{- block.settings.submit_button -}}
+                        {% else %}
+                          {{- 'general.newsletter.button_label' | t -}}
+                        {% endif %}
+                      </button>
+                    </div>
+                    {%- if form.errors -%}
+                      <div class="message--error d-flex middle-xs start-xs mt-16">
+                        <div class="icon icon--small icon--error fs-0">
+                          {% render 'icon-close', size: 16 %}
+                        </div>
+                        <span class="ml-8">
+                          {{ form.errors.translated_fields.email | capitalize }}
+                          {{ form.errors.messages.email }}
+                        </span>
+                      </div>
+                    {%- endif -%}
+                    {%- if form.posted_successfully? -%}
+                      <div class="message--success d-flex middle-xs start-xs mt-16">
+                        <div class="icon icon--small icon--success fs-0">
+                          {% render 'icon-check', size: 16 %}
+                        </div>
+                        <span class="ml-8">
+                          {{ 'general.newsletter.success' | t }}
+                        </span>
+                      </div>
+                    {%- endif -%}
+                  {%- endform -%}
+                </div>
+              </div>
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+
+      <div class="footer--middle"> 
+        <div class="rw  hide-empty r-gap-32 gap-lg-zero">
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+        
+          
+              {%- when 'single_menu' -%}
+                <div class="clm" style="--w-xs: 6; --w-sm: 3; --w-lg: 2;">
+                  <div class="c-gap r-gap-lg-24">
+                    {%- if block.settings.menu -%}
+                      <p class="footer__menu-heading menu__style menu__link m-zero pb-8 pt-16">{{- block.settings.menu.title -}}</p>
+                      <ul class="footer__nav ls-none">
+                        {%- for link in block.settings.menu.links -%}
+                          {% liquid
+                            assign isOpenMenu = link.url | slice: 0
+                            assign target_blank = ''
+                            if isOpenMenu != '/' and isOpenMenu != '#' and open_external_link
+                              assign target_blank = 'target = "_blank"'
+                            endif
+                          %}
+                          <li class="nav__item {{ link.current | default: '' | replace: 'true', 'nav__item--active' }}">
+                            <a href="{{ link.url }}" {{ target_blank }} {% if link.active %} aria-current="page" {% endif %} class="d-inline-block pt-6 pb-8 pr-0 pl-0 wb-break-word">
+                              {{- link.title -}}
+                            </a>
+                          </li>
+                        {%- endfor -%}
+                      </ul>
+                    {%- endif -%}
+                  </div>
+                </div>
+          
+            {%- endcase -%}
+          {%- endfor -%}
+
+
+          <span class="sparkle-footer-menu">
+            <svg class="sparkle" width="30" height="23" viewBox="0 0 30 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M25.9333 0C21.8286 9.1762 22.1762 10.6191 30 16.9333C20.8238 12.8286 19.381 13.1762 13.0667 21C17.1715 11.8238 16.8238 10.3809 9 4.06666C18.1762 8.17142 19.6191 7.82381 25.9333 0Z" fill="#8E2210"/>
+            <path d="M7.25715 14C5.49796 17.9327 5.64695 18.551 9.00001 21.2571C5.06736 19.498 4.44899 19.6469 1.74287 23C3.50205 19.0673 3.35306 18.449 0 15.7429C3.93266 17.502 4.55102 17.3531 7.25715 14Z" fill="#8E2210"/>
+            </svg>
+        </span>
+        </div>
+        </div>
+      <div class="rw hide-empty r-gap-32">
+        {%- for link in section.settings.menu.links -%}
+          {% liquid
+            assign isOpenMenu = link.url | slice: 0
+            assign target_blank = ''
+            if isOpenMenu != '/' and isOpenMenu != '#' and open_external_link
+              assign target_blank = 'target = "_blank"'
+            endif
+          %}
+          <div class="clm" style="--w-xs: 12; --w-sm: 6; --w-lg: 3;">
+            <div class="c-gap r-gap-lg-24">
+              {%- if link.links.size > 0 -%}
+                <div class="">
+                  <a href="{{ link.url }}" {{ target_blank }} class="menu__link menu__link-lv1 menu__style d-block {{ link.current | default: '' | replace: 'true', 'menu__link--active' }}">
+                    <span class="d-block link__title">{{ link.title }}</span>
+                  </a>
+                  <ul class="footer__nav ls-none">
+                    {%- for childlink in link.links -%}
+                      {% liquid
+                        assign isOpenMenuLv2 = childlink.url | slice: 0
+                        assign target_blank_lv2 = ''
+                        if isOpenMenuLv2 != '/' and isOpenMenuLv2 != '#' and open_external_link
+                          assign target_blank_lv2 = 'target = "_blank"'
+                        endif
+                      %}
+                      <li class="nav__item">
+                        <a href="{{ childlink.url }}" {{ target_blank_lv2 }} {% if childlink.active %} aria-current="page" {% endif %} class="d-inline-block pt-16 pb-8 pr-0 pl-0 wb-break-word">
+                          {{- childlink.title -}}
+                        </a>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                </div>
+              {%- else -%}
+                <a href="{{ link.url }}" {{ target_blank }} class="menu__link menu__link-lv1 menu__style d-block {{ link.current | default: '' | replace: 'true', 'menu__link--active' }}">
+                  <span class="d-block link__title">{{ link.title }}</span>
+                </a>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+    <div class="footer__content__bottom m-auto pt-8 d-flex center-xs fd-column middle-xs fd-row-lg between-lg mt-64 gap-32 c-gap-lg-48 r-gap-lg-4">
+    
+      <div class="d-flex fd-column fd-row-lg r-gap-24 r-gap-lg-12 fw-wrap" style=" --w-lg: 5;">
+        <div class="color-light subtext pt-lg-12 pb-lg-12">
+          <small class="copy-right-text">&copy; {{ shop.name | link_to: routes.root_url }}</small>
+          <small class="subtext">{{ powered_by_link }}</small>
+        </div>
+      </div>
+
+      <div class="d-flex fd-column center-xs middle-xs fd-row-lg w-100 w-sm-auto fw-wrap r-gap-lg-24 end-md">
+        <div class="footer-localization p-relative-lg d-flex fw-wrap fw-nowrap-md hide-empty mb-24 mb-lg-0 pr-lg-16 gap-16 r-gap-24">
+          {%- if section.settings.show_currency_selector and localization.available_languages.size > 1 -%}
+            <sht-localization class="d-flex" data-js-file-id="component-country-switcher-js-file" data-js-file="{{ 'component-country-switcher.js' | asset_url }}" data-section-id="shopify-section-country-switcher" data-url="{{ routes.root_url }}?section_id=country-switcher">
+              <button type="button" class="js-country-switcher-btn btn-localization focus-state subtext fw-700 d-flex between-xs middle-xs w-100 ta-left c-pointer b-zero gap-4">
+                {{ localization.country | image_url: width: 20, height: 20 | image_tag: widths: '350', sizes: '100vw', class: 'country-list--flag br-50p of-cover h-100', loading: 'lazy', fetchpriority: 'auto', decoding: 'async' }}
+                {{ localization.country.currency.iso_code }}
+                {{ localization.country.currency.symbol }}
+                {{ icon_chevron_down }}
+              </button>
+            </sht-localization>
+          {%- endif -%}
+          {%- if section.settings.show_language_selector and localization.available_languages.size > 1 -%}
+            <sht-localization class="d-flex" data-js-file-id="component-language-switcher-js-file" data-js-file="{{ 'component-language-switcher.js' | asset_url }}" data-section-id="shopify-section-language-switcher" data-url="{{ routes.root_url }}?section_id=language-switcher">
+              <button type="button" class="js-language-switcher-btn btn-localization focus-state subtext fw-700 d-flex between-xs middle-xs w-100 ta-left c-pointer b-zero gap-4">
+                {{ localization.language.iso_code | upcase }}
+                {{ icon_chevron_down }}
+              </button>
+            </sht-localization>
+          {%- endif -%}
+        </div>
+        {%- if section.settings.show_payment_methods and shop.enabled_payment_types -%}
+          <div class="footer__payment maw-lg-100 p-relative-lg">
+            <span class="visually-hidden">{{ 'sections.footer.payment' | t }}</span>
+            <ul class="list list-payment d-flex gap-16 center-xs start-lg fw-wrap ls-none">
+              {%- for type in shop.enabled_payment_types -%}
+                <li class="list-payment__item d-flex">
+                  {{ type | payment_type_svg_tag: class: 'icon--full-color' }}
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+      </div>
+
+    </div>
+  </div>
+</footer>
+{% schema %}
+{
+  "name": "t:sections.footer.name",
+  "max_blocks": 5,
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.general.content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_scheme.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_back_to_top",
+      "label": "t:sections.footer.settings.enable_back_to_top.label",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "t:sections.header.settings.headers.header_currenct_selector.content",
+      "info": "t:sections.header.settings.headers.header_currenct_selector.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_currency_selector",
+      "default": true,
+      "label": "t:sections.header.settings.show_currency_selector.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.header.settings.headers.header_language_selector.content",
+      "info": "t:sections.header.settings.headers.header_language_selector.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_language_selector",
+      "default": true,
+      "label": "t:sections.header.settings.show_language_selector.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.footer.settings.headers.header_payment_methods.content",
+      "info": "t:sections.footer.settings.headers.header_payment_methods.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_methods",
+      "label": "t:sections.footer.settings.show_payment.label",
+      "info": "t:sections.footer.settings.show_payment.info",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "t:sections.footer.settings.headers.header_footer_menu.content"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "t:general.settings.menu.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_external_link",
+      "label": "t:general.settings.open_external_link.label",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "store_information",
+      "name": "t:sections.footer.settings.store_information.label",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.text.content"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:general.settings.heading.label",
+          "default": "About your store"
+        },
+        {
+          "type": "image_picker",
+          "id": "footer_image",
+          "label": "t:general.settings.image.label"
+        },
+        {
+          "type": "range",
+          "id": "image_width",
+          "label": "t:general.settings.image_width_on_large_screen.label",
+          "min": 40,
+          "max": 260,
+          "step": 4,
+          "unit": "px",
+          "default": 140
+        },
+        {
+          "type": "range",
+          "id": "image_width_mobile",
+          "label": "t:general.settings.image_width_on_mobile_screen.label",
+          "min": 40,
+          "max": 260,
+          "step": 4,
+          "unit": "px",
+          "default": 68
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "t:general.settings.description.label",
+          "default": "<p>Feature your brand's vision and mission to customers</p>"
+        },
+        {
+          "type": "text",
+          "id": "email",
+          "default": "Hello@naturalgirlwigs.com",
+          "label": "Email"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "phone",
+          "default": "+1281-201-5867",
+          "label": "Phone"
+        },
+        {
+          "type": "header",
+          "content": "t:sections.footer.settings.headers.header_follow_on_shop.content",
+          "info": "t:sections.footer.settings.headers.header_follow_on_shop.info"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_follow_on_shop",
+          "label": "t:sections.footer.settings.enable_follow_on_shop.label",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "t:sections.footer.settings.headers.header_social_media.content"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_socical_icons",
+          "label": "t:sections.footer.settings.show_social_media_icons.label",
+          "info": "t:sections.main_password.blocks.settings.social_media.info",
+          "default": true
+        },
+        {
+          "type": "select",
+          "id": "socical_icons_style",
+          "label": "t:sections.footer.settings.social_media_button_style.label",
+          "default": "btn-plain",
+          "options": [
+            {
+              "value": "btn-primary",
+              "label": "t:general.settings.filled_button.label"
+            },
+            {
+              "value": "btn-plain",
+              "label": "t:general.settings.ghost_button.label"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "single_menu",
+      "name": "t:sections.footer.settings.single_menu.label",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "t:general.settings.menu.label"
+        }
+      ]
+    },
+    {
+      "type": "newsletter",
+      "name": "t:sections.footer.settings.newsletter.label",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "t:sections.footer.settings.paragraph_newsletter.content"
+        },
+        {
+          "type": "text",
+          "id": "newsletter_heading",
+          "label": "t:general.settings.heading.label",
+          "default": "Subscribe to our newsletter"
+        },
+        {
+          "type": "richtext",
+          "id": "newsletter_description",
+          "label": "t:general.settings.description.label",
+          "default": "<p>Write a short sentence describing what customers can expect from your newsletter</p>"
+        },
+        {
+          "type": "text",
+          "id": "submit_button",
+          "label": "t:general.settings.submit_button.label",
+          "default": "Subscribe"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_block_background",
+          "label": "t:general.settings.enable_background_color.label",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.custom_color.content"
+        },
+        {
+          "type": "color",
+          "id": "background_content",
+          "label": "t:general.settings.background.label"
+        },
+        {
+          "type": "color",
+          "id": "color_content",
+          "label": "t:general.settings.content.label"
+        }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      {
+        "type": "single_menu"
+      }
+    ]
+  }
+}
+{% endschema %}

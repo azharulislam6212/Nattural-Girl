@@ -1,0 +1,220 @@
+{% liquid
+  assign section_id = section.id | md5 | truncate: 12, ""
+%}
+<div class="s--margin color-{{- section.settings.color_scheme }} s-container-radius o-hidden p-relative no-transparent" data-ui-component="Image Gallery Section">
+  <sht-carousel class="carousel-special p-relative d-block o-hidden s-container-radius  " data-enable="true">
+    <div aria-atomic="true" class="rw o-hidden d-flex fw-wrap r-gap-equal js-carousel-items ox-auto p-relative scrollable scrollable-x disable-scrollbars carousel">
+      {%- for block in section.blocks -%}
+        {% liquid
+          assign loading = "lazy"
+          assign decoding ="async"
+          assign fetchpriority = "auto"
+
+          if section.index <= 2 and forloop.first
+            assign loading = "eager"
+            assign fetchpriority = "high"
+          endif
+          assign placeholder_image_index = forloop.index0 | modulo: 4 | plus: 1
+          assign media = 'product-apparel-' | append: placeholder_image_index | placeholder_svg_tag: 'placeholder media js-image-lazy w-100 h-100 d-block'
+          assign media_alt = block.settings.image.alt | default: block.settings.image.image | split: '/' | last
+          assign media_size = '(min-width: 459px) calc(100vw / 2), (min-width: 1025px) calc(100vw / 3), (min-width: 1195px) calc(min(MEDIA_MAX_WIDTHpx, 100vw) / 4), 100vw' | replace: "MEDIA_MAX_WIDTH", settings.page_max_width
+          assign media = block.settings.image | image_url: width: block.settings.image.width | image_tag: widths: '350, 450, 750', sizes: media_size, alt: media_alt, class: 'js-image-lazy media of-cover w-100', loading: loading, fetchpriority: fetchpriority, decoding: decoding
+        %}
+        <sht-carousel-itm class="sht-carousel carousel-special-item js-carousel-item clm p-relative scrollable-aln-start carousel__item no-transparent" style="--w-xs:12;--w-sm:6;--w-md:4;--w-lg:3;" role="group" aria-roledescription="Slide" aria-label="{{ 'accessibility.slide' | t }} {{ forloop.index }} {{ 'accessibility.of' | t }} {{ forloop.length }}" data-item-index="{{ forloop.index }}">
+          <sht-drwr-trg class="gallery-media p-relative" data-drawer-id="drawer{{ section_id }}">
+            <div class="js-drawer-trigger-media">
+              {% render 'image', image_item: media, ratio: section.settings.image_ratio %}
+            </div>
+            <div class="card__content p-absolute bottom-0 right-0 zi-2 wb-break-word{% if block.settings.product_list == blank %} d-none {% endif %}">
+              <button aria-label="{{ 'accessibility.view_detail' | t }}" class="js-drawer-trigger btn btn-outline  btn--large btn-icon">
+                {% render 'icon-eyes' %}
+              </button>
+            </div>
+            <div class="js-drawer-trigger-content d-none">
+              <ul class="ls-none d-grid gap-16" role="listbox">
+                {%- for product in block.settings.product_list -%}
+                  <li role="option">
+                    {%- liquid
+                      assign media_product = 'product-apparel-1' | placeholder_svg_tag: 'placeholder media js-image-lazy w-100 h-100 d-block'
+                      assign media_product = product | image_url: width: product.image.width | image_tag: widths: '320', sizes: '80px', alt: product.title, class: 'js-image-lazy media of-cover h-100 w-100'
+                    %}
+                    <div class="image-gallery__product d-flex gap-12" style="--image-background: {{ section.settings.image_background | default: 'transparent' }}">
+                      <div class="p-relative">
+                        {% render 'image', image_item: media_product, ratio: section.settings.product_image_ratio, image_classes: 'image-gallery__product-media rounded-small o-hidden' %}
+                        <a href="{{ product.url }}" class="p-absolute bottom-0 left-0 w-100 h-100"></a>
+                      </div>
+                      <div class="flex-1 d-flex fd-column gap-8">
+                        <p class="subtext color-light hide-empty wb-break-word m-zero">
+                          {{- product.vendor -}}
+                        </p>
+                        <a href="{{ product.url }}" class="card__heading wb-break-word d-block m-zero fw-700 hide-empty">{{- product.title | escape -}}</a>
+                        {%- render 'product-price' product: product, target: product, content_align: 'ta-left start-xs' -%}
+                      </div>
+                    </div>
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </sht-drwr-trg>
+        </sht-carousel-itm>
+      {% endfor %}
+    </div>
+    <div class="carousel-pagination middle-y w-100 p-absolute no-js-hidden zi-2">
+      <div class="p-absolute left-0">
+        <button type="button" data-step="1" class="js-carousel-prev-btn btn btn-outline btn-icon icon middle-y btn--medium" aria-label="{{ 'accessibility.previous_slide' | t }}" name="previous" disabled>{% render 'icon-chevron-left' %}</button>
+      </div>
+      <div class="p-absolute right-0">
+        <button type="button" data-step="1" class="js-carousel-next-btn btn btn-outline btn-icon icon middle-y btn--medium" aria-label="{{ 'accessibility.next_slide' | t }}" name="next" disabled>{% render 'icon-chevron-right' %}</button>
+      </div>
+    </div>
+  </sht-carousel>
+</div>
+
+<sht-drwr class="sht-drawer color-{{- settings.color_scheme_drawer_popover }} no-focus-visible d-flex end-xs" id="drawer{{ section_id }}" hidden tabindex="-1">
+    <div class="drawer__overlay js-drawer-overlay p-fixed top-0 left-0 right-0 bottom-0 w-100 h-100v"></div>
+    <div class="drawer__wrapper js-drawer-wrapper o-hidden" role="dialog" aria-modal="true" aria-label="{{ 'sections.image_gallery.shop_the_look' | t }}">
+      <div class="drawer__header d-flex middle-xs between-xs">
+        <h2 class="drawer__heading h5 m-zero js-drawer-heading">
+          {{ 'sections.image_gallery.shop_the_look' | t }}
+        </h2>
+        <button class="js-drawer-btn-close btn btn--medium btn-icon  btn-plain" type="button" aria-label="{{ 'accessibility.close' | t }}">
+          {% render 'icon-close' %}
+        </button>
+      </div>
+      <div class="drawer__body oy-scroll flex-1 disable-scrollbars">
+        <div class="drawer__content pb-12">
+          <div class="p-relative br-16 o-hidden js-drawer-media mb-24"></div>
+          <div class="js-drawer-content"></div>
+        </div>
+      </div>
+    </div>
+  </sht-drwr>
+{% schema %}
+{
+  "name": "t:sections.image_gallery.name",
+  "disabled_on": {
+    "groups": [
+      "header"
+    ]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.general.content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:general.settings.color_schemes.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.image_gallery.header.gallery_item.content",
+      "info": "t:sections.image_gallery.header.gallery_item.info"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "t:general.settings.image_ratio.label",
+      "options": [
+        {
+          "value": "1",
+          "label": "t:general.settings.image_ratio.options.square.label"
+        },
+        {
+          "value": "2/3",
+          "label": "t:general.settings.image_ratio.options.portrait.label"
+        },
+        {
+          "value": "3/2",
+          "label": "t:general.settings.image_ratio.options.landscape.label"
+        }
+      ],
+      "default": "2/3"
+    },
+    {
+      "type": "header",
+      "content": "t:general.settings.headers.product_card.content"
+    },
+    {
+      "type": "select",
+      "id": "product_image_ratio",
+      "label": "t:general.settings.image_ratio.label",
+      "options": [
+        {
+          "value": "1",
+          "label": "t:general.settings.image_ratio.options.square.label"
+        },
+        {
+          "value": "2/3",
+          "label": "t:general.settings.image_ratio.options.portrait.label"
+        },
+        {
+          "value": "3/2",
+          "label": "t:general.settings.image_ratio.options.landscape.label"
+        },
+        {
+          "value": "auto",
+          "label": "t:general.settings.image_ratio.options.adapt.label"
+        }
+      ],
+      "default": "2/3"
+    },
+    {
+      "type": "color",
+      "id": "image_background",
+      "label": "t:general.settings.image_background.label",
+      "info": "t:general.settings.image_background.info"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image_gallery",
+      "name": "t:sections.image_gallery.blocks.gallery.name",
+      "settings": [
+        {
+          "type": "header",
+          "content": "t:general.settings.headers.image.content"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:general.settings.image.label"
+        },
+        {
+          "type": "header",
+          "content": "t:sections.image_gallery.blocks.shop_the_look.content"
+        },
+        {
+          "type": "product_list",
+          "id": "product_list",
+          "label": "t:general.settings.product.label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.image_gallery.name",
+      "blocks": [
+        {
+          "type": "image_gallery"
+        },
+        {
+          "type": "image_gallery"
+        },
+        {
+          "type": "image_gallery"
+        },
+        {
+          "type": "image_gallery"
+        },
+        {
+          "type": "image_gallery"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

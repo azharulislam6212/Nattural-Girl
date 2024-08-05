@@ -1,0 +1,38 @@
+{%- for value in option.values -%}
+  <div class="product-swatches__item js-variant-option-value product-option__value {% if product.selected_or_first_available_variant.available == false and option.selected_value == value %}product-option--sold-out{% endif %}" data-value="{{ value | escape }}-{{ index }}" data-snipets="core-color-swatch">
+    <input type="radio" aria-label="{{ option.name }}" class="input--variant form__control js-variant-item {{ input_class | default: 'js-variant-radio-item' }} visually-hidden"
+      id="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
+      name="{{ option.name }}"
+      value="{{ value | escape }}"
+      data-variant-value="{{ value | escape }}-{{ index }}"
+      form="{{ product_form_id }}"
+      {% if option.selected_value == value %}checked{% endif %}>
+    <label class="form__label form__label--{{- settings.swatch_source }} d-block" for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}" tabindex="-1">
+      <span class="product-swatches product-swatches--{{- settings.swatch_source }} product-variant-label o-hidden js-variant-swatch-item d-block br-50p subtext p-relative c-pointer o-hidden d-flex center-xs middle-xs ta-center" aria-hidden="true" data-option-value="{{ value | downcase | escape | remove: " " }}" data-swatch-source="{{ settings.swatch_source }}">
+        {% if settings.swatch_source == 'variant_image' %}
+          {%- liquid
+              assign selected_variant = ''
+        
+              for variant in product.variants
+
+          
+
+                if variant.title contains value and variant.image
+                  assign selected_variant = variant
+                  break
+                endif
+              endfor
+          -%}
+
+
+
+          {%- if selected_variant.image -%}
+            {{ selected_variant.image | image_url: width: 200 | image_tag: widths: '200', class: 'product-swatches-image absolute zi-1 top-0 left-0 w-100 h-100 of-cover' }}
+          {%- endif -%}
+        {% endif %}
+        <span class="variant-option-label js-variant-option-label pe-none p-absolute">{{ value }}</span>
+      </span>
+      <span class="variant-option-label-v js-variant-option-label">{{ value }}</span>
+    </label>
+  </div>
+{%- endfor -%}

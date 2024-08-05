@@ -1,0 +1,137 @@
+.after-before-header{
+    margin-bottom: 60px;
+    text-align: center;
+    display: inline-block;
+    position: relative;
+}
+
+.after-before-title{
+    margin: 0;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 40px;
+    line-height: 48px;
+    color: rgb(var(--color-heading-rgb));
+}
+
+.before-image img, .after-image img{
+    border-radius: 10px;
+    border: 5px solid #8E2210;
+}
+
+.heading-title{
+    padding: 25px 15px 15px;
+    border: 5px solid #8E2210;
+    border-radius: 0 0 10px 10px;
+    border-top: 0;
+    background-color: #fff;
+    text-align: center;
+    font-family: var(--body-font);
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12.7681px;
+    line-height: 22px;
+    margin-top: -10px;
+}
+
+.split-cursor::before {
+    content: "";
+    position: absolute;
+    width: 4px;
+    height: 100%;
+    background: #8E2210;
+    border-right: 1px solid var(--color-light-text);
+    border-left: 1px solid var(--color-light-text);
+    z-index: -1;
+}
+
+.position-left-heading{
+    position: absolute;
+    left: -24px;
+    top: -15px;  
+}
+
+
+.position-right-heading{
+    position: absolute;
+    right: -24px;
+    top: -15px;  
+}
+
+.before-image{
+    position: relative;
+}
+
+.before-text{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    gap: 10px;
+    position: absolute;
+    height: 29px;
+    left: 16px;
+    top: 16.5px;
+    background: #FFFFFF;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.after-text{
+    z-index: 99;
+    background: #fff;
+    bottom: 24px;
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    gap: 10px;
+    position: absolute;
+    width: 68px;
+    height: 29px;
+    right: 30px;
+    background: #FFFFFF;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+
+
+
+
+.after-before-column--product .position-right-heading {
+    position: absolute;
+    right: -38px;
+    top: -26px;
+}
+
+.after-before-column--product .container{
+    max-width: 1077px;
+}
+
+
+@media screen and (max-width: 767px) {
+
+    .position-left-heading {
+        top: auto;
+        bottom: -15px;
+    }
+    .position-right-heading{
+        top: auto;
+        bottom: -15px;
+    }
+    .after-before-title{
+       font-size:32px;
+       line-height: 35px;
+   }
+
+   .after-before-header{
+       margin-bottom: 48px;
+   }
+
+   .column-item{
+    margin-bottom: 12px;
+   }
+}

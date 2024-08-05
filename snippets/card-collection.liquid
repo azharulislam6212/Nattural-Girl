@@ -1,0 +1,34 @@
+{%- comment -%}
+{% render 'card-collection',
+  collection: collection,
+  media_ratio: '1/1'
+  show_product_count: settings.show_product_count
+%}
+{%- endcomment -%}
+{%- capture image_sizes -%}
+  (min-width: {{- settings.page_max_width -}}px) calc(({{- settings.page_max_width -}}px - (2vw * 3))/3), (min-width: 1025px) calc((100vw - 200px) / 3), (min-width: 459px) calc((100vw - 144px) / 2), calc((100vw - 76px) / 2)
+{%- endcapture -%}
+{%- liquid
+  assign loading = "lazy"
+  assign decoding ="async"
+  assign fetchpriority = "auto"
+
+  if section.index <= 2 and is_first
+    assign loading = "eager"
+    assign fetchpriority = "high"
+  endif
+  assign collection_image = 'collection-apparel-1' | placeholder_svg_tag: 'placeholder media of-cover js-image-lazy w-100 h-100'
+  assign collection_image = collection.products.first.featured_image | image_url: width: section.settings.hero_image.width | image_tag: widths: '320, 450, 550, 750, 950, 1024, 1200, 1400, 1600, 1800, 2000', sizes: image_sizes, alt: collection.title, class: 'media of-cover js-image-lazy w-100 h-100', loading: loading, fetchpriority: fetchpriority, decoding: decoding
+  assign collection_image = collection.image | image_url: width: section.settings.hero_image.width | image_tag: widths: '320, 450, 550, 750, 950, 1024, 1200, 1400, 1600, 1800, 2000', sizes: image_sizes, alt: collection.title, class: 'media of-cover js-image-lazy w-100 h-100', loading: loading, fetchpriority: fetchpriority, decoding: decoding
+-%}
+
+<div class="sht-card collection-card focus-state w-100 p-relative sht-mask o-hidden color-{{- settings.collection_card_color_scheme }} {{ settings.collection_card_position }} media--hover-effect" style="--overlay: {{ settings.collection_mask_overlay_opacity }}; {{- card_collection_style -}}">
+  <a aria-label="{{ collection.title }}" href="{{ collection.url }}" class="d-block collection-card__link p-absolute top-0 left-0 w-100 h-100 zi-3"></a>
+  {% render 'image', image_item: collection_image, src: collection_image.src, ratio: media_ratio, image_wrap_classes: 'h-100', image_classes: 'h-100 w-100' %}
+  <div class="card--content-inner p-absolute bottom-0 w-100 zi-2 wb-break-word">
+    <h3 class="h6 m-zero card__heading">{{ collection.title }}</h3>
+      <p class="mt-8 d-block {{ settings.show_collection_product_quantity | default: 'd-none-important' | replace: 'true', '' }}">
+        {{ 'general.search.collection.view_count_product' | t: count: collection.products.size }}
+      </p>
+  </div>
+</div>
